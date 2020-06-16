@@ -1,0 +1,236 @@
+<html><head>
+
+<title>File names supported on the archive systems</title>
+
+<!-- $Id: archive-file-name-support.html,v 1.7 2014/04/18 23:40:18 murakami Exp $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+table { border-collapse:collapse; }
+table.border, th.border, td.border { border: 1px solid black; }
+tbody tr:nth-child(even) { background-color: #f6fafa; }
+.green1 { color: green; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="http://people.arsc.edu/~murakami/ngts-cew/DoD-Shield.gif"
+alt="DoD Shield" border="0" style="float: right;"/></a>
+<a href=".">
+<img src="http://people.arsc.edu/~murakami/SLM/HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+File names supported on the archive systems</a>
+</a></h1><br class="clearit">
+<hr></center>
+								<!-- bodytext -->
+
+<h1> <span id="Introduction"> Introduction </span></h1>
+<p>The HCPMP is in the process of implementing a new archival storage service as part of the Storage Lifecycle Management (SLM) project.  In order to accommodate this new archival storage service, certain object types, directory and file names will only be supported on archive systems within a regular file container such as a tar file.  Prior to the new archival storage service no specific direction was given across the HPCMP for object types or directory and file name support on archive systems.
+</p>
+<h1> <span id="Summary"> Summary </span></h1>
+<p>Archive systems directory and file names will not support ASCII control characters, some special characters or leading and trailing SPACE characters.  In addition only regular files and directories will be supported.  Also unsupported are large object-count directories. Up to 250K files or directories per directory will be supported.  Characters that are supported in object names on the archive systems of HPCMP include all alphanumeric characters and most printable ASCII characters.  The supported characters are the subset of printable ASCII characters, ASCII 32 to ASCII 126, hex 20 to 7e, excluding the special characters SLASH (ASCII 47, h2f, /), BACKSLASH (ASCII 92, h5c, \), and ASTERISK (ASCII 42, h2a, *) and the SPACE (ASCII 32, h20, ' ') as leading or trailing characters.
+</p><p>Unsupported object types, directory and file names will still be supported within a regular file container such as a tar file.
+</p><p>We have provided a script at ${SAMPLES_HOME}/slm/bad-files that will traverse your directory structure and provide output containing the unsupported objects and object names.  The script can be used to review your archive holdings proactively or to confirm that issues you received notification of have been addressed.  We request that you examine your archive data for unsupported objects, delete anything other than regular directories and files, and re-name unsupported object names.
+</p><p>Users will be notified if they have files with bad names, unsupported file types, or unsupported large object-count directories.
+</p><p>Please update your scripts accordingly so that newly created files do not contain these unsupported attributes. For more information see the longer version below.
+</p><p>Thank you for your continued support of this initiative and please contact CCAC with questions/concerns.
+</p>
+<h1> <span id="Details"> Details </span></h1>
+<p>The HCPMP is in the process of implementing a new archival storage service as part of the Storage Lifecycle Management (SLM) project.
+The ARL, AFRL, ERDC, Navy, ORS, and MHPCC DSRCs are preparing the archive filesystems in order to accommodate this upcoming solution for both good practice and technical reasons.  
+</p><p>We will need your help with the good practice remediation aspect.
+</p><p>An example of good practice is cleaning up non-printing characters, such as ASCII control character codes for BACKSPACE, TAB, RETURN, DELETE and others, that are occasionally introduced by accident into directory and file names.
+</p><p>They present a low-level risk to system security and integrity.  They cause problems retrieving files from system backups, and with scripted verification. Almost invariably, they cause confusion for the owner and group owners of the file, who have trouble renaming, deleting, or using the files because the file names simply aren't as they appear to be. 
+</p><p>Users will not be able to see files on the archival storage systems with bad names from the new archival storage interface.  Once we switch to the new archival storage interface users will no longer be able to archive files with bad names or of unsupported types except  within a regular file container such as a tar file.
+</p>
+<h2> <span id="Container_files"> Container files </span></h2>
+<p>Unsupported object types, directory and file names will still be supported on archive systems within a regular file container such as a tar file.
+</p>
+<h2> <span id="Supported_and_Unsupported_File_Types"> Supported and Unsupported File Types </span></h2>
+<p>Only regular files and directories will be supported.
+</p><p>Output from the ls -l command shows the file system object type code as the first character.
+</p>
+<table class='border'>
+<caption> Supported and Unsupported File Types
+</caption><tr>
+<th class='border'> Object Type Code
+</th><th class='border'> Supported
+</th><th class='border'> Description
+</th></tr>
+<tr>
+<td class='border' style="text-align:center;"> d
+</td><td class='border' style="text-align:center;"> yes
+</td><td class='border'> The entry is a directory.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> -
+</td><td class='border' style="text-align:center;"> yes
+</td><td class='border'> The entry is an ordinary file.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> D
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is a door.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> l
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is a symbolic link.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> b
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is a block special file.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> c
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is a character special file.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> p
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is a FIFO (or "named pipe") special file.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> P
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is an event port.
+</td></tr>
+<tr>
+<td class='border' style="text-align:center;"> s
+</td><td class='border' style="text-align:center;"> no
+</td><td class='border'> The entry is an AF_UNIX address family socket.
+</td></tr></table>
+<p>Existing objects of unsupported types in your archive files will not be visible through the new service.
+</p>
+<h2> <span id="Unsupported_characters_in_object_names"> Unsupported characters in object names </span></h2>
+<ul><li> All the ASCII control characters, ASCII 00 to ASCII, 31 hex 00 to 1f, including TAB (ASCII 9, h09), RETURN (ASCII 13, h0d), DELETE (ASCII 127, h7f), and BACKSPACE (ASCII 8, h08)
+</li><li> SPACE (ASCII 32, h20, ' ') as leading or trailing characters
+</li><li> SLASH (ASCII 47, h2f, /)
+</li><li> BACKSLASH (ASCII 92, h5c \)
+</li><li> ASTERISK (ASCII 42, h2a, *)
+</li><li> Extended characters, ASCII 128 to ASCII 255
+</li><li> Unicode characters
+</li></ul>
+<p>In SLM names with unsupported characters will be disallowed when you try to create a new object and existing objects having these names in your archive files will not be visible through SLM.
+</p>
+<h3> <span id="Supported_character_notes"> Supported character notes </span></h3>
+<ul><li> The SPACE (ASCII 32, h20, ' ') character is supported as an embedded character but use of names containing the SPACE character require special handling in the command line, scripts, network protocols and other places.  If you use spaces in names you will find cases where this special handling has to be added.  A very common case is a simple script that you receive from someone that you have to 'fix' to include the special handling for spaces in file-names.  In addition some of the special handling may confuse a user when a name encoded by special handling is viewed eg: a%20name%20encoded.
+</li><li> The HYPHEN (ASCII 45, h2d, '-') character is supported but it's use as the first character of a name will require special handling in a shell command line and other places.
+</li></ul>
+<h2> <span id="Unsupported_large_object-count_directories"> Unsupported large object-count directories </span></h2>
+<p>Also unsupported are large object-count directories.  'Large' means more than 250,000 directories and/or files within a single directory.  An ‘ls | wc –l’ within a directory will produce a count of the number of objects.
+</p>
+<h2> <span id="Users_will_be_notified_of_files_with_bad_names_or_of_unsupported_file_types"> Users will be notified of files with bad names or of unsupported file types </span></h2>
+<p>We have provided a script at ${SAMPLES_HOME}/slm/bad-files that will traverse your directory structure and provide output containing the unsupported objects and object names.  The script can be used to review your archive holdings proactively or to confirm that issues you received notification of have been addressed.  We request that you examine your archive data for unsupported objects, delete anything other than regular directories and files, and re-name unsupported object names.
+</p><p>Users will be notified if they have files with bad names, of unsupported file types, or unsupported large object-count directories.
+</p><p>Please update your scripts accordingly so that newly created files do not contain these attributes.
+</p><p>Thank you for your continued support of this initiative and please contact CCAC with questions/concerns.
+</p>
+<h1> <span id="Unsupported_names.2Fobjects_CCAC_email_boiler_plate"> Unsupported names/objects CCAC email boiler plate </span></h1>
+<p>Dear &lt;USER&gt;, 
+</p><p>Files you own will not be supported by the new archival storage service as part of the Storage Lifecycle Management (SLM) project.  Archive systems directory and file names will no longer support ASCII control characters, some special characters or leading and trailing SPACE characters. In addition only regular files and directories will be supported. Also unsupported are large object-count directories.
+</p><p>We have provided a script at ${SAMPLES_HOME}/slm/bad-files that will traverse your directory structure and provide output containing the unsupported objects and object names. The script can be used to review your archive holdings proactively or to confirm that issues you received notification of have been addressed.
+</p>
+<table>
+<tr>
+<td> CCAC URL:
+</td><td> <a href="http://centers.hpc.mil" rel="nofollow">http://centers.hpc.mil</a>
+</td></tr>
+<tr>
+<td> DSN:
+</td><td> 785-0679
+</td></tr>
+<tr>
+<td> Toll Free:
+</td><td> 1-877-CCAC-039 (1-877-222-2039)
+</td></tr>
+<tr>
+<td> Commercial:
+</td><td> 1-937-255-0679
+</td></tr>
+<tr>
+<td> FAX:
+</td><td> 1-937-656-9538
+</td></tr>
+<tr>
+<td> Emails:
+</td><td> help@ccac.hpc.mil (CCAC Service Center)
+</td></tr></table>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 4/18/2014 - LAM - Combined the Supported and Unsupported File Types tables into a single table and modified the text to match the version edited by HPCMP web staff.
+</li><li> 11/6/2013 - LAM - Changed to new Centers Portal (<a href="http://centers.hpc.mil" rel="nofollow">http://centers.hpc.mil</a>) link instead of old CCAC link.  Changed to Red-Black HPCMP Logo for stand alone page.  A new pdf of the short version was created and all versions were uploaded to the centers portal.  The new pdf was forwarded to Don and the CEW email list.
+</li><li> 10/25/2013 - LAM - Forwarded the email I sent to Tom Kendall and Steve Scherr to Don to present to the BCT.  A pdf version of the document generated 10/22/2013 was attached.  The email referenced an html version posted to the HPCMP Centers Portal.
+</li><li> 10/22/2013 - LAM - Added boiler plate for the email that CCAC will send to users who have unsupported objects.
+<ul><li> Various changes based on input from others including a specific location for the scrip which is already in place on ARL systems and reordering of the sections about the script.
+</li></ul>
+</li><li> 10/15/2013 - LAM - Added script location and hex codes as well as the ascii codes.  The script uses "find &lt;dir&gt; -ls" which reports hex codes rather than the base 10 ascii codes.
+</li><li> October 14, 2013 - LAM - Incorporated changes suggested by Gene and Tom
+<ul><li> The new archival storage service is Storage Lifecycle Management (SLM)
+</li></ul>
+</li><li> October 8, 2013 - LAM - Gene closed: <a href="https://www2.nirvanaware.com/bugzilla/show_bug.cgi?id=2062" rel="nofollow">Bug 2062</a> <a href="https://rt.arsc.edu/Ticket/Display.html?id=43508" class="external text" rel="nofollow">RT 43508</a> - How large of a directory can Ssync handle?
+<ul><li> HPCMP is settling in on 250K objects per directory as a policy limit
+</li><li> Tested to 320,000 files in a single directory - Ssync 32 bit version
+</li><li> Tested up to 1 million files in a single directory (no hard limit reached) - Ssync 64 bit version
+</li></ul>
+</li><li> October 7, 2013 - LAM - Updated based on input from Customer Experience Workgroup (CEW) discussions of the last couple of weeks.  Posted to <a href="http://people.arsc.edu/~murakami/SLM/archive-file-name-support.html" rel="nofollow">http://people.arsc.edu/~murakami/SLM/archive-file-name-support.html</a>
+</li><li> October 2, 2013 - LAM - Gene closed: <a href="https://www2.nirvanaware.com/bugzilla/show_bug.cgi?id=2056" rel="nofollow">Bug 2056</a> - Need clarification of what characters will be synchronized by the Ssync daemon
+</li><li> September 30, 2013 - LAM - paraphrased statement about characters allowed in object names in <a href="https://www2.nirvanaware.com/bugzilla/show_bug.cgi?id=2056" rel="nofollow">Bug 2056</a>
+</li><li> September 20, 2013 - LAM - Forwarded to Gene and myself.
+<ul><li> I created this ARSCipedia page.
+</li><li> This page is based on a communication that may or may not have gone out to HPCMP users in 2012.
+</li></ul>
+</li><li> July 02, 2012 - Sent from Chris Barnes to Tom Kendall, Bryan Comstock, Gene McGill and Reid Bingham.
+<ul><li> Subject: Communication to ARL and NAVY Users concerning SLM
+</li></ul>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 54/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1377-0!1!0!!en!2 and timestamp 20140418232901 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/File_names_supported_on_the_archive_systems">
+https://intrawiki.arsc.edu/index.php/File_names_supported_on_the_archive_systems</a>"
+<br> - Friday, April 18, 2014 @ 3:53:13 PM (Alaska Time)</div>
+<ul>
+<li><a href="#Introduction">1 Introduction</a></li>
+<li><a href="#Summary">2 Summary</a></li>
+<li><a href="#Details">3 Details</a>
+<ul>
+<li><a href="#Container_files">3.1 Container files</a></li>
+<li><a href="#Supported_and_Unsupported_File_Types">3.2 Supported and Unsupported File Types</a></li>
+<li><a href="#Unsupported_characters_in_object_names">3.3 Unsupported characters in object names</a>
+<ul>
+<li><a href="#Supported_character_notes">3.3.1 Supported character notes</a></li>
+</ul>
+</li>
+<li><a href="#Unsupported_large_object-count_directories">3.4 Unsupported large object-count directories</a></li>
+<li><a href="#Users_will_be_notified_of_files_with_bad_names_or_of_unsupported_file_types">3.5 Users will be notified of files with bad names or of unsupported file types</a></li>
+</ul>
+</li>
+<li><a href="#Unsupported_names.2Fobjects_CCAC_email_boiler_plate">4 Unsupported names/objects CCAC email boiler plate</a></li>
+<li><a href="#Revision_Log">5 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

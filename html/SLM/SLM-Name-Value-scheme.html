@@ -1,0 +1,212 @@
+<html><head>
+
+<title>SLM Name_Value scheme</title>
+
+<!-- $Id: SLM-Name-Value-scheme.html,v 1.3 2018/01/15 08:34:00 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SLM Name_Value scheme
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+								<!-- bodytext -->
+
+<h1> <span id="SLM_Name_Value_scheme"> SLM Name_Value scheme </span></h1>
+<p>The SLM Name_Value scheme is one of the user accessible schemes.  See <a href="SgetS.html" title="SgetS">SgetS</a> for a complete list.
+</p><p>The SLM Name_Value scheme is created when a user sets attribute values for a Data Object using either Sdata or Sscheme.
+</p><p>The "name" is arbitrary alphanumeric and the user can create multiple "name" = "value" pairs
+</p>
+<h1> <span id="Notes_and_Special_considerations_for_a_Multiple_Rows_Scheme"> Notes and Special considerations for a Multiple Rows Scheme </span></h1>
+<ul><li> Updating and deleting a particular row of metadata in a multi-row Scheme is supported.
+</li><li> The ROW_ID is shown in Sscheme -l starting with SRB 2012 R3.
+</li><li> Sls -select is NOT supported for a ROW_ID because of reasons explained by Chris Lindner.  My restatement of this explanation is:
+<ul><li> <b>The ROW_ID is a relative number that will change if a record of a multi-row Scheme with a lower ROW_ID is deleted.</b>
+</li></ul>
+</li><li> The ROW_ID supported for updating or deleting a particular row of metadata in a multi-row Scheme should be retrieved immediately before the update or delete and <b>if multiple rows (but not all rows) are to be deleted using one set of retrieved information, the rows should be deleted in the order of highest ROW_ID first.</b>
+</li></ul>
+<h1> <span id="Metadata_Scheme:_Name_Value_-_columns"> Metadata Scheme: Name_Value - columns</span></h1>
+<table>
+
+<tr>
+<td> Attribute Name
+</td><td> Position
+</td><td> Type
+</td><td> Constraints
+</td><td> Default
+</td><td> Display Size
+</td><td> Column Name
+</td><td> Column Type
+</td></tr>
+<tr>
+<td> ROW_ID
+</td><td> 0
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_VALUE &#124; SRB_COLUMN_NOT_NULL
+</td><td> -1
+</td><td> 12
+</td><td> row_id
+</td><td> integer
+</td></tr>
+<tr>
+<td> Name
+</td><td> 1
+</td><td> string[32]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 32
+</td><td> name
+</td><td> varchar(32)
+</td></tr>
+<tr>
+<td> Value
+</td><td> 2
+</td><td> string[256]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 30
+</td><td> value
+</td><td> varchar(255)
+</td></tr></table>
+<h1> <span id="Values_in_every_column_of_the_SLM_Name_Value_scheme"> Values in every column of the SLM Name_Value scheme </span></h1>
+<p>The following was omitted from the above table because the values are the same for every row:
+</p>
+<pre>Metadata Scheme: Name_Value
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_name_value
+...
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_name_value
+...
+</pre>
+<h1> <span id="SLM_Name_Value_scheme_-_native_output"> SLM Name_Value scheme - native output </span></h1>
+<pre>$ SgetS -x Name_Value | sed 's|^| |'
+--------------------------- RESULTS ------------------------------
+Metadata Scheme ID: 100065
+Metadata Scheme: Name_Value
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_name_value
+Metadata Attribute ID: 100066
+Metadata Attribute: ROW_ID
+Metadata Attribute Position: 0
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_VALUE | SRB_COLUMN_NOT_NULL
+Metadata Attribute Default: -1
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_name_value
+Metadata Attribute Column Name: row_id
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100065
+Metadata Scheme: Name_Value
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_name_value
+Metadata Attribute ID: 100067
+Metadata Attribute: Name
+Metadata Attribute Position: 1
+Metadata Attribute Type: string[32]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 32
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_name_value
+Metadata Attribute Column Name: name
+Metadata Attribute Column Type: varchar(32)
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100065
+Metadata Scheme: Name_Value
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_name_value
+Metadata Attribute ID: 100068
+Metadata Attribute: Value
+Metadata Attribute Position: 2
+Metadata Attribute Type: string[256]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 30
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_name_value
+Metadata Attribute Column Name: value
+Metadata Attribute Column Type: varchar(255)
+
+-----------------------------------------------------------------
+
+[21:00:14 Mon Oct 07] murakami@pershing-login02 ~
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 10/7/2013 - LAM - Increased Name from 16 to 32 characters when reviewing <a href="https://www2.nirvanaware.com/bugzilla/show_bug.cgi?id=2015" rel="nofollow">Bug 2015</a> <a href="https://rt.arsc.edu/Ticket/Display.html?id=42923" class="external text" rel="nofollow">RT 42923</a> - Increase length for Name attribute of Name_Value Scheme to 32 characters.
+</li><li> 7/26/2012 - LAM - Added "Notes and Special considerations for a Multiple Rows Scheme" to this documentation based on iTracker 5967.
+<ul><li> <a href="https://www.nirvanaware.com:8443/itracker/module-projects/view_issue.do?id=5967" rel="nofollow">iTracker 5967 - How do I specify ROW_ID of a multiple rows scheme using "Sls -select"?</a>
+</li><li> Opened Tuesday 2/7/2012
+</li><li> <a href="https://rt.arsc.edu/Ticket/Display.html?id=38933" rel="nofollow">RT 38933</a> SRB iTracker 5967 - How do I specify ROW_ID of a multiple rows scheme using "Sls -select"?
+</li><li> Closed Thursday 7/26/2012 just prior to the Q2 Quarterly case review.
+</li></ul>
+</li><li> 5/14/2012  From: "Scheder, Constantin" To: "Kendall, Thomas M", "Schissel, David", "Delsorbo, Anthony", "Murakami, Lawrence A CTR (US)", "McGill, Joseph E", "Comstock, Bryan" Subject: Re: SRB 2012 R 3 release schedule
+<ul><li> Tom: ok, the Smkcoll -p and 32 Max_Name_Value_Rows will be available in the next build on Monday morning. We should have the final R3 release by May 21st. Tino
+</li></ul>
+</li><li> 1/27/2012 - LAM - First posted to NGTS portal.
+</li><li> 8/28/2011 - LAM - Created this page.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 35/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:524-0!1!0!!en!2 and timestamp 20131008010254 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_Name_Value_scheme">
+https://intrawiki.arsc.edu/index.php/SLM_Name_Value_scheme</a>"
+<br> - Monday, October 7, 2013 @ 5:12:19 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SLM_Name_Value_scheme">1 SLM Name_Value scheme</a></li>
+<li><a href="#Notes_and_Special_considerations_for_a_Multiple_Rows_Scheme">2 Notes and Special considerations for a Multiple Rows Scheme</a></li>
+<li><a href="#Metadata_Scheme:_Name_Value_-_columns">3 Metadata Scheme: Name_Value - columns</a></li>
+<li><a href="#Values_in_every_column_of_the_SLM_Name_Value_scheme">4 Values in every column of the SLM Name_Value scheme</a></li>
+<li><a href="#SLM_Name_Value_scheme_-_native_output">5 SLM Name_Value scheme - native output</a></li>
+<li><a href="#Revision_Log">6 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

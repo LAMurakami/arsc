@@ -1,0 +1,429 @@
+<HTML><HEAD><TITLE>Sretain - set SRB retention attributes.</TITLE>
+<style type="text/css">
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+dt { color: #a02712}
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+<a href="..">
+<img src="DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="../SLM/HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+Sretain - set SRB retention attributes.
+
+</h1>
+</center>
+<br class="clearit"><hr>
+
+Section: User Contributed Perl Documentation (1)<BR>Updated: 2012-08-07<BR><A HREF="#index">Index</A>
+<hr>
+
+<A NAME="lbAB">
+<H2>NAME</H2></A>
+
+<B>Sretain</B> - set SRB retention attributes.
+<A NAME="lbAC">
+<H2>SYNOPSIS</H2></A>
+
+<A NAME="ixAAC"></A>
+<B>Sretain&nbsp;[options]&nbsp;days|date&nbsp;objects|collections</B>
+<A NAME="lbAD">
+<H2>DESCRIPTION</H2></A>
+
+<A NAME="ixAAD"></A>
+<B>Sretain</B> is the command line interface to set a <I>``Retain_Time''</I> date on
+Storage Resource Broker (<FONT SIZE="-1">SRB</FONT>) objects. The <B>Sretain</B> command updates the
+<I>``Admin''</I> Scheme which is a System Schmeme that is automatically applied during
+ingestion of objects into <FONT SIZE="-1">SRB</FONT>. The <B>Sretain</B> command requires a <B>days</B> or
+<B>date</B> argument for the Retain_Time date and <B>objects</B> or
+<B>collections</B> to act upon. The <I>``Last Review Time''</I> is set automatically by
+the <B>Sretain</B> command.
+<A NAME="lbAE">
+<H2>days|date</H2></A>
+
+<A NAME="ixAAE"></A>
+The <B>days|date</B> parameter is a required parameter. The
+<B>days|date</B> parameter determines the new <I>``Retain_Time''</I> date to be
+set on Storage Resource Broker (<FONT SIZE="-1">SRB</FONT>) objects. The <B>days|date</B>
+parameter can be specified in a variety of formats.
+<DL COMPACT>
+<DT><B>integer[d|w|m|y]</B><DD>
+<A NAME="ixAAF"></A>
+Specifies <I>``Retain_Time''</I> date in integer days of duration from the current
+date.  Modifiers are available for days <B>d</B>, weeks <B>w</B>, months <B>m</B> and years
+<B>y</B>.  Days is the default if no modified is specified.
+<DT><B>yyyy/mm/dd</B><DD>
+<A NAME="ixAAG"></A>
+Specifies a fixed date for the <I>``Retain_Time''</I> date in
+year/month/day format.
+<DT><B>yyyy-mm-dd</B><DD>
+<A NAME="ixAAH"></A>
+Specifies a fixed date for the <I>``Retain_Time''</I> date in
+year-month-day format. 
+<DT><B>mm/dd/yyyy</B><DD>
+<A NAME="ixAAI"></A>
+Specifies a fixed date for the <I>``Retain_Time''</I> date in
+month/day/year format. 
+<DT><B>mm-dd-yyyy</B><DD>
+<A NAME="ixAAJ"></A>
+Specifies a fixed date for the <I>``Retain_Time''</I> date in
+month-day-year format.
+</DL>
+<A NAME="lbAF">
+<H2>objects|collections</H2></A>
+
+<A NAME="ixAAK"></A>
+The <B>objects|collections</B> parameter is a required parameter. More than
+one <B>object</B> and/or <B>collection</B> can be specified. The
+<B>objects|collections</B> parameter specifies the <FONT SIZE="-1">SRB</FONT> objects and/or
+collections to act upon.
+<A NAME="lbAG">
+<H2>OPTIONS</H2></A>
+
+<A NAME="ixAAL"></A>
+The <B>Sretain</B> command allows a number of options to set <I>``Admin''</I> Scheme
+attributes besides the <I>``Retain_Time''</I> date and includes the <B>-r</B> option
+which causes the attributes to be set recursively on objects within the
+collection[s].
+<P>
+
+The options are as follows:
+<DL COMPACT>
+<DT><B>-R</B>, <B>-recursive</B><DD>
+<A NAME="ixAAM"></A>
+Specifies that the operation be applied recursively on objects within the
+collection[s]. The <B>-R</B> option only works when collections are specified.
+<DT><B>-next_review=days|date</B><DD>
+<A NAME="ixAAN"></A>
+Specify the <B>date</B> or number of <B>days</B> until the next review.
+<DT><B>-archive|-immediate|-noarchive</B><DD>
+<A NAME="ixAAO"></A>
+Specifies whether the object is archived, archived immediately, or not archived
+(<I>``Archive Behavior''</I> attribute).
+<DT><B>-dr|-nodr</B><DD>
+<A NAME="ixAAP"></A>
+Specifies whether the object is sent to the <FONT SIZE="-1">DR</FONT> system (<I>``</I><FONT SIZE="-1"><I>DR</I></FONT><I> Behavior''</I>
+attribute).
+<DT><B>-purge|-nopurge</B><DD>
+<A NAME="ixAAQ"></A>
+Specifies whether the object is released after archive. (<I>``Purge Behavior''</I>
+attribute).
+<DT><B>-next_review days|date</B><DD>
+<A NAME="ixAAR"></A>
+Specifies the next review time in either <B>days</B> or <B>date</B> in the format
+specified earlier.
+<DT><B>-hold</B><DD>
+<A NAME="ixAAS"></A>
+Specifies that the <I>``Admin Hold''</I> column be set to yes.  <B>This is an
+administrator only option.</B>
+<DT><B>-p HPCMP_Project_ID</B><DD>
+<A NAME="ixAAT"></A>
+Specifies the 13 character <FONT SIZE="-1">HPCMP</FONT> project <FONT SIZE="-1">ID</FONT> that this object is associated with.
+<DT><B>-help</B><DD>
+<A NAME="ixAAU"></A>
+Print this help message and exit.
+<DT><B>-version</B><DD>
+<A NAME="ixAAV"></A>
+Print the program version and exit.
+<DT><B>-verbose</B><DD>
+<A NAME="ixAAW"></A>
+Print more verbose output during the execution of <B>Sretain</B>.
+</DL>
+<A NAME="lbAH">
+<H2>ADMIN SCHEME</H2></A>
+
+<A NAME="ixAAX"></A>
+The Admin scheme is a System Scheme that is automatically applied during
+ingestion of objects into <FONT SIZE="-1">SRB</FONT>. The Admin scheme has the following attributes:
+<DL COMPACT>
+<DT><I>Archive_Behavior</I><DD>
+<A NAME="ixAAY"></A>
+Specifies whether the object is archived, archived immediately, or not archived.
+<DT><I>DR_Behavior</I><DD>
+<A NAME="ixAAZ"></A>
+Specifies whether the object is sent to the <FONT SIZE="-1">DR</FONT> system.
+<DT><I>Purge_Behavior</I><DD>
+<A NAME="ixABA"></A>
+Specifies whether the object is released after archive.
+<DT><I>Retention_Period</I><DD>
+<A NAME="ixABB"></A>
+Identifies the number of days the object is retained in the archive.
+<DT><I>Retain_Time</I><DD>
+<A NAME="ixABC"></A>
+Identifies the date the object will be retained through.
+<DT><I>PreWarning_Period</I><DD>
+<A NAME="ixABD"></A>
+Identifies the number of days prior to the end of the retention period that the
+user should be warned.
+<DT><I>Last_Review_Time</I><DD>
+<A NAME="ixABE"></A>
+Identifies when the object was last reviewed. Automatically updated by
+<B>Sretain</B>.
+<DT><I>Next_Review_Time</I><DD>
+<A NAME="ixABF"></A>
+Identifies when the archive policy is due to be reviewed by the user.
+<DT><I>Admin_Hold</I><DD>
+<A NAME="ixABG"></A>
+Identifies whether the object is prevented from expiration and purge (not user
+modifiable).
+<DT><I>HPCMP_Project_ID</I><DD>
+<A NAME="ixABH"></A>
+Identifies the <FONT SIZE="-1">HPCMP</FONT> project that the object or collection belongs to.
+The value must be uppercase alphanumeric.
+</DL>
+<A NAME="lbAI">
+<H2>Metadata Attribute Population Algorithm - Step Description</H2></A>
+
+<A NAME="ixABI"></A>
+<DL COMPACT>
+<DT>1.<DD>
+If the attribute is a string list then the value must be one of the strings
+specified for the string list.  The system uses values supplied directly by the
+user (does not apply for System Master Schemes).
+<DT>2.<DD>
+If the user does not supply a value, i.e. the value is ``null'', then the system
+uses the user default value associated with the attribute column.
+<DT>3.<DD>
+If there is no user default value, the system uses the administrator default
+value associated with the attribute column.
+<DT>4.<DD>
+If there is no administrator default value, the system inherits the value from
+the Parent Collection.
+<DT>5.<DD>
+If none of the above conditions are met then the system leaves the value as
+``null''. (From <FONT SIZE="-1">SRB</FONT> User guide (2010 Alpha version)
+</DL>
+<A NAME="lbAJ">
+<H2>EXAMPLES</H2></A>
+
+<A NAME="ixABJ"></A>
+<DL COMPACT>
+<DT>Note: The following examples are based on the current date of: 2011-05-06 15:24:00<DD>
+<A NAME="ixABK"></A>
+The Sretain command updates the <I>``Retain_Time''</I> date based on the
+<B>days|date</B> required parameter.  The Sretain command calculates the date used
+based on the current date if an integer[d|w|m|y] specification is made.
+The current time is used for the time portion of the new <I>``Retain_Time''</I>
+date time value. 
+<DT>Example 1 Setting retention time to 90 days<DD>
+<A NAME="ixABL"></A>
+% Sretain&nbsp;90&nbsp;MyObj
+
+
+<P>
+
+
+This command will set the retention period for the object MyObj in the current
+collection to 90 days from the current date.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Retain_Time::2011-08-04&nbsp;15:24:00'&nbsp;MyObj
+<DT>Example 2 Setting retention time to 3 months<DD>
+<A NAME="ixABM"></A>
+% Sretain&nbsp;3m&nbsp;MyObj
+
+
+<P>
+
+
+This command will set the retention period for the object MyObj in the current
+collection to 3 months from the current date.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Retain_Time::2011-08-06&nbsp;15:24:00'&nbsp;MyObj
+<DT>Example 3 Setting retention time to 90 days for an object in a collection<DD>
+<A NAME="ixABN"></A>
+% Sretain&nbsp;90d&nbsp;MyCol/MyObj
+
+
+<P>
+
+
+This command will set the retention period for the object MyObj in the
+collection MyCol to 90 days from the current date.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Retain_Time::2011-08-04&nbsp;15:24:00'&nbsp;MyCol/MyObj
+<DT>Example 4 Setting retention time to 6 months using a regular expression.<DD>
+<A NAME="ixABO"></A>
+% Sretain&nbsp;6m&nbsp;'MyObj*'
+
+
+<P>
+
+
+This command will set the retention period for any objects matching 'MyObj*' in
+the current collection to 6 months from the current date.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Retain_Time::2011-11-06&nbsp;15:24:00'&nbsp;'MyObj*'
+
+
+<P>
+
+
+Note that the regular expression must be quoted so that it will pass to <FONT SIZE="-1">SRB</FONT>
+without being expanded by the shell.
+<DT>Example 5 Setting retention time to a specfic date recursively on a collection<DD>
+<A NAME="ixABP"></A>
+% Sretain&nbsp;-R&nbsp;05/20/2011&nbsp;MyCol
+
+
+<P>
+
+
+This command will set the retention period for the collection MyCol and all
+objects in the collection recursively to 05/20/2011
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-R&nbsp;-val&nbsp;'Admin.Retain_Time::2011-05-20&nbsp;15:24:00'&nbsp;MyObj
+<DT>Example 6 Setting retention time and Project in a single command.<DD>
+<A NAME="ixABQ"></A>
+% Sretain&nbsp;4w&nbsp;-p&nbsp;<FONT SIZE="-1">HPCMO92330SIS</FONT>&nbsp;MyObj
+
+
+<P>
+
+
+This command will set the retention period
+to 4 weeks from the current date and set the project to <FONT SIZE="-1">HPCMO92330SIS</FONT>
+for the object MyObj in one command.
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Retain_Time::2011-06-03&nbsp;15:24:00,Admin.HPCMP_Project_ID::HPCMO92330SIS'&nbsp;MyObj
+</DL>
+<A NAME="lbAK">
+<H2>SEE ALSO</H2></A>
+
+<A NAME="ixABR"></A>
+<B></B><A HREF="Sreview.html">Sreview</A><B>(1)</B>,
+<B></B><A HREF="../../SRB_Commands/Sscheme.html">Sscheme</A><B>(1)</B>,
+<B></B><A HREF="../../SRB_Commands/Sls">Sls.html</A><B>(1)</B>,
+<B></B><A HREF="../../SRB_Commands/Senv">Senv.html</A><B>(1)</B>
+<A NAME="lbAL">
+<H2>RELEASE NOTES</H2></A>
+
+<A NAME="ixABS"></A>
+<DL COMPACT>
+<DT>Version 1.0 - July 23, 2010<DD>
+<A NAME="ixABT"></A>
+Initial release.
+<DT>Version 1.1 - December 17, 2010 - <A HREF="mailto:LAM@ARSC">LAM@ARSC</A><DD>
+<A NAME="ixABU"></A>
+Modified to accept uppercase alphanumberic project and short project option.
+Modified pod examples to match implemented syntax.
+<DT>Version 1.2 - April 27, 2011 - <A HREF="mailto:LAM@ARSC">LAM@ARSC</A><DD>
+<A NAME="ixABV"></A>
+Modified for changes to scheme names and columns and changes to Scheme syntax.
+Removed Last_Review_Time from generated Scheme command.
+Remove fractional parts of integer for Retention_Period.
+<DT>Version 1.3 - May 6, 2011 - <A HREF="mailto:LAM@ARSC">LAM@ARSC</A><DD>
+<A NAME="ixABW"></A>
+Removed convert_date prototype for subroutine not defined or used.
+Fix code to default to days (don't require the d).
+Removed setting of <FONT SIZE="-1">SRB_HOME</FONT> and modification of <FONT SIZE="-1">PATH</FONT> which was causing
+a 'Use of uninitialized value in concatenation' error on systems where the
+hard coded default path was not the path where <FONT SIZE="-1">SRB</FONT> was installed.
+Report an error if at least two parameters are not supplied.
+Modified code to update Retain_Time rather than Retention_Period.
+Replaced the convert_days subroutine with convert_dwmy subroutine that returns
+<BR>&nbsp;a&nbsp;<FONT SIZE="-1">SRB</FONT>&nbsp;date&nbsp;formatted&nbsp;string.&nbsp;&nbsp;Removed&nbsp;subroutines&nbsp;that&nbsp;are&nbsp;no&nbsp;longer&nbsp;required.
+Truncate the date when used for Retain_Time to avoid <FONT SIZE="-1">SRB</FONT> error.
+Modified date error handling - exit with error if unable to parse date.
+<DT>Version 1.4 - May 10, 2011 - <A HREF="mailto:LAM@ARSC">LAM@ARSC</A><DD>
+<A NAME="ixABX"></A>
+Modified srb_date to use a different date format accepted for both
+Retain_Time and Next_Review_Time.  Removed truncation of Retain-Through date.
+<DT>Version 1.5 - May 2, 2012 - LAM@HTL<DD>
+<A NAME="ixABY"></A>
+Modified for change of Retain-Through attribute name to new Retain_Time name.
+Changed version to 1.5 alpha.
+<DT>Version 1.6 - July 6, 2012 - LAM@HTL<DD>
+<A NAME="ixABZ"></A>
+Modified script to submit one 'Sscheme -w' command for all objects specified.
+Reported version is now 1.6 (without alpha).
+<DT>Version 1.7 - August 7, 2012 - LAM@HTL<DD>
+<A NAME="ixACA"></A>
+Modified help and man page to specify ``-R'' instead of ``-r'' for recursion to match other Scommands.
+Modified to always escape any asterisk wildcard characters in the objects|collections argument.
+<P>
+</DL>
+
+<HR>
+<A NAME="index"><H2>Index</H2></A>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">days|date</A><DD>
+<DT><A HREF="#lbAF">objects|collections</A><DD>
+<DT><A HREF="#lbAG">OPTIONS</A><DD>
+<DT><A HREF="#lbAH">ADMIN SCHEME</A><DD>
+<DT><A HREF="#lbAI">Metadata Attribute Population Algorithm - Step Description</A><DD>
+<DT><A HREF="#lbAJ">EXAMPLES</A><DD>
+<DT><A HREF="#lbAK">SEE ALSO</A><DD>
+<DT><A HREF="#lbAL">RELEASE NOTES</A><DD>
+</DL>
+<HR>
+This document was created by
+man2html and sed,
+using the manual pages.<BR>
+Time: 23:12:05 GMT, August 07, 2012
+</BODY>
+</HTML>

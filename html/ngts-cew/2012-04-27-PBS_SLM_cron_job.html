@@ -1,0 +1,280 @@
+<html><head>
+<title>PBS SLM cron job</title>
+<!-- $Id: 2012-04-27-PBS_SLM_cron_job.html,v 1.1 2012/04/30 21:31:59 murakami Exp murakami $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+.red4bg { background-color: #d5bac0; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1 class="firstHeading"><a href="#toc">PBS SLM cron job<br>4/27/2012</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+								<!-- bodytext -->
+
+<h1> <span id="PBS_SLM_cron_job"> PBS SLM cron job </span></h1>
+<p>A cron job can submit a PBS transfer queue job that can authenticate to the STORAGE realm and use SLM commands (Sput to Archive, Sget from Archive). 
+</p>
+<h2> <span id="crontab_entry_that_runs_a_script"> crontab entry that runs a script </span></h2>
+<p>crontab -l
+</p>
+<pre>*/15 * * * * /u/work/&lt;user&gt;/hello_world/slm-cron-test.bash
+</pre>
+<h2> <span id="cron_script_that_submits_a_PBS_transfer_queue_job"> cron script that submits a PBS transfer queue job </span></h2>
+<pre>#!/bin/bash
+
+echo "Cron Job Starting: `date`"&nbsp;; echo
+echo "On Node: `uname -n`"&nbsp;; echo
+
+echo "cd /u/work/&lt;user&gt;/hello_world"&nbsp;; echo
+<span class="red4bg">cd /u/work/&lt;user&gt;/hello_world</span>
+
+echo "qsub slm-cron-test.pbs"&nbsp;; echo
+<span class="red4bg">qsub slm-cron-test.pbs</span>
+
+echo&nbsp;; echo "qstat -a"
+qstat -a
+
+echo&nbsp;; echo "Job Ending: `date`"
+</pre>
+<h2> <span id="PBS_transfer_queue_job_script">  PBS transfer queue job script </span></h2>
+<pre><span class="red4bg">#!/bin/bash --login</span>
+#PBS -l select=1:ncpus=1
+#PBS -l walltime=1:00
+#PBS -j oe
+#PBS -A HPCMO92330SIS
+#PBS -l application=other
+#PBS -N HPCMOSIS
+<span class="red4bg">#PBS -q transfer</span>
+<span class="red4bg">#PBS -S/usr/krb5/bin/kshell</span>
+     
+cd $PBS_O_WORKDIR # Go to directory where job was submitted from.
+
+echo "----- PBS Script -----"
+cat $0
+echo "----- End PBS Script -----"&nbsp;; echo
+
+echo "Job Starting: `date`"&nbsp;; echo
+echo "On Node: `uname -n`"&nbsp;; echo
+
+# echo "source /opt/adm/CONF/zzz-HEUE.sh"&nbsp;; echo
+<span class="red4bg"># source /opt/adm/CONF/zzz-HEUE.sh</span>
+
+echo "module list"&nbsp;; echo
+module list
+
+echo&nbsp;; echo "/usr/local/siauth/bin/siauth"&nbsp;; echo
+<span class="red4bg">/usr/local/siauth/bin/siauth</span>
+
+echo&nbsp;; echo "klist"&nbsp;; echo
+klist
+
+echo&nbsp;; echo "source $SAMPLES_HOME/slm/init.sh"&nbsp;; echo
+<span class="red4bg">source $SAMPLES_HOME/slm/init.sh</span>
+
+echo&nbsp;; echo "Sls -l"&nbsp;; echo
+Sls -l
+
+echo&nbsp;; echo "Job Ending: `date`"
+</pre>
+<h2> <span id="crob_job_output"> crob job output </span></h2>
+<pre>Date: Fri, 27 Apr 2012 11:45:01 -0800
+From: root@akustdsl-0001.arsc.edu (Cron Daemon)
+To: &lt;user&gt;@akustdsl-0001.arsc.edu
+Subject: Cron &lt;&lt;user&gt;@akustdsl-0001&gt; /u/work/&lt;user&gt;/hello_world/slm-cron-test.bash
+Content-Type: text/plain; charset=UTF-8
+Auto-Submitted: auto-generated
+X-Cron-Env: &lt;BASH_ENV=~/.bashrc&gt;
+X-Cron-Env: &lt;SHELL=/bin/sh&gt;
+X-Cron-Env: &lt;HOME=/home/&lt;user&gt;&gt;
+X-Cron-Env: &lt;PATH=/usr/bin:/bin&gt;
+X-Cron-Env: &lt;LOGNAME=&lt;user&gt;&gt;
+X-Cron-Env: &lt;USER=&lt;user&gt;&gt;
+
+Cron Job Starting: Fri Apr 27 11:45:01 AKDT 2012
+
+On Node: akustdsl-0001.arsc.edu
+
+cd /u/work/&lt;user&gt;/hello_world
+
+qsub slm-cron-test.pbs
+
+1716.akustdsl-0001.arsc.edu
+
+qstat -a
+
+akustdsl-0001.arsc.edu: 
+                                                            Req'd  Req'd   Elap
+Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+--------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+1716.akustdsl-0 &lt;user&gt;   transfer HPCMOSIS      --    1   1    8gb 00:01 Q   -- 
+
+Job Ending: Fri Apr 27 11:45:02 AKDT 2012
+</pre>
+<h2> <span id="PBS_transfer_queue_job_output"> PBS transfer queue job output </span></h2>
+<pre>+ QSTAT=/opt/pbs/default/bin/qstat
++ GDMRESTART=/usr/sbin/gdm-safe-restart
++ VGLAUTHFILE=/tmp/vgl_xauth_key
++ VGLGENKEY=/app/VirtualGL/bin/vglgenkey
++ VGLGROUP=vglusers
++ LOGFILE=/tmp/prologue.out
++ PBSJOBID=1716.akustdsl-0001.arsc.edu
++ PBSUSER=&lt;user&gt;
++ PBSGROUP=staff
++ set -x
++ /opt/pbs_share/common/staging_prologue.sh 1716.akustdsl-0001.arsc.edu &lt;user&gt; staff
+INFO(prologue): This job was is not a stage-in job.
++ set +x
+----- PBS Script -----
+#!/bin/bash --login
+#PBS -l select=1:ncpus=1
+#PBS -l walltime=1:00
+#PBS -j oe
+#PBS -A HPCMO92330SIS
+#PBS -l application=other
+#PBS -N HPCMOSIS
+#PBS -q transfer
+#PBS -S/usr/krb5/bin/kshell
+     
+cd $PBS_O_WORKDIR # Go to directory where job was submitted from.
+
+echo "----- PBS Script -----"
+cat $0
+echo "----- End PBS Script -----"&nbsp;; echo
+
+echo "Job Starting: `date`"&nbsp;; echo
+echo "On Node: `uname -n`"&nbsp;; echo
+
+echo "source /opt/adm/CONF/zzz-HEUE.sh"&nbsp;; echo
+source /opt/adm/CONF/zzz-HEUE.sh
+
+echo "module list"&nbsp;; echo
+module list
+
+echo&nbsp;; echo "/usr/local/siauth/bin/siauth"&nbsp;; echo
+/usr/local/siauth/bin/siauth
+
+echo&nbsp;; echo "klist"&nbsp;; echo
+klist
+
+echo&nbsp;; echo "source $SAMPLES_HOME/slm/init.sh"&nbsp;; echo
+source $SAMPLES_HOME/slm/init.sh
+
+echo&nbsp;; echo "Sls -l"&nbsp;; echo
+Sls -l
+
+echo&nbsp;; echo "Job Ending: `date`"
+----- End PBS Script -----
+
+Job Starting: Fri Apr 27 11:45:02 AKDT 2012
+
+On Node: akustdsl-0001.arsc.edu
+
+source /opt/adm/CONF/zzz-HEUE.sh
+
+module list
+
+Currently Loaded Modulefiles:
+  1) compiler/pgi/11.10      5) cwjm/20110826
+  2) java64/jdk/1.6          6) mpscp/1.3a
+  3) mpi/pgi/openmpi/1.4.3   7) totalview/8.9
+  4) pbs
+
+/usr/local/siauth/bin/siauth
+
+DEBUG: siauth&nbsp;: Optional parent_process option not set.
+DEBUG: siauth&nbsp;: Trying .k5login at ${HOME}/../.k5login/&lt;user&gt;/.k5login.
+DEBUG: siauth&nbsp;: UID 4985 attempting to get Kerberos tgt as principal &lt;user&gt;@STORAGE.HPC.MIL with keytab /var/siauth/&lt;user&gt;.keytab.
+NOTICE: siauth&nbsp;: Kerberos tgt acquired for UID 4985 as &lt;user&gt;@STORAGE.HPC.MIL using keytab /var/siauth/&lt;user&gt;.keytab.
+
+klist
+
+Ticket cache: PIPE:1023
+Default principal: &lt;user&gt;@STORAGE.HPC.MIL
+
+Valid starting     Expires            Service principal
+04/27/12 11:45:03  04/27/12 21:45:02  krbtgt/STORAGE.HPC.MIL@STORAGE.HPC.MIL
+
+source /app/samples/slm/init.sh
+
+Kerberos principal: &lt;user&gt;@STORAGE.HPC.MIL
+SLM User: &lt;user&gt;
+SLM Home: /opt/slm/current
+SLM Authentication Name: &lt;user&gt;@HPCMP.HPC.MIL
+SLM Host: mcat71.arsc.edu,mcat72.arsc.edu
+SLM Resource: htl.spike.srb_rsrc1
+SLM Classification Level: ORS
+
+Welcome to SRB.
+Your User Name is "&lt;user&gt;@HPCMP.HPC.MIL".
+Your Default Classification is "ORS".
+Your Default Resource is "htl.spike.srb_rsrc1".
+Your Home Collection is "/archive/&lt;user&gt;".
+
+Initial SLM Collection: /htl/spike.srb_rsrc1/&lt;user&gt;
+
+Sls -l
+
+/htl/spike.srb_rsrc1/&lt;user&gt;
+C hpcmosis                   collection       &lt;user&gt;@HPCMP.HPC.MIL                0 2012-04-24 15:49:26.0000 
+  slmstagein-test.pbs        generic          &lt;user&gt;@HPCMP.HPC.MIL             1044 2012-04-27 08:39:34.0000 htl.spike.srb_rsrc1
+  slmstageout-test.pbs       generic          &lt;user&gt;@HPCMP.HPC.MIL              706 2012-04-27 08:56:40.0000 htl.spike.srb_rsrc1
+
+Job Ending: Fri Apr 27 11:45:05 AKDT 2012
++ /opt/pbs_share/common/staging_epilogue.sh 1716.akustdsl-0001.arsc.edu &lt;user&gt; staff HPCMOSIS 6427
+ mem=8gb,ncpus=1,place=free,vmem=8gb,walltime=00:01:00
+ cpupercent=0,cput=00:00:01,mem=884kb,ncpus=1,vmem=11844kb,walltime=00:00:03 transfer HPCMO92330SIS 0
+INFO(epilogue): This job was not a stage-in job.
++ set +x
+dualvar is only available with the XS version of Scalar::Util at /usr/lib/perl5/site_perl/5.8.8/IO/Socket/SSL.pm line 38
+BEGIN failed--compilation aborted at /usr/lib/perl5/site_perl/5.8.8/IO/Socket/SSL.pm line 38.
+Compilation failed in require at /app/SLB/SLB_epilog.pl line 6.
+BEGIN failed--compilation aborted at /app/SLB/SLB_epilog.pl line 6.
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 4/27/2012 - LAM - Created this page from an actual test sequence.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 45/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:943-0!1!0!!en!2 and timestamp 20120427232942 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/PBS_SLM_cron_job">
+https://intrawiki.arsc.edu/index.php/PBS_SLM_cron_job</a>"
+<br> - Friday, April 27, 2012 @ 3:35:45 PM (Alaska Time)</div>
+<ul>
+<li><a href="#PBS_SLM_cron_job">1 PBS SLM cron job</a>
+<ul>
+<li><a href="#crontab_entry_that_runs_a_script">1.1 crontab entry that runs a script</a></li>
+<li><a href="#cron_script_that_submits_a_PBS_transfer_queue_job">1.2 cron script that submits a PBS transfer queue job</a></li>
+<li><a href="#PBS_transfer_queue_job_script">1.3 PBS transfer queue job script</a></li>
+<li><a href="#crob_job_output">1.4 crob job output</a></li>
+<li><a href="#PBS_transfer_queue_job_output">1.5 PBS transfer queue job output</a></li>
+</ul>
+</li>
+<li><a href="#Revision_Log">2 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

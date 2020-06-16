@@ -1,0 +1,183 @@
+<HTML><HEAD><TITLE>Sdata - Set/modify/delete/show metadata on objects within a collection</TITLE>
+<style type="text/css">
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+dt { color: #a02712}
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+<a href="..">
+<img src="DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="../SLM/HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+Sdata - Set/modify/delete/show metadata on objects within a collection
+
+</h1>
+</center>
+<br class="clearit"><hr>
+
+Section: User Commands  (1)<BR>Updated: August 2, 2010 <BR><A HREF="#index">Index</A>
+<hr>
+
+<P>
+<A NAME="lbAB">
+<H2>NAME</H2></A>
+
+<B>Sdata</B>
+
+- Set/modify/delete/show metadata on objects within a collection
+<P>
+<A NAME="lbAC">
+<H2>SYNOPSIS</H2></A>
+
+<B>Sdata {-R} [-o|--object] object_name {[-p|--project]PROJECT} {-c &lt;collection&gt;}</B>
+
+<B>{keyword{={value}} {;keyword{={value}}  ...} {OPTIONS}</B>
+
+<P>
+<A NAME="lbAD">
+<H2>DESCRIPTION</H2></A>
+
+<B>Sdata</B>
+
+allows one to display, set, change or delete keyword-value pairs
+or the project in the Storage Resource Broker (SRB) metadata.
+<P>
+<A NAME="lbAE">
+<H2>OPTIONS</H2></A>
+
+<DL COMPACT>
+<DT><B>-c, --collection</B>
+
+<DD>
+set the collection to operate
+<DT><B>-f, --force</B>
+
+<DD>
+ignore nonexistent files, never prompt
+<DT><B>-h,--help </B>
+
+<DD>
+display this help and exit
+<DT><B>-i, --interactive</B>
+
+<DD>
+prompt before setting metadata
+<DT><B>-o, --object</B>
+
+<DD>
+SRB object or objects
+<DT><B>-p, --project</B>
+
+<DD>
+set the project code for object
+<DT><B>-R, --recursive</B>
+
+<DD>
+operate on SRB object metadata contents recursively
+<DT><B>-v, --verbose</B>
+
+<DD>
+explain what is being done
+<DT><B>--version</B>
+
+<DD>
+output version information and exit
+<DT><B>-x, --xml</B>
+
+<DD>
+<P>
+</DL>
+<A NAME="lbAF">
+<H2>keyword{={value}}</H2></A>
+
+For each object_name, the {keyword{={value}}|..} will perform actions:
+<DL COMPACT>
+<DT><B>&quot;keyword&quot; is NOT provided,</B>
+
+<DD>
+all metadata associated with object_name is displayed to standard output
+<DT><B>&quot;keyword&quot; is provided,</B>
+
+<DD>
+metadata associated with keyword is displayed to standard output
+<DT><B>&quot;keyword=&quot; is provided,</B>
+
+<DD>
+metadata associated with keyword is DELETED
+<DT><B>&quot;keyword=value&quot; is provided,</B>
+
+<DD>
+metadata associated with &quot;keyword&quot; is inserted/changed to &quot;value&quot;
+</DL>
+<P>
+
+Multiple {keyword{={value}} values are delimited by a semi-colon, &quot;;&quot;.
+<P>
+
+For the Title, Creator, Subject, Description, Publisher, Contributor, Creation Date, Type, Document ID, and Rights names
+metadata values will be stored in the &quot;Dublin Core&quot; scheme.  The values for all other names will be
+stored in the &quot;Name Value&quot; scheme.  At the current time the &quot;Name Value&quot; scheme is limited to 20
+name value pairs.
+<A NAME="lbAG">
+<H2>EXAMPLES</H2></A>
+
+<DL COMPACT>
+<DT><B>Sdata -o MyObj &quot;Creator=John Doe&quot;</B>
+
+<DD>
+This command will set the Creator attribute for the object MyObj in the current collection to &quot;John Doe&quot;.
+<DT><B>Sdata -o MyObj</B>
+
+<DD>
+This command will display all metadata to standard output for the object MyObj in the current collection.
+<DT><B>Sdata -o MyObj &quot;Creator=&quot;</B>
+
+<DD>
+This command will DELETE the Creator attribute value for the object MyObj in the current collection to &quot;John Doe&quot;.
+<DT><B>Sdata -o MyObj &quot;Creator=John Doe;Description=A model of some type;Type=Input&quot;</B>
+
+<DD>
+This command will set the Creator attribute to &quot;John Doe&quot;, the Description attribute to
+&quot;A model of some type&quot;, and the Type attribute to &quot;Input&quot;
+for the object MyObj in the current collection.
+<DT><B>Sdata -R -c user/ModelA/Input &quot;Description=A model of some type;Type=Input&quot;</B>
+
+<DD>
+This command will set the Description attribute to &quot;A model of some type&quot;,
+and the Type attribute to &quot;Input&quot; for all objects recursively in the user/ModelA/Input.
+<P>
+</DL>
+<A NAME="lbAH">
+<H2>MORE</H2></A>
+
+??? Needed ????
+
+Sdata also does something else?
+<P>
+
+<HR>
+<A NAME="index"><H2>Index</H2></A>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">OPTIONS</A><DD>
+<DT><A HREF="#lbAF">keyword{={value}}</A><DD>
+<DT><A HREF="#lbAG">EXAMPLES</A><DD>
+<DT><A HREF="#lbAH">MORE</A><DD>
+</DL>
+<HR>
+This document was created by
+man2html and sed,
+using the manual pages.<BR>
+Time: 22:45:51 GMT, August 02, 2010
+</BODY>
+</HTML>

@@ -1,0 +1,141 @@
+# Set group for software installation
+
+newgrp [appropriate group]
+
+# This step is not necessary if your primary group is the appropriate group
+
+# Set the installation directory in a varable to be used in all following.
+# The final executable file will be in this directory.
+
+INSTALL_DIR=$WRKDIR/cam
+
+# Create a wrk directory to store the source tarball and files from installation
+# The configure and make steps will place a copy of the output in this work directory.
+
+mkdir -p ${INSTALL_DIR}/wrk
+
+# Go to wrk directory and get the source tarball
+
+cd ${INSTALL_DIR}/wrk
+wget http://www.cesm.ucar.edu/models/atm-cam/download/cam3.1/cam3.1.p2_source_code.tar.gz
+
+# Unpack the source tarball
+
+gunzip -c cam3.1.p2_source_code.tar.gz | tar -xvf - 2>&1 \
+| tee step-01-cam-3-1-p2-tar-unpack.txt
+
+# Edit the Makefile per guidance of Ed in RT 34571
+
+mkdir cam1/models/atm/cam/bld/RCS
+ci -l cam1/models/atm/cam/bld/Makefile
+>> Makefile for building CAM on various platforms.
+
+# Use the editor of your choice
+# leafpad is installed in my ~/bin directory but not a ARSC default.
+
+leafpad cam1/models/atm/cam/bld/Makefile &
+
+# Detailed editing instructions:
+# In /cam1/models/atm/cam/bld/Makefile find a section starting with:
+
+#------------------------------------------------------------------------
+# Linux
+#------------------------------------------------------------------------
+
+# Scroll down and within that section find:
+
+# Flags common to all compilers
+
+ifeq ($(SPMD),TRUE)
+LDFLAGS += -L$(LIB_MPI) -l$(MPI_LIB_NAME)
+else
+FFLAGS += -DHIDE_MPI
+endif
+
+# Right after the above section insert the following code block
+
+#####################################################
+### Force Pacman to use mpi wrappers -- EAK, ARSC ###
+#####################################################
+ifeq ($(SPMD),TRUE)
+FC=mpif90
+CC=mpicc
+endif
+#####################################################
+### Force Pacman to use mpi wrappers -- EAK, ARSC ###
+#####################################################
+
+# Save the changed Makefile and exit
+
+# Use rcsdiff to verify the Makefile change
+
+$ rcsdiff cam1/models/atm/cam/bld/Makefile
+===================================================================
+RCS file: cam1/models/atm/cam/bld/RCS/Makefile,v
+retrieving revision 1.1
+diff -r1.1 cam1/models/atm/cam/bld/Makefile
+591a592,602
+> #####################################################
+> ### Force Pacman to use mpi wrappers -- EAK, ARSC ###
+> #####################################################
+> ifeq ($(SPMD),TRUE)
+> FC=mpif90
+> CC=mpicc
+> endif
+> #####################################################
+> ### Force Pacman to use mpi wrappers -- EAK, ARSC ###
+> #####################################################
+> 
+
+# Create a build directory and go to it
+
+mkdir ${INSTALL_DIR}/wrk/cam_bld
+cd ${INSTALL_DIR}/wrk/cam_bld
+
+# Set the environment for a build using the Portland Group Compiler
+#  suite with the mpi wrappers
+
+module purge
+module load PrgEnv-pgi
+
+# Note that on Midnight the module is named PrgEnv.pgi
+# You can use "module avail" to find available modules.
+
+# Run the configure script with the appropriate parameters
+# Note that you can get a listing of all parameters with:
+# ../cam1/models/atm/cam/bld/configure -h
+
+../cam1/models/atm/cam/bld/configure \
+-nc_inc /usr/local/pkg/netcdf/netcdf-4.1.nc3.pgi/include \
+-nc_lib /usr/local/pkg/netcdf/netcdf-4.1.nc3.pgi/lib \
+-spmd -ldflags '-lnetcdff' \
+-mpi_inc /usr/include -mpi_lib /usr/lib64/OMPI/pgi \
+-cam_exedir ${INSTALL_DIR} 2>&1 \
+| tee ../step-02-cam-3-1-p2-configure.txt
+
+# Now make cam with the configuration build above.
+
+make 2>&1 | tee ../step-03-cam-3-1-p2-make.txt
+
+# Look at the built executable
+
+file ${INSTALL_DIR}/cam
+
+# The version I built looked like:
+
+ AMD x86-64, version 1 (SYSV), for GNU/Linux 2.6.9,
+ dynamically linked (uses shared libs), for GNU/Linux 2.6.9, not stripped
+
+# The executable and the work directory are the only things in INSTALL_DIR
+
+ls -l ${INSTALL_DIR}
+
+# The downloaded source tarball, extracted files, build directory
+#  and the output of the configure and make steps are in the work directory.
+
+ls -l ${INSTALL_DIR}/wrk
+
+# You can look at the configure and make output with the following:
+
+less ${INSTALL_DIR}/wrk/step-02-cam-3-1-p2-configure.txt
+less ${INSTALL_DIR}/wrk/step-03-cam-3-1-p2-make.txt

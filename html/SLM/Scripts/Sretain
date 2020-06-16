@@ -1,0 +1,1141 @@
+#!/usr/bin/env perl
+# $Id: Sretain,v 1.32 2012/08/07 23:06:08 murakami Exp murakami $
+# See perl pod documentation at the end of this file
+
+use strict;
+use warnings;
+use Pod::Usage;
+use POSIX;
+use Time::Local qw(timelocal);
+use Getopt::Long;
+
+use constant PROGRAM => "Sretain";
+use constant VERSION => "1.7";
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## PROTOTYPES
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+sub srb_date;
+sub get_user_type;
+sub convert_dwmy;
+sub parse_args;
+sub verify_project;
+sub _error;
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## GLOBALS
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+my %SRB_AUTH_INFO;
+my @OBJECTS;
+my @SCHEME_PARAMS;
+my $CMD;
+my $DAYS;
+my $ARG;
+my $LIST_SCHEME = 0;
+my $DEFAULT_SCHEME = "Admin";
+my $ERRORS = 0;
+my $RECURSIVE = 0;
+my $STATUS;
+my $DEBUG = 0;
+my $VERBOSE = 0;
+my $DATE_STR;
+my $CURR_TIME = time();
+my %CURR_DATE =
+    (
+      YEAR => ((localtime($CURR_TIME))[5] + 1900),
+      MONTH => ((localtime($CURR_TIME))[4] + 1),
+      DAY => (localtime($CURR_TIME))[3]
+    );
+
+# List of metadata parameters
+my %OPTION_PARAMS =
+  (
+
+    ADMIN_HOLD =>
+      {
+        SUPER => 1,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Admin_Hold",
+      },
+
+    NEXT_REVIEW =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Next_Review_Time",
+      },
+
+    PROJECT =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "HPCMP_Project_ID",
+      },
+
+    PRE_WARNING =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "PreWarning_Period",
+      },
+
+    RETENTION_DAYS =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Retention_Period",
+      },
+
+    RETAIN_THROUGH =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Retain_Time",
+      },
+
+    ARCHIVE =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Archive_Behavior",
+      },
+
+    IMMEDIATE =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Archive_Behavior",
+      },
+
+    DR =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "DR_Behavior",
+      },
+
+    PURGE =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin",
+        COLUMN => "Purge_Behavior",
+      },
+  );
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## BEGIN
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+if (! parse_args())
+  {
+    _error("failed to parse arguments");
+    exit(1);
+  }
+
+## Exit if $DEBUG is set before actually modifying files
+if ($DEBUG)
+  {
+    exit(0);
+  }
+
+# Set scheme info on all requested objects
+$CMD = 'Sscheme'; # Use native SRB Sscheme command
+if ($RECURSIVE)
+  {
+    $CMD .= " -R";  # request recusion
+  }
+
+my $OBJSTR = join(' ', @OBJECTS);
+if ($OBJSTR =~ m/\*/)                            # If wildcard
+  {
+    printf("DEBUG: %s\n", $OBJSTR) if ($VERBOSE);
+    $OBJSTR =~ s/\*/\\\*/g;                      # Escape wildcard
+    printf("DEBUG: %s\n", $OBJSTR) if ($VERBOSE);
+  }
+
+$CMD .= sprintf(" -w -val '%s' %s",
+   join(',', @SCHEME_PARAMS),
+   $OBJSTR);
+
+printf("DEBUG: %s\n", $CMD) if ($VERBOSE);
+
+$STATUS = system($CMD);
+
+if (($STATUS >> 8) != 0)
+  {
+    $ERRORS++;
+  }
+
+if ($ERRORS)
+  {
+    exit(1);
+  }
+
+## List scheme elements if requested
+if ($LIST_SCHEME)
+  {
+    foreach (@OBJECTS)
+      {
+        $CMD = sprintf("Sscheme %s -l -scheme \"%s\" %s",
+            $RECURSIVE ? "-r" : "",
+            $DEFAULT_SCHEME,
+            $_);
+
+        system($CMD);
+      }
+  }
+
+exit(0);
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## SUBROUTINES
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      _debug -- print debug information
+#
+# SYNOPSIS
+#      _debug($fmt, $arg1[, $arg2]);
+#
+# DESCRIPTION
+#      If $VERBOSE is set to 1, prints $fmt and optional $args using printf to
+#      STDOUT.
+#
+# RETURN VALUES
+#      None.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub _debug
+{
+  my $fmt = shift(@_);
+  my @args = @_;
+  my $msg;
+
+  return if (! $VERBOSE);
+
+  $fmt = sprintf("DEBUG: %s%s", $fmt, ($fmt !~ /\n$/ ? "\n" : ""));
+
+  $msg = sprintf($fmt, @args);
+
+  printf($msg);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      _error -- print error information 
+# 
+# SYNOPSIS
+#      _error($fmt, $arg1[, $arg2]);
+#
+# DESCRIPTION
+#      Prints $fmt and options $args using printf to STDERR.
+#
+# RETURN VALUES
+#      None.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub _error
+{
+  my $fmt = shift(@_);
+  my @args = @_;
+  my $msg;
+
+  $fmt = sprintf("Sretain ERROR: %s%s", $fmt, ($fmt !~ /\n$/ ? "\n" : ""));
+
+  $msg = sprintf($fmt, @args);
+
+  printf(STDERR $msg);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      parse_args -- parse command line arguments
+#
+# SYNOPSIS
+#      $status = parse_args();
+#
+# DESCRIPTION
+#      The parse_args subroutine parses command line arguments provided by the
+#      @ARGV array.
+#
+# RETURN VALUES
+#      Upon successful completion a value of 1 is returned.  Otherwise, a value
+#      of 0 is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub parse_args
+{
+  my %args;
+  my $arg;
+  my $status;
+
+  GetOptions      
+    (
+      \%args,
+      "debug",
+      "verbose",
+      "next_review=s",
+      "hold!",
+      "archive!",
+      "immediate!",
+      "list|l",
+      "purge!",
+      "dr!",
+      "project|p=s",
+      "recursive|r",
+      "version|v" => sub { printf("%s %s\n", PROGRAM, VERSION); exit(0); },
+      "help|h" => sub { pod2usage(-exitval => 0, -verbose => 1); },
+    ) or pod2usage(2);
+
+  if ($#ARGV < 1)
+    {
+      _error("must specify retention days and one or more object or collection");
+      pod2usage(2);
+    }
+
+  # Get retention period
+  $arg = shift(@ARGV);
+
+  if ($arg =~ /^\d+[d|w|m|y]?$/)
+    {
+      $OPTION_PARAMS{RETAIN_THROUGH}{VALUE} = convert_dwmy($arg);
+    }
+  else
+    {
+      $OPTION_PARAMS{RETAIN_THROUGH}{VALUE} = srb_date($arg);
+    }
+
+  if (! defined($OPTION_PARAMS{RETAIN_THROUGH}{VALUE}))
+    {
+      _error("invalid retention day specified '%s'",
+          $arg);
+      return(0);
+    }
+
+  push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+      $OPTION_PARAMS{RETAIN_THROUGH}{SCHEME},
+      $OPTION_PARAMS{RETAIN_THROUGH}{COLUMN},
+      $OPTION_PARAMS{RETAIN_THROUGH}{VALUE}));
+
+  # Remaining args are objects/collections
+  if ($#ARGV == -1)
+    {
+      _error("must specifiy one or more objects or collections");
+      return(0);
+      pod2usage(2);
+    }
+
+  push(@OBJECTS, @ARGV);
+
+  # Parse remaining arguments
+  if (exists($args{verbose}))
+    {
+      $VERBOSE = 1;
+    }
+
+  if (exists($args{debug}))
+    {
+      $DEBUG = 1;
+    }
+
+  if (exists($args{recursive}))
+    {
+      $RECURSIVE = 1;
+    }
+
+  if (exists($args{list}))
+    {
+      $LIST_SCHEME = 1;
+    }
+
+  if (exists($args{archive}) || exists($args{immediate}))
+    {
+      if ((exists($args{archive}) && ! $args{archive}) && exists($args{immediate}))
+        {
+          _error("cannot specify --noarchive and --immediate");
+          return(0);
+        }
+
+      push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+          $OPTION_PARAMS{ARCHIVE}{SCHEME},
+          $OPTION_PARAMS{ARCHIVE}{COLUMN},
+          (exists($args{immediate}) ? "immediate" :
+              ($args{archive} ? "yes" : "no"))));
+    }
+
+  if (exists($args{next_review}))
+    {
+      if ($args{next_review} =~
+          /\d{2,4}[-\/]\d{2}[-\/]\d{2,4}/)
+        {
+          $arg = srb_date($args{next_review});
+        }
+      elsif ($args{next_review} =~ /\d+[a-z]/)
+        {
+          $arg = convert_dwmy($args{next_review});
+        }
+      else
+        {
+          $arg = undef;
+        }
+
+      if (! defined($arg))
+        {
+          _error("invalid date specified for next review time '%s'",
+              $args{next_review});
+          return(0);
+        }
+   
+      push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+          $OPTION_PARAMS{NEXT_REVIEW}{SCHEME},
+          $OPTION_PARAMS{NEXT_REVIEW}{COLUMN},
+          $arg));
+    }
+
+  if (exists($args{dr}))
+    {
+      push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+          $OPTION_PARAMS{DR}{SCHEME},
+          $OPTION_PARAMS{DR}{COLUMN},
+          ($args{dr} ? "yes" : "no")));
+    }
+
+  if (exists($args{purge}))
+    {
+      push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+          $OPTION_PARAMS{PURGE}{SCHEME},
+          $OPTION_PARAMS{PURGE}{COLUMN},
+          ($args{purge} ? "yes" : "no")));
+    }
+
+  # Must be "superuser" or "sysadmin" user type to set "Admin Hold"
+  if (exists($args{hold}))
+    {
+      $arg = get_user_type();
+
+      if (! defined($arg))
+        {
+          _error("failed to get user type");
+          return(0);
+        }
+
+      if ($arg ne "superuser" && $arg ne "sysadmin")
+        {
+          _error("cannot set \"Admin Hold\" as a non-admin user (%s)",
+              $arg);
+          return(0);
+        }
+
+      push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+          $OPTION_PARAMS{ADMIN_HOLD}{SCHEME},
+          $OPTION_PARAMS{ADMIN_HOLD}{COLUMN},
+          ($args{hold} ? "yes" : "no")));
+    }
+
+  if (exists($args{project}))
+    {
+      if (! verify_project($args{project}))
+        {
+          _error("invalid project code '%s'", $args{project});
+          return(0);
+        }
+
+      push(@SCHEME_PARAMS, sprintf("%s.%s::%s",
+          $OPTION_PARAMS{PROJECT}{SCHEME},
+          $OPTION_PARAMS{PROJECT}{COLUMN},
+          $args{project}));
+    }
+
+  _debug("Scheme parameters:");
+  _debug("--------------------");
+  foreach $arg (@SCHEME_PARAMS)
+    {
+      _debug("%s", $arg);
+    }
+  _debug("--------------------");
+
+  _debug("%s", join(',', @SCHEME_PARAMS));
+
+  return(1);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      get_user_type -- return user type
+#
+# SYNOPSIS
+#      $user_type = get_user_type();
+#
+#      $user_type = get_user_type({ user => $user, scheme => $scheme });
+#
+# DESCRIPTION
+#      Returns the SRB user type assigned to the current user or the user
+#      specified by the user hash argument.  Optionally specify an
+#      authentication scheme to specify.  Specifying the authentication scheme
+#      may be necessary if a user has multiple authentication schemes defined.
+#
+# RETURN VALUES
+#      Upon successful completion the SRB user type is returned.  Otherwise,
+#      the undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub get_user_type
+{
+  my ($args) = @_;
+  my $cmd;
+  my $user = undef;
+  my $scheme = undef;
+  my $type = undef;
+  my $pd;
+  my $buf;
+
+  if (exists($args->{user}))
+    {
+      $user = $args->{user};
+    }
+
+  if (exists($args->{scheme}))
+    {
+      $scheme = $args->{scheme};
+    }
+
+  if (! defined($user) || ! defined($scheme))
+    {
+      $cmd = "Senv";
+
+      if (! open($pd, "$cmd 2>&1 |"))
+        {
+          return(undef);
+        }
+
+      while ($buf = <$pd>)
+        {
+          chomp($buf);
+
+          _debug("\$buf = %s", $buf);
+
+          if (! defined($user) && $buf =~ /SRB_USER_NAME\s+'([^ ]*)'/)
+            {
+              $user = $1;
+            }
+
+          if (! defined($scheme) && $buf =~ /SRB_AUTH_SCHEME\s+'([^ ]*)'/)
+            {
+              $scheme = $1;
+            }
+        }
+
+      close($pd);
+    }
+
+  if (! defined($user) || ! defined($scheme))
+    {
+      return(undef);
+    }
+
+  $cmd = sprintf("SgetU -l -scheme %s %s",
+      $scheme, $user);
+
+  if (! open($pd, "$cmd 2>&1 |"))
+    {
+      return(undef);
+    }
+
+  while ($buf = <$pd>)
+    {
+      chomp($buf);
+
+      _debug("\$buf = %s", $buf);
+
+      if ($buf =~ /User Type:\s+([^ ]*)/)
+        {
+          $type = $1;
+        }
+    }
+
+  close($pd);
+
+  return($type);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      srb_date -- returns a SRB formatted date string
+#
+# SYNOPSIS
+#      $str = srb_date($date_spec);
+#
+# DESCRIPTION
+#      The subroutine srb_date returns a SRB formatted date string calculated
+#      from the argument specified.  The date formats supported are as follows:
+#
+#      YYYY-MM-DD or YYYY/MM/DD
+#
+#      MM-DD-YYYY or MM/DD/YYYY
+#
+#      The SRB date format is as follows:
+#
+#      YYYY-MM-DD HH:MM:SS.0000
+#
+# RETURN VALUES
+#      Upon successful completion a date string formatted for SRB is returned.
+#      Otherwise, the undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub srb_date
+{
+  my $spec = shift(@_);
+  my ($year, $month, $day, $hour, $min, $sec);
+  my $curr_time;
+  my $srb_fmt = "%.4d-%.2d-%.2d %.2d:%.2d:%.2d";
+
+  my @date_ents = split("[-\/]", $spec);
+
+  if (length($date_ents[0]) == 4)
+    {
+      $year = $date_ents[0];
+      $month = $date_ents[1];
+      $day = $date_ents[2];
+    }
+  else
+    {
+      $year = $date_ents[2];
+      $month = $date_ents[0];
+      $day = $date_ents[1];
+    }
+
+  if (! $year =~ /^\d+$/ || ! $month =~ /^\d+$/ || ! $day =~ /^\d+$/)
+   {
+          _error("Invalid retention date specified: $spec");
+          exit(1);
+   }
+
+  $curr_time = time();
+
+  $hour = (localtime($curr_time))[2];
+  $min = (localtime($curr_time))[1];
+  $sec = (localtime($curr_time))[0];
+
+  eval
+   {
+     my $dummy = timelocal($sec, $min, $hour, $day, $month - 1, $year - 1900);
+   };
+
+  if (my $err = $@)
+   {
+          _error("Invalid retention date specified: $spec");
+          exit(1);
+   }
+
+  return(sprintf($srb_fmt, $year, $month, $day, $hour, $min, $sec));
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      convert_dwmy -- converts day[suffix] into a SRB date formatted string.
+#
+# SYNOPSIS
+#      $status = convert_dwmy($day_spec);
+#
+# DESCRIPTION
+#      The subroutine convert_dwmy returns a SRB date formatted string converted
+#      $day_spec.  The $day_spec is a number followed by an optional suffix:
+#
+#      d - days
+#      w - week (7 days)
+#      m - month
+#      y - years
+#
+#      The SRB date format is as follows:
+#
+#      YYYY-MM-DD HH:MM:SS.0000
+#
+# RETURN VALUES
+#      Upon successful completion the SRB date formatted string is returned.
+#      If an invalid suffix is provided, the undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub convert_dwmy
+{
+  my $spec = shift(@_);
+  my ($num, $unit);
+  my $days;
+  my $year;
+  my $month;
+  my $day;
+  my $hour;
+  my $min;
+  my $sec;
+  my $srb_fmt = "%.4d-%.2d-%.2d %.2d:%.2d:%.2d";
+
+  ($num, $unit) = $spec =~ /(\d+)([a-z]?)/;
+
+  if (length($unit) && $unit !~ /[d|w|m|y]/)
+    {
+      return(undef);
+    }
+
+  unit:
+    {
+      ($unit eq "d") && do
+        {
+         ($sec, $min, $hour, $day, $month, $year)
+         = localtime(time() + ($num * 24 * 60 *60));
+         $month += 1; $year += 1900;
+          last unit;
+        };
+
+      ($unit eq "w") && do
+        {
+         ($sec, $min, $hour, $day, $month, $year)
+         = localtime(time() + ($num * 7 * 24 * 60 *60));
+         $month += 1; $year += 1900;
+          last unit;
+        };
+
+      ($unit eq "m") && do
+        {
+         ($sec, $min, $hour, $day, $month, $year) = localtime();
+          $year += 1900 + int(($month + $num) / 12);
+          $month += 1 + $num  % 12;
+          last unit;
+        };
+
+      ($unit eq "y") && do
+        {
+         ($sec, $min, $hour, $day, $month, $year) = localtime();
+          $year += 1900 + $num;
+          $month += 1;
+          last unit;
+        };
+
+      do
+        {
+         ($sec, $min, $hour, $day, $month, $year)
+         = localtime(time() + ($num * 24 * 60 *60));
+         $month += 1; $year += 1900;
+          last unit;
+        }
+    }
+
+  return(sprintf($srb_fmt, $year, $month, $day, $hour, $min, $sec));
+}
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      verify_project - verifies a project ID is formatted correctly
+#
+# SYNOPSIS
+#      $status = verify_project($id);
+#
+# DESCRIPTION
+#      The subroutine verify_project checks to make sure that $id is a 13-digit
+#      number.
+#
+# RETURN VALUES
+#      If $id is valid, 1 is returned.  Otherwise, 0 is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub verify_project
+{
+  my $project = shift(@_);
+
+  if (length($project) > 13 || $project !~ /[1-9A-Z]{1,13}/)
+    {
+      return(0);
+    }
+
+  return(1);
+}
+
+__END__
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## POD DOCUMENTATION
+##
+## perldoc Sretain
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+=pod
+
+=head1 NAME
+
+B<Sretain> - set SRB retention attributes.
+
+=head1 SYNOPSIS
+
+S<B<Sretain [options] days|date objects|collections>>
+
+=head1 DESCRIPTION
+
+B<Sretain> is the command line interface to set a I<"Retain_Time"> date on
+Storage Resource Broker (SRB) objects. The B<Sretain> command updates the
+I<"Admin"> Scheme which is a System Schmeme that is automatically applied during
+ingestion of objects into SRB. The B<Sretain> command requires a B<days> or
+B<date> argument for the Retain_Time date and B<objects> or
+B<collections> to act upon. The I<"Last Review Time"> is set automatically by
+the B<Sretain> command.
+
+=head1 days|date
+
+The B<days|date> parameter is a required parameter. The
+B<days|date> parameter determines the new I<"Retain_Time"> date to be
+set on Storage Resource Broker (SRB) objects. The B<days|date>
+parameter can be specified in a variety of formats.
+
+=over 4
+
+=item B<integer[d|w|m|y]>
+
+Specifies I<"Retain_Time"> date in integer days of duration from the current
+date.  Modifiers are available for days B<d>, weeks B<w>, months B<m> and years
+B<y>.  Days is the default if no modified is specified.
+
+=item B<yyyy/mm/dd>
+
+Specifies a fixed date for the I<"Retain_Time"> date in
+year/month/day format.
+
+=item B<yyyy-mm-dd>
+
+Specifies a fixed date for the I<"Retain_Time"> date in
+year-month-day format. 
+
+=item B<mm/dd/yyyy>
+
+Specifies a fixed date for the I<"Retain_Time"> date in
+month/day/year format. 
+
+=item B<mm-dd-yyyy>
+
+Specifies a fixed date for the I<"Retain_Time"> date in
+month-day-year format.
+
+=back
+
+=head1 objects|collections
+
+The B<objects|collections> parameter is a required parameter. More than
+one B<object> and/or B<collection> can be specified. The
+B<objects|collections> parameter specifies the SRB objects and/or
+collections to act upon.
+
+=head1 OPTIONS
+
+The B<Sretain> command allows a number of options to set I<"Admin"> Scheme
+attributes besides the I<"Retain_Time"> date and includes the B<-r> option
+which causes the attributes to be set recursively on objects within the
+collection[s].
+
+The options are as follows:
+
+=over 4
+
+=item B<-R>, B<-recursive>
+
+Specifies that the operation be applied recursively on objects within the
+collection[s]. The B<-R> option only works when collections are specified.
+
+=item B<-next_review=days|date>
+
+Specify the B<date> or number of B<days> until the next review.
+
+=item B<-archive|-immediate|-noarchive>
+
+Specifies whether the object is archived, archived immediately, or not archived
+(I<"Archive Behavior"> attribute).
+
+=item B<-dr|-nodr>
+
+Specifies whether the object is sent to the DR system (I<"DR Behavior">
+attribute).
+
+=item B<-purge|-nopurge>
+
+Specifies whether the object is released after archive. (I<"Purge Behavior">
+attribute).
+
+=item B<-next_review days|date>
+
+Specifies the next review time in either B<days> or B<date> in the format
+specified earlier.
+
+=item B<-hold>
+
+Specifies that the I<"Admin Hold"> column be set to yes.  B<This is an
+administrator only option.>
+
+=item B<-p HPCMP_Project_ID>
+
+Specifies the 13 character HPCMP project ID that this object is associated with.
+
+=item B<-help>
+
+Print this help message and exit.
+
+=item B<-version>
+
+Print the program version and exit.
+
+=item B<-verbose>
+
+Print more verbose output during the execution of B<Sretain>.
+
+=back
+
+=head1 ADMIN SCHEME
+
+The Admin scheme is a System Scheme that is automatically applied during
+ingestion of objects into SRB. The Admin scheme has the following attributes:
+
+=over 4
+
+=item I<Archive_Behavior>
+
+Specifies whether the object is archived, archived immediately, or not archived.
+
+=item I<DR_Behavior>
+
+Specifies whether the object is sent to the DR system.
+
+=item I<Purge_Behavior>
+
+Specifies whether the object is released after archive.
+
+=item I<Retention_Period>
+
+Identifies the number of days the object is retained in the archive.
+
+=item I<Retain_Time>
+
+Identifies the date the object will be retained through.
+
+=item I<PreWarning_Period>
+
+Identifies the number of days prior to the end of the retention period that the
+user should be warned.
+
+=item I<Last_Review_Time>
+
+Identifies when the object was last reviewed. Automatically updated by
+B<Sretain>.
+
+=item I<Next_Review_Time>
+
+Identifies when the archive policy is due to be reviewed by the user.
+
+=item I<Admin_Hold>
+
+Identifies whether the object is prevented from expiration and purge (not user
+modifiable).
+
+=item I<HPCMP_Project_ID>
+
+Identifies the HPCMP project that the object or collection belongs to.
+The value must be uppercase alphanumeric.
+
+=back
+
+=head1 Metadata Attribute Population Algorithm - Step Description
+
+=over 4
+
+=item 1.
+
+If the attribute is a string list then the value must be one of the strings
+specified for the string list.  The system uses values supplied directly by the
+user (does not apply for System Master Schemes).
+
+=item 2.
+
+If the user does not supply a value, i.e. the value is "null", then the system
+uses the user default value associated with the attribute column.
+
+=item 3.
+
+If there is no user default value, the system uses the administrator default
+value associated with the attribute column.
+
+=item 4.
+
+If there is no administrator default value, the system inherits the value from
+the Parent Collection.
+
+=item 5.
+
+If none of the above conditions are met then the system leaves the value as
+"null". (From SRB User guide (2010 Alpha version)
+
+=back
+
+=head1 EXAMPLES
+
+=over 4
+
+=item Note: The following examples are based on the current date of: 2011-05-06 15:24:00
+
+The Sretain command updates the I<"Retain_Time"> date based on the
+B<days|date> required parameter.  The Sretain command calculates the date used
+based on the current date if an integer[d|w|m|y] specification is made.
+The current time is used for the time portion of the new I<"Retain_Time">
+date time value. 
+
+=item Example 1 Setting retention time to 90 days
+
+% S<Sretain 90 MyObj>
+
+This command will set the retention period for the object MyObj in the current
+collection to 90 days from the current date.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme -w -val 'Admin.Retain_Time::2011-08-04 15:24:00' MyObj>
+
+=item Example 2 Setting retention time to 3 months
+
+% S<Sretain 3m MyObj>
+
+This command will set the retention period for the object MyObj in the current
+collection to 3 months from the current date.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme  -w -val 'Admin.Retain_Time::2011-08-06 15:24:00'  MyObj>
+
+=item Example 3 Setting retention time to 90 days for an object in a collection
+
+% S<Sretain 90d MyCol/MyObj>
+
+This command will set the retention period for the object MyObj in the
+collection MyCol to 90 days from the current date.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme  -w -val 'Admin.Retain_Time::2011-08-04 15:24:00' MyCol/MyObj>
+
+=item Example 4 Setting retention time to 6 months using a regular expression.
+
+% S<Sretain 6m 'MyObj*'>
+
+This command will set the retention period for any objects matching 'MyObj*' in
+the current collection to 6 months from the current date.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme -w -val 'Admin.Retain_Time::2011-11-06 15:24:00' 'MyObj*'>
+
+Note that the regular expression must be quoted so that it will pass to SRB
+without being expanded by the shell.
+
+=item Example 5 Setting retention time to a specfic date recursively on a collection
+
+% S<Sretain -R 05/20/2011 MyCol>
+
+This command will set the retention period for the collection MyCol and all
+objects in the collection recursively to 05/20/2011
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme -w -R -val 'Admin.Retain_Time::2011-05-20 15:24:00' MyObj>
+
+=item Example 6 Setting retention time and Project in a single command.
+
+% S<Sretain 4w -p HPCMO92330SIS MyObj>
+
+This command will set the retention period
+to 4 weeks from the current date and set the project to HPCMO92330SIS
+for the object MyObj in one command.
+
+% S<Sscheme  -w -val 'Admin.Retain_Time::2011-06-03 15:24:00,Admin.HPCMP_Project_ID::HPCMO92330SIS'  MyObj>
+
+=back
+
+=head1 SEE ALSO
+
+B<Sreview(1)>, B<Sscheme(1)>, B<Sls(1)>, B<Senv(1)>
+
+=head1 RELEASE NOTES
+
+=over 4
+
+=item Version 1.0 - July 23, 2010
+
+Initial release.
+
+=item Version 1.1 - December 17, 2010 - LAM@ARSC
+
+Modified to accept uppercase alphanumberic project and short project option.
+Modified pod examples to match implemented syntax.
+
+=item Version 1.2 - April 27, 2011 - LAM@ARSC
+
+Modified for changes to scheme names and columns and changes to Scheme syntax.
+Removed Last_Review_Time from generated Scheme command.
+Remove fractional parts of integer for Retention_Period.
+
+=item Version 1.3 - May 6, 2011 - LAM@ARSC
+
+Removed convert_date prototype for subroutine not defined or used.
+Fix code to default to days (don't require the d).
+Removed setting of SRB_HOME and modification of PATH which was causing
+a 'Use of uninitialized value in concatenation' error on systems where the
+hard coded default path was not the path where SRB was installed.
+Report an error if at least two parameters are not supplied.
+Modified code to update Retain_Time rather than Retention_Period.
+Replaced the convert_days subroutine with convert_dwmy subroutine that returns
+ a SRB date formatted string.  Removed subroutines that are no longer required.
+Truncate the date when used for Retain_Time to avoid SRB error.
+Modified date error handling - exit with error if unable to parse date.
+
+=item Version 1.4 - May 10, 2011 - LAM@ARSC
+
+Modified srb_date to use a different date format accepted for both
+Retain_Time and Next_Review_Time.  Removed truncation of Retain-Through date.
+
+=item Version 1.5 - May 2, 2012 - LAM@HTL
+
+Modified for change of Retain-Through attribute name to new Retain_Time name.
+Changed version to 1.5 alpha.
+
+=item Version 1.6 - July 6, 2012 - LAM@HTL
+
+Modified script to submit one 'Sscheme -w' command for all objects specified.
+Reported version is now 1.6 (without alpha).
+
+=item Version 1.7 - August 7, 2012 - LAM@HTL
+
+Modified help and man page to specify "-R" instead of "-r" for recursion to match other Scommands.
+Modified to always escape any asterisk wildcard characters in the objects|collections argument.
+
+=back
+
+=cut

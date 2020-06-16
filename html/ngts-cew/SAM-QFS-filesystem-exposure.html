@@ -1,0 +1,98 @@
+<html><head>
+<link rel="Shortcut Icon" href="http://people.arsc.edu/~murakami/favicon.ico" />
+<title>Exposure of underlying (SAM-QFS) archive file system</title>
+<!-- $Id: SAM-QFS-filesystem-exposure.html,v 1.1 2013/06/24 22:31:08 murakami Exp murakami $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="HPCMP-logo.gif" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1 class="firstHeading"><a href="#toc">Exposure of underlying (SAM-QFS) archive file system<br>9/19/2012</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="DoD-Shield.gif" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+								<!-- bodytext -->
+
+<h1> <span id="Direct_access_to_the_underlying_.28SAM-QFS.29_archive_file_systems_will_be_discontinued_at_the_implementation_of_SLM."> Direct access to the underlying (SAM-QFS) archive file systems will be discontinued at the implementation of SLM. </span></h1>
+<p>GA / Nirvana, the provider of Storage Resource Broker (SRB), which is a primary component of the Storage Lifecycle Management (SLM) implementation, has strongly recommended against allowing write access to the underlying (SAM-QFS) archive file systems.  Allowing write access would cause problems with the operation of the sync daemon.
+</p>
+<h1> <span id="CEW_Recommendation_on_Exposure_of_underlying_.28SAM-QFS.29_archive_file_system"> CEW Recommendation on Exposure of underlying (SAM-QFS) archive file system </span></h1>
+<p><b>The Customer Experience Workgroup (CEW) agrees with the GA / Nirvana recommendation.</b>
+</p><p>After much discussion, the Customer Experience Workgroup (CEW) did a poll to determine who was for or against allowing direct access to the underlying (SAM-QFS) archive file system. Although there is much concern about how things will turn out, the majority of the group voted to not allow direct access at the implementation of SRB.
+</p><p>A minority suggested that those sites with NFS mounts to the archive data be allowed to use read-only mounts to ease transition to SLM.
+</p><p>It was stated that we cannot rely on the sync daemon to work without causing problems and that heavily influenced the majority opinion that write access to the underlying SAM-QFS file system be discontinued when SLM is implemented.
+</p><p>There was concern that all current data movement scripts will no longer work.
+</p><p>A small minority proposed that we allow existing access, at least for an interim period, to lessen the change to users. 
+</p>
+<h1> <span id="Simultaneous_POSIX_and_SLM_Access_Concerns"> Simultaneous POSIX and SLM Access Concerns </span></h1>
+<ul><li> GA recommended strongly against this.
+</li><li> As currently configured, SLM appends random numbers onto the POSIX object it creates for an Sput file.
+<ul><li> If a user does an "Sput file file", SLM will store the file as file.&lt;random&gt;.&lt;date&gt;, and the user will be confused when they sign on a newton-like system, look for 'file' and only see 'file.&lt;random&gt;.&lt;date&gt;'.
+</li><li> This can be changed but...
+</li></ul>
+</li><li> An Smv is a metadata-only operation.
+<ul><li> The POSIX object is not changed.
+</li><li> A user who does an "Smv file new_file" will not see new_file in their POSIX file system.
+</li></ul>
+</li><li> When Ssync is running in Real-Time mode, the normal production mode, a POSIX "mv file new_file" is registered in SRB as a rm of the original object, including it's metadata, and a register of the new object.
+<ul><li> Thanks to the metadata being lost, data could be lost in the case where the mv'd object comes in with a default retention yet has a modification time of &gt; 30 days ago.
+</li></ul>
+</li><li> There may be other negative consequences.
+</li></ul>
+<h1> <span id="Revision_log"> Revision log </span></h1>
+<ul><li> 9/18/2012 - LAM - During the preparation for the SLM Operational Readiness Assessment Pre-Brief in the weeks of 10 September 2012 and 17 September 2012, propositions for a path forward to production were proposed that included Dual Access to the Archive systems using both SLM and traditional POSIX access.  The SLM Support Team responded with the concerns added to this document above and the following:
+<ul><li> The SLM Support Team has serious concerns about the idea of a single user using SLM for work done on the new IBMs while using POSIX for work done on legacy systems.
+</li><li> We think it better to pick a small set of (cooperative) users, aggressively help them develop their scripts in the Pilot file system, and when ready, have them cut completely over to SLM from all HPC clients.
+<ul><li> At the cut-over, we'd change ownership and permissions on their top-level POSIX directory so that they can no longer access their data via POSIX.
+</li><li> With each user we help through this process, we'll be better able to assist the next user.
+</li><li> We'll also be able to throttle the migration up or down based on the success or difficulty we're having.
+</li><li> SLM will have the best chance to succeed as this will be more like the recommended production configuration.
+</li><li> If we pick users with large data holdings, we make significant gains quickly.
+</li><li> It used to be that about 20 users had half the bytes.
+</li><li> If we got to five of those users, we'd make great progress.
+</li></ul>
+</li><li> Emails with "SLM Operational Readiness Assessment" were sent with attachments during this time.
+</li><li> Several versions of a slide deck were created with a 2012-09-19-SLM Operational Readiness Assessment_vprebrief.pptx version used on Monday, 17 September 2012.
+</li></ul>
+</li><li> 11/9/2011 - LAM - Modified per 10/24/2011 Customer Experience Workgroup (CEW) call notes and email inquiry from Sunita Allwerdt of the Workload Management Team.
+<ul><li> Removed references to SRB replacing them with SLM. 
+</li></ul>
+</li><li> 10/24/2011 - LAM - Discussed on <a href="https://ngtsmt.navo.hpc.mil/portal/page/portal/NGTS%20Portal/HPCMP_EUE/HEUE_Team/Customer_Experience_Workgroup/2011-10-24-CEW-Agenda.html" rel="nofollow">10/24/2011 Customer Experience Workgroup (CEW) call.</a>
+</li><li> 7/7/2010 - LAM - Initially Posted to <a href="https://ngtsmt.navo.hpc.mil/portal/page/portal/NGTS%20Portal/HPCMP_EUE/HEUE_Team/Customer_Experience_Workgroup/Policy/Tab/SAM-QFS-filesystem-exposure.html" rel="nofollow">NGTS Portal CEW Policy section area.</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 23/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:686-0!1!0!!en!2 and timestamp 20120918215904 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_Exposure_of_underlying_(SAM-QFS)_archive_file_system">
+https://intrawiki.arsc.edu/index.php/SLM_Exposure_of_underlying_(SAM-QFS)_archive_file_system</a>"
+<br> - Wednesday, September 19, 2012 @ 9:15:31 AM (Alaska Time)</div>
+<ul>
+<li><a href="#Direct_access_to_the_underlying_.28SAM-QFS.29_archive_file_systems_will_be_discontinued_at_the_implementation_of_SLM.">1 Direct access to the underlying (SAM-QFS) archive file systems will be discontinued at the implementation of SLM.</a></li>
+<li><a href="#CEW_Recommendation_on_Exposure_of_underlying_.28SAM-QFS.29_archive_file_system">2 CEW Recommendation on Exposure of underlying (SAM-QFS) archive file system</a></li>
+<li><a href="#Simultaneous_POSIX_and_SLM_Access_Concerns">3 Simultaneous POSIX and SLM Access Concerns</a></li>
+<li><a href="#Revision_log">4 Revision log</a></li>
+</ul>
+</td></tr></table>

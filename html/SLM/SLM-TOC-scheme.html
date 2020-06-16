@@ -1,0 +1,320 @@
+<html><head>
+
+<title>SLM TOC scheme</title>
+
+<!-- $Id: SLM-TOC-scheme.html,v 1.2 2018/01/15 08:36:08 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SLM TOC scheme
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+								<!-- bodytext -->
+
+<h1> <span id="SLM_TOC_scheme"> SLM TOC scheme </span></h1>
+<p>The SLM Table Of Contents (TOC) scheme is one of the user accessible schemes.  See <a href="SgetS.html" title="SgetS">SgetS</a> for a complete list.
+</p><p>The SLM Table Of Contents (TOC) scheme is created when a user sets attribute values for a Data Object using Sscheme.
+</p><p>The SLM Table Of Contents (TOC) scheme is for Table of Contents attributes of individual members of container files.
+</p>
+<h1> <span id="Notes_and_Special_considerations_for_a_Multiple_Rows_Scheme"> Notes and Special considerations for a Multiple Rows Scheme </span></h1>
+<ul><li> Updating and deleting a particular row of metadata in a multi-row Scheme is supported.
+</li><li> The ROW_ID is shown in Sscheme -l starting with SRB 2012 R3.
+</li><li> Sls -select is NOT supported for a ROW_ID.
+<ul><li> <b>The ROW_ID is a relative number that will change if a record of a multi-row Scheme with a lower ROW_ID is deleted.</b>
+</li></ul>
+</li><li> The ROW_ID supported for updating or deleting a particular row of metadata in a multi-row Scheme should be retrieved immediately before the update or delete and <b>if multiple rows (but not all rows) are to be deleted using one set of retrieved information, the rows should be deleted in the order of highest ROW_ID first.</b>
+</li></ul>
+<h1> <span id="Metadata_Scheme:_TOC_-_columns"> Metadata Scheme: TOC - columns</span></h1>
+<table border>
+
+<tr>
+<td> Attribute Name
+</td><td> Position
+</td><td> Type
+</td><td> Constraints
+</td><td> Default
+</td><td> Display Size
+</td><td> Column Name
+</td><td> Column Type
+</td></tr>
+<tr>
+<td> ROW_ID
+</td><td> 0
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_VALUE &#124; SRB_COLUMN_NOT_NULL
+</td><td> -1
+</td><td> 12
+</td><td> row_id
+</td><td> integer
+</td></tr>
+<tr>
+<td> unix_mode
+</td><td> 1
+</td><td> string[8]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 8
+</td><td> unix_mode
+</td><td> varchar(8)
+</td></tr>
+<tr>
+<td> unix_uid
+</td><td> 2
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 8
+</td><td> unix_uid
+</td><td> integer
+</td></tr>
+<tr>
+<td> unix_gid
+</td><td> 3
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 8
+</td><td> unix_gid
+</td><td> integer
+</td></tr>
+<tr>
+<td> file_size
+</td><td> 4
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 14
+</td><td> file_size
+</td><td> integer
+</td></tr>
+<tr>
+<td> date_modify
+</td><td> 5
+</td><td> timestamp
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 14
+</td><td> date_modify
+</td><td> timestamp (4) with local time zone
+</td></tr>
+<tr>
+<td> file_name
+</td><td> 6
+</td><td> string[256]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 256
+</td><td> file_name
+</td><td> varchar(255)
+</td></tr></table>
+<h1> <span id="Values_in_every_column_of_the_SLM_TOC_scheme"> Values in every column of the SLM TOC scheme </span></h1>
+<p>The following was omitted from the above table because the values are the same for every row:
+</p>
+<pre>Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+...
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+...
+</pre>
+<h1> <span id="SLM_TOC_scheme_-_native_output"> SLM TOC scheme - native output </span></h1>
+<pre>$ SgetS -x TOC | sed 's|^| |'
+--------------------------- RESULTS ------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100070
+Metadata Attribute: ROW_ID
+Metadata Attribute Position: 0
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_VALUE | SRB_COLUMN_NOT_NULL
+Metadata Attribute Default: -1
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: row_id
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100071
+Metadata Attribute: unix_mode
+Metadata Attribute Position: 1
+Metadata Attribute Type: string[8]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 8
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: unix_mode
+Metadata Attribute Column Type: varchar(8)
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100072
+Metadata Attribute: unix_uid
+Metadata Attribute Position: 2
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 8
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: unix_uid
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100073
+Metadata Attribute: unix_gid
+Metadata Attribute Position: 3
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 8
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: unix_gid
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100074
+Metadata Attribute: file_size
+Metadata Attribute Position: 4
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_VALUE | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 0
+Metadata Attribute Display Size: 14
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: file_size
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100075
+Metadata Attribute: date_modify
+Metadata Attribute Position: 5
+Metadata Attribute Type: timestamp
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 34
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: date_modify
+Metadata Attribute Column Type: timestamp (4) with local time zone
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100069
+Metadata Scheme: TOC
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_toc
+Metadata Attribute ID: 100076
+Metadata Attribute: file_name
+Metadata Attribute Position: 6
+Metadata Attribute Type: string[256]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 256
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_toc
+Metadata Attribute Column Name: file_name
+Metadata Attribute Column Type: varchar(255)
+
+-----------------------------------------------------------------
+
+[17:22:52 Tue Jul 09] murakami@harold-l3 ~
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 7/9/2013 - LAM - Created this page.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 35/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1331-0!1!0!!en!2 and timestamp 20130813224313 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_TOC_scheme">
+https://intrawiki.arsc.edu/index.php/SLM_TOC_scheme</a>"
+<br> - Tuesday, August 13, 2013 @ 3:06:25 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SLM_TOC_scheme">1 SLM TOC scheme</a></li>
+<li><a href="#Notes_and_Special_considerations_for_a_Multiple_Rows_Scheme">2 Notes and Special considerations for a Multiple Rows Scheme</a></li>
+<li><a href="#Metadata_Scheme:_TOC_-_columns">3 Metadata Scheme: TOC - columns</a></li>
+<li><a href="#Values_in_every_column_of_the_SLM_TOC_scheme">4 Values in every column of the SLM TOC scheme</a></li>
+<li><a href="#SLM_TOC_scheme_-_native_output">5 SLM TOC scheme - native output</a></li>
+<li><a href="#Revision_Log">6 Revision Log</a></li>
+</ul>
+</td></tr></table>

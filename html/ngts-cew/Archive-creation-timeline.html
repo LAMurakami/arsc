@@ -1,0 +1,143 @@
+<html><head>
+<title>Archive creation timeline</title>
+<!-- $Id$ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.blue1 { color: blue; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1 class="firstHeading"><a href="#toc">Archive creation timeline<br>8/15/2012</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+								<!-- bodytext -->
+				<p><br />
+</p>
+
+<h1> <span id="Introduction"> Introduction </span></h1>
+<p>A description of the discrete steps for creating first an ARCHIVE copy and then a DR copy of an object by SRB and SAM and SRB recording the results in the database making current status available to users.
+</p>
+<h2> <span id="Summary"> Summary </span></h2>
+<p>Best case: Archive could happen within a couple minutes.
+</p><p>Worst case: Archive could happen over night or longer.
+</p><p>Absolute worst case: Center turns off access to archive system to allow it to catch up (as has happened on Gold).
+</p>
+<h1> <span id="ARCHIVE:"> ARCHIVE: </span></h1>
+<h2> <span id="Object_arrives_in_file_system_via_Sput"> Object arrives in file system via Sput </span></h2>
+<ul><li> Object metadata is created in mcat DB
+</li><li> Start the stopwatch
+</li></ul>
+<h2> <span id="ARCHIVE_policy_configuration"> ARCHIVE policy configuration </span></h2>
+<ul><li> The ARCHIVE policy is configured to run every five minutes, but a query of the mcat DB looking for candidates to archive may take longer than five minutes.
+</li></ul>
+<ul><li>  If the query is in flight, there are two possibilities:
+<ul><li>  If the current query discovers the newly Sput object, then the archive request is submitted to the SAM API.
+</li><li>  If the current query misses the newly Sput object, then the query must complete and the next query must begin before an archive request is submitted to SAM.
+</li></ul>
+</li><li>  If the policy is between queries, then wait is up to five minutes before the next query begins.
+</li><li>  Minimum time case is object is caught on a current, in-flight query, in which case the archive request to SAM could happen immediately.
+</li><li>  Maximum time case is the current query is in flight but missed the new object, in which case the query must finish (indeterminate time), wait for the next query (zero to five minutes), then get to the new object in the query output (indeterminate time).
+</li></ul>
+<h2> <span id="Now_the_query_is_in_to_SAM.27s_archive_queue."> Now the query is in to SAM's archive queue. </span></h2>
+<ul><li> In order for SAM to create an arcopy job (arcopy does the actual archiving) certain thresholds must crossed.  With SLM there are two thresholds: 
+</li></ul>
+<ol type="A">
+<li>Total archive request must exceed a certain size, 'startsize'.
+<li>Time since last arcopy start, 'startage', is exceeded.</ol>
+<ul><li> Best case: Object by itself, or in combination with objects already in the queue, exceeds startsize, or the startage timer expires right after the object is placed in the queue.  This is more likely with heavy activity in the file system.
+</li><li> Worst case: Object must wait startage time.
+</li></ul>
+<h2> <span id="SAM_is_now_ready_to_fire_off_an_arcopy_process."> SAM is now ready to fire off an arcopy process. </span></h2>
+<p>Before it will do this:
+</p>
+<ul><li>  There must be a free tape drive (if archiving to tape).
+<ul><li> Tape drives can be tied up for hours if there is an archive backlog.
+</li></ul>
+</li><li> There must be less than the limit of currently active local tape archive jobs.
+<ul><li> Might have to wait for other arcopy jobs to finish, they could take hours.
+</li></ul>
+</li><li> There must be less than the limit of currently active remote archive jobs (if archiving to DR)
+<ul><li> Bandwidth to DR is typically lower than tape drives.
+</li></ul>
+</li></ul>
+<h2> <span id="Once_the_arcopy_job_is_started:"> Once the arcopy job is started: </span></h2>
+<ul><li> Any individual object must wait for any other object ahead in the queue for that arcopy.
+<ul><li> Your 10KB file might be behind my 1TB file.
+</li></ul>
+</li><li> Any individual object will archive at a rate dependent on the available disk bandwidth.
+<ul><li> Disk file systems may be so busy they can't feed the tape drive at full rate.
+</li></ul>
+</li></ul>
+<h2> <span id="Archive_copy_metadata_can_now_be_made_available_to_SLM_users."> Archive copy metadata can now be made available to SLM users. </span></h2>
+<p>The Sync Daemon picks-up the change.
+</p>
+<ul><li> If the Sync Daemon is in a long queue of events that it is processing then there can be an additional (indeterminate) delay in this step until the Sync Daemon arrives at the archive event and can commit it to the mcat DB.
+</li><li> At that point SLM users can see the result using SgetD –x &lt;file&gt; and Sscheme –l –scheme “hsm*” &lt;file&gt;.
+</li></ul>
+<h1> <span id="Other_considerations:"> Other considerations: </span></h1>
+<ul><li> Every tape mount takes 13 seconds to load, 26 seconds to unload, 57 seconds on average to position, and up to 115 seconds to rewind.  With this overhead for each tape mount, it is best use of tape drives to batch up objects into arcopy jobs.  This reduces responsiveness to any individual archive request, but is better for overall system throughput.
+</li><li> In addition to archiving, staging, recycling also happen, which tie up tape drives.  If average growth is N TB / day, the amount of tape activity will be greater, sometimes several times greater, than N TB.
+</li></ul>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 8/15/2012 - LAM - Modified document based on suggestions from Tino.
+</li><li> 7/31/2012 - Constantin (Tino) Scheder - Replies to the email.
+<ul><li> Replace the “indeterminate time” in step 2 with “generally 5 minutes” or whatever time we can observe regularly after the Oracle profiles are re-applied. This time won’t change to much unless we tune the database queries again.
+</li><li> The statement “A. Object must age beyond a site-specific value, 'archive age'.” in step 3 is technically not correct because we are firing all archive requests off with the immediate flag. This also changes the “worst case” scenario in that step.
+</li><li> We’re missing a step 6:
+<ul><li> The fact that a file was archived and all of the archive copy metadata are made available to SLM users when the Sync Daemon picks-up the change. However, if the Sync Daemon is in a long queue of events that it is processing then there can be an additional (indeterminate) delay in this step until the Sync Daemon arrives at the archive event and can commit it to the mcat DB. At that point SLM users can see the result using SgetD –x &lt;file&gt; and Sscheme –l –scheme “hsm*” &lt;file&gt;.
+</li></ul>
+</li></ul>
+</li><li> 7/26/2012 - LAM - Created this page from an email from Gene after a conversation we had today when I said it would be nice to have this.
+<ul><li> From: Gene McGill Subject: Archive creation timeline Date: Thu, 26 Jul 2012 15:49:12 -0800
+</li></ul>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 59/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1050-0!1!0!!en!2 and timestamp 20120816001026 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/Archive_creation_timeline">
+https://intrawiki.arsc.edu/index.php/Archive_creation_timeline</a>"
+<br> - Wednesday, August 15, 2012 @ 4:29:35 PM (Alaska Time)</div>
+<ul>
+<li><a href="#Introduction">1 Introduction</a>
+<ul>
+<li><a href="#Summary">1.1 Summary</a></li>
+</ul>
+</li>
+<li><a href="#ARCHIVE:">2 ARCHIVE:</a>
+<ul>
+<li><a href="#Object_arrives_in_file_system_via_Sput">2.1 Object arrives in file system via Sput</a></li>
+<li><a href="#ARCHIVE_policy_configuration">2.2 ARCHIVE policy configuration</a></li>
+<li><a href="#Now_the_query_is_in_to_SAM.27s_archive_queue.">2.3 Now the query is in to SAM's archive queue.</a></li>
+<li><a href="#SAM_is_now_ready_to_fire_off_an_arcopy_process.">2.4 SAM is now ready to fire off an arcopy process.</a></li>
+<li><a href="#Once_the_arcopy_job_is_started:">2.5 Once the arcopy job is started:</a></li>
+<li><a href="#Archive_copy_metadata_can_now_be_made_available_to_SLM_users.">2.6 Archive copy metadata can now be made available to SLM users.</a></li>
+</ul>
+</li>
+<li><a href="#Other_considerations:">3 Other considerations:</a></li>
+<li><a href="#Revision_Log">4 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

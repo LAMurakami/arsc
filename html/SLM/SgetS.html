@@ -1,0 +1,146 @@
+<html><head>
+
+<title>SgetS - Displays information about SRB Metadata Schemes.</title>
+
+<!-- $Id: SgetS.html,v 1.2 2018/01/15 08:26:12 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SgetS - Displays information about SRB Metadata Schemes.
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+
+								<!-- bodytext -->
+				<p><br />
+<a href="../ngts-cew/srb-doc/srbUser/generated/sgets.htm" rel="nofollow">SgetS</a>
+ - Displays information about SRB Metadata Schemes.
+</p>
+
+<p>As of Tuesday, August 13, 2013 @ 10:47 AM (Alaska Time) a less privileged user can see the following schemes:
+</p>
+<pre>$ SgetS
+ [Metadata Scheme ID] [Metadata Scheme] [Metadata Scheme Status] [Allow Multiple Rows] [Is System Scheme] [Metadata Scheme Type]
+--------------------------------------------------------------------------------------------------------------------------------
+ 100003               Admin             SRB_OBJECT_ENABLED       0                     1                  master
+ 100043               Dublin_Core       SRB_OBJECT_ENABLED       0                     0                  master
+ 100025               HSM               SRB_OBJECT_ENABLED       0                     0                  master
+ 100034               HSM_Copy          SRB_OBJECT_ENABLED       1                     0                  master
+ 100065               Name_Value        SRB_OBJECT_ENABLED       1                     0                  master
+ 100069               TOC               SRB_OBJECT_ENABLED       1                     0                  master                
+ 100020               Users             SRB_OBJECT_ENABLED       0                     0                  master
+ 100055               Policy            SRB_OBJECT_ENABLED       1                     0                  table
+</pre>
+<table border>
+
+<tr>
+<td> Scheme
+</td><td> Status
+</td><td> Multiple Rows
+</td><td> System Scheme
+</td><td> Type
+</td></tr>
+<tr>
+<td> <a href="SLM-Admin-scheme.html" title="SLM Admin scheme"> Admin</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 0
+</td><td> 1
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-Dublin-Core-scheme.html" title="SLM Dublin Core scheme"> Dublin_Core</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 0
+</td><td> 0
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-HSM-scheme.html" title="SLM HSM scheme"> HSM</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 0
+</td><td> 0
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-HSM-Copy-scheme.html" title="SLM HSM Copy scheme"> HSM_Copy</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 1
+</td><td> 0
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-Name-Value-scheme.html" title="SLM Name Value scheme"> Name_Value</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 1
+</td><td> 0
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-TOC-scheme.html" title="SLM TOC scheme"> TOC</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 1
+</td><td> 0
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-Users-scheme.html" title="SLM Users scheme"> Users</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 0
+</td><td> 0
+</td><td> master
+</td></tr>
+<tr>
+<td> <a href="SLM-Policy-scheme.html" title="SLM Policy scheme"> Policy</a>
+</td><td> SRB_OBJECT_ENABLED
+</td><td> 1
+</td><td> 0
+</td><td> table
+</td></tr></table>
+<p>The scheme name in the above table is a link to detail about the scheme.
+</p>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 8/13/2013 - LAM - Removed link to NGTS portal which has been retired.
+</li><li> 7/9/2013 - LAM - Added TOC scheme.
+</li><li> 6/27/2012 -LAM - Added Policy which now appears as a Scheme of type table.
+</li><li> 1/27/2012 - LAM - First posted to NGTS portal.
+</li><li> 12/15/2011 - LAM - Added link to the man page
+</li><li> 8/27/2011 - LAM - Created this page linking to the HPCMP schemes.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 24/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:507-0!1!0!!en!2 and timestamp 20130813184646 -->
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SgetS">
+https://intrawiki.arsc.edu/index.php/SgetS</a>"
+<br> - Tuesday, August 13, 2013 @ 1:42:28 PM (Alaska Time)</div>
+				<!-- /bodytext -->
+</body></html>

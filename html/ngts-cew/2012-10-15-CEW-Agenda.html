@@ -1,0 +1,178 @@
+<html><head>
+<title>10/15/2012 Agenda - Customer Experience Workgroup (CEW)</title>
+<!-- $Id$ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1 class="firstHeading"><a href="#toc">10/15/2012 Agenda<br>Customer Experience Workgroup (CEW)</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+								<!-- bodytext -->
+<p>CEW Call number: 866-381-8626 Passcode 316405
+</p><p>9:00 AM Hawaii Time, 11:00 AM Alaska Time, 12:00 PM Pacific Time, 1:00 PM Mountain Time, 2:00 PM Central Time, 3:00 PM Eastern Time
+</p>
+
+<h1> <span id="Customer_Experience_Workgroup_.28CEW.29_10.2F15.2F2012_Agenda_.26_Call_Notes"> <a href="CEW-Members_0.html" class="external text" rel="nofollow">Customer Experience Workgroup (CEW)</a> 10/15/2012 Agenda &amp; Call Notes </span></h1>
+<ul><li> <span class="green1">On the call: Lawrence A. Murakami (HTL), Don Cable (AFRL), James Ianni (ARL), John Skinner (NAVO), Mary Ann Ciufini (MHPCC)</span>
+</li></ul>
+<h2> <span id="Navy_SLM_Pilot_and_ELT"> Navy SLM Pilot and ELT </span></h2>
+<ul><li> Navy SLM ELT remains on hold waiting for positive test results at ARL and HTL related to SRB 2012 SP2 and the Ssync binary.  Five Ssync engineering releases were tested at ARL and HTL in the last two weeks.  Ssync_20121010 looks promising but requires a few more days of runtime, and some local-mode walks of the other file systems for further testing.
+</li><li> An out of cycle Center Directors VTC on Wednesday, October 31st is planned to provide an update on the status of ELT at ARL and Navy and the results of the SLM Pilot at Navy.
+</li><li> <span class="green1">Chris Barnes stated (in an email just prior to the call) that we will produce SLM pilot usage reports and plan another outreach to SLM Pilot Users next week.</span>
+</li></ul>
+<h2> <span id="ezHPC_3.11"> ezHPC 3.11 </span></h2>
+<ul><li> Keith and Weston will not be on Monday calls because of Portal and UIT/ezHPC redesign workload and staffing but will continue to be a part of the SLM process.
+</li><li> Scotty Swillie reports that the plan is to roll out the new versions of ezHPC sometime in the second quarter of 2013.
+<ul><li> There are some fundamental changes being planned that may affect how SLM is supported.
+</li><li> UIT and ezHPC are waiting on some OpenID/OAuth/Portal issues to be resolved with the Program Security Team.
+</li></ul>
+</li><li> 10/1/2012 CEW call action item: John Skinner and James Ianni will continue trying to access ezHPC 3.11 and open CCAC tickets reporting issues they encounter.
+<ul><li> John Skinner&nbsp;?
+<ul><li> <span class="green1">John stated he will not open a CCAC LiveTime ticket on using his CAC to access ezHPC because his CAC is not working.</span>
+</li><li> <span class="green1">John stated he won't try it with his YubiKey because Comcast is not resolving IP addresses and that means they aren't being broadcast properly.</span>
+</li><li> <span class="green1">Lawrence stated that because Don using a Time Warner ISP and Lawrence using an Alaska ISP could both access the website it sounds like a Comcast issue.</span>
+</li><li> <span class="green1">Don stated that ERDC could be blocking sections of Comcast.</span>
+</li></ul>
+</li><li> <span class="green1">John Skinner reported the following just after the call while I was writing up these call notes:</span>
+<ul><li> <span class="green1">I was able to access the UIT site and then access ezHPC from under UIT by doing the following on my local system.  Obviously most *nix users won't have root access to change local /etc/hosts file and maybe they won't have to; but I did.</span>
+<ol><li> <span class="green1">CAC card access never did work for me. The HSAM thing, apparently.</span>
+</li><li> <span class="green1">I had to edit my local /etc/hosts file to add an entry for UIT web server, because no Comcast DNS server appears able to resolve "www.uit.hpc.mil" FQDN.</span>
+<ul><li> <span class="green1"># /etc/hosts</span>
+</li><li> <span class="green1">140.31.13.7 www.uit.hpc.mil     # added 10/15/2012</span>
+</li></ul>
+</li><li> <span class="green1">Then yubi-key access did work for me with no HSAM errors or any other errors after I started an ezHPC session.</span>
+</li><li> <span class="green1">It's interesting that my ISP's DNS servers have no problem resolving the "ezhpc.hpc.mil" FQDN, as shown below:</span>
+<ul><li> <span class="green1">ezhpc.hpc.mil   canonical name = dolomite.erdc.hpc.mil.</span>
+</li><li> <span class="green1">Name:   dolomite.erdc.hpc.mil</span>
+</li><li> <span class="green1">Address: 140.31.13.5</span>
+</li></ul>
+</li></ol>
+</li><li> <span class="green1">So, I removed /etc/hosts entry mentioned above and went straight to <a href="https://ezhpc.hpc.mil" class="external free" rel="nofollow">https://ezhpc.hpc.mil</a>, basically ignoring the UIT website name resolution issue and UIT.  However, when you then select the link "Launch ezHPC 3.11", it again calls www.uit.hpc.mil - which for me won't resolve UNLESS I manually edit my /etc/hosts and add it back in.</span>
+</li></ul>
+</li><li> Dr. James C. Ianni sent an email to CCAC to open a CCAC LiveTime ticket on 10/1/2012 with the following:
+<ul><li> I cannot log into an ezHPC session. I'm trying to use my CAC card to log in, but ezHPC keeps prompting me for my Kerberos Principal and password. I tried clicking on "Attempt HSAM", but I'm getting "Authentication Failed" Client Not Found in Kerberos Database. I'm running 32-bit Windows 7. I tried under both IE and Firefox.
+</li><li> <span class="green1">James stated that CCAC had replied he had been put in the HSAM database and he should repeat his attempt.   He did so and reported he still had no success.</span>
+</li></ul>
+</li></ul>
+</li><li> 10/1/2012 CEW call action item: Don will attempt ezHPC 3.11 access from home.
+<ul><li> Don Cable reports he can access ezHPC from his home using a Time Warner ISP connection with his YubiKey.
+<ul><li> He reported having to add the java web start package to his computer using a Red Hat tree OS
+</li></ul>
+</li></ul>
+</li><li> 10/1/2012 CEW call action item: Lawrence will also attempt ezHPC 3.11 access from home.
+<ul><li> Lawrence Murakami was able to access ezHPC from his home using a General Communication, Inc. (Alaska) ISP connection with his YubiKey.
+<ul><li> Had to trust www.uit.hpc.mil using a certificate with digital signature that has expired.
+<ul><li> Saw: The application will run with unrestricted access to your personal files and other facilities (webcam, microphone) on your computer.
+</li></ul>
+</li><li> Submitted and examined output from a PBS SLM job.  Noted that html files were displayed in a plain text view.
+</li></ul>
+</li></ul>
+</li></ul>
+<ul><li> <span class="green1">Lawrence stated that because the ezHPC application displays html files in a plain text view, ezHPC doesn't provide a quick way to provide SLM results in a GUI.</span>
+</li><li> <span class="green1">Lawrence stated that the schedule of new versions of ezHPC is probably the earliest any SLM functionality could be included.</span>
+</li></ul>
+<h2> <span id="SRB_2012_SP2.2C_Ssync_.26_SP3"> SRB 2012 SP2, Ssync &amp; SP3 </span></h2>
+<ul><li> SRB 2012 SP2 was installed on the HTL SLM instance on Tuesday, 9/18/2012. and passed the initial suite of tests by Thursday, 9/20/2012.
+</li><li> A new integrated client install package was made available on Friday, 9/21/2012.
+<ul><li> The new versions include a change to address an issue reported by CCAC LiveTime ticket # 140801, RT 40154.  This change will allow for GREP_OPTIONS that include '-n'.
+</li></ul>
+</li><li> Multiple Ssync binaries have been delivered since SP2.
+<ul><li> A new index needs to be created for highest performance with the new Ssync.
+</li></ul>
+</li><li> SP3 currently targeted for release in the end of October time frame.
+</li><li> SP2 was installed at ARL on 9/21. The first updated Ssync was installed 9/24. A couple of issues have been discovered.
+</li><li> Navy deferred installation of SRB 2012 SP2 and the Ssync until after the end of FY 2012.
+</li><li> The new SRB 2012 SP2 client and HPCMP initialization was installed at Navy.
+</li><li> GA (Tino) says that within a major release, a newer R3 client should work with the older R3 server, such as Navy has now.
+<ul><li> An R4 client would not be expected to work with an R3 server.
+</li></ul>
+</li><li> GA (Tino) also says that a client should report an error if it is working with an incompatible server.
+</li></ul>
+<h2> <span id="SC_2012"> SC 2012 </span></h2>
+<ul><li> Attending: Lawrence A. Murakami (HTL), Mary Ann Ciufini (MHPCC), Christopher Barnes (LM), Robert Lunceford (Navy), David Schissel (GA), Martin Margo (GA), Others?
+<ul><li> A space set aside near the HPCMP booth can be used for small meetings.
+</li></ul>
+</li><li> Christopher Barnes (LM) and Robert Lunceford (Navy) have been talking about a meeting with Panasus. 
+<ul><li> SC 2012 is just prior to the 20th. of November when Panasus integration with SRB is scheduled to be delivered.
+</li></ul>
+</li></ul>
+<h2> <span id="SLM_Documentation"> SLM Documentation </span></h2>
+<ul><li> 10/1/2012 CEW call action item: Lawrence will send an email about installing the SLM documentation on an Apache server.
+<ul><li> An email with subject "SRB 2012 R3 SP2 documentation in html format" was sent to Tracey Smith on 10/4/2012 @ 4:39 Alaska Time.
+</li><li> The srb-doc-2012-R3-SP2.tar.gz file includes GA / Nirvana User documentation and HPCMP SLM additional Documentation for the 2012 R3 SP2 release of SRB.  The Storage Resource Broker (SRB) documentation is in both html and pdf form.  The tar.gz also includes an index to all the documentation.
+</li><li> This can be installed on a Linux apache server with the following:
+<ul><li> cd &lt;somewhere in DocumentRoot&gt;
+</li><li> mkdir slm
+</li><li> cd slm
+</li><li> tar -xzf &lt;path&gt;/srb-doc-2012-R3-SP2.tar.gz
+</li><li> chmod -R a+rX .
+</li></ul>
+</li><li> You then need to create a link to the slm directory.  If your server does not automatically serve up an index.html for a link to a directory, link to the slm/index.html file directly.
+</li><li> Let me know if you need this packaged some other way than a tar.gz file.  The file is on Navy systems at: /p/cwfs/murakami/slm-pioneer/srb-doc-2012-R3-SP2.tar.gz because it is 4.4 MB which is a bit large for email.
+</li><li> The tar.gz file includes only end user documentation and does not include Admin, Install, SDK, JavaAPI or some of the other documentation in the ${SRB_HOME}/doc (/opt/slm/current/doc on US) folder wherever the SRB client has been installed.  This is a stripped down version of what is at: <a href="http://people.arsc.edu/~murakami/ngts-cew" rel="nofollow">http://people.arsc.edu/~murakami/ngts-cew</a> with a different index.
+</li><li> SHA1(srb-doc-2012-R3-SP2.tar.gz)= 41240c649ea731a2e860744374ba45212344606a
+</li><li> I have not gotten a response.
+<ul><li> <span class="green1">Don and Lawrence talked about this via email just before the call and at the beginning of the call.</span>
+</li><li> <span class="green1">Don will follow up on this.</span>
+</li></ul>
+</li><li> This is equivalent to <a href="http://people.arsc.edu/~murakami/ngts-cew/srb-doc/srbUser/index.htm" rel="nofollow">SRB Help in HTML format</a> with a single index?
+</li></ul>
+</li><li> On the 9/24/2012 CEW call Lawrence asked David to get what was done with Steve Scrammel and Alan Walcraft ready to be posted in ${SAMPLES_home}.
+</li></ul>
+<h2> <span id="New_Topics"> New Topics </span></h2>
+<ul><li> <span class="green1">Mary Ann asked about a call the week of SC 2012.  Lawrence stated he had no plans for a call on that Monday or the week of SC 2012.</span>
+</li><li> <span class="green1">Mary Ann expressed her desire for an informal meeting at SC 2012.</span>
+</li></ul>
+<ul><li> <span class="green1">Mary Ann asked: What is status of SLM rollout?</span>
+</li><li> <span class="green1">Lawrence stated that the items in the first topic of the agenda "Navy SLM Pilot and ELT" is the best he knows at this time.</span>
+</li></ul>
+<h2> <span id="Next_Call"> Next Call </span></h2>
+<ul><li> Next call 10/22/2012
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 73/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:390-0!1!0!!en!2 and timestamp 20121015203859 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/User:Murakami/CEW_Agenda">
+https://intrawiki.arsc.edu/index.php/User:Murakami/CEW_Agenda</a>"
+<br> - Monday, October 15, 2012 @ 3:40:07 PM (Alaska Time)</div>
+<li><a href="#Customer_Experience_Workgroup_.28CEW.29_10.2F15.2F2012_Agenda_.26_Call_Notes">1 Customer Experience Workgroup (CEW) 10/15/2012 Agenda &amp; Call Notes</a>
+<ul>
+<li><a href="#Navy_SLM_Pilot_and_ELT">1.1 Navy SLM Pilot and ELT</a></li>
+<li><a href="#ezHPC_3.11">1.2 ezHPC 3.11</a></li>
+<li><a href="#SRB_2012_SP2.2C_Ssync_.26_SP3">1.3 SRB 2012 SP2, Ssync &amp; SP3</a></li>
+<li><a href="#SC_2012">1.4 SC 2012</a></li>
+<li><a href="#SLM_Documentation">1.5 SLM Documentation</a></li>
+<li><a href="#New_Topics">1.6 New Topics</a></li>
+<li><a href="#Next_Call">1.7 Next Call</a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+</body></html>

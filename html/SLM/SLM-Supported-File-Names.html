@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>HPC Centers - For Users - US PBS Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+
+    <link href="SLM-Supported-File-Names_files/customBootstrap.css" rel="stylesheet">
+    <link href="SLM-Supported-File-Names_files/style.css" rel="stylesheet">
+    <link href="SLM-Supported-File-Names_files/greg_style.css" rel="stylesheet">
+    <link href="SLM-Supported-File-Names_files/DT_bootstrap.css" rel="stylesheet">
+    <link href="https://devcenters.arl.hpc.mil/images/favicon.ico" rel="shortcut icon">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="/assets/js/html5shiv.js"></script>
+    <![endif]-->
+    <!-- This makes IE8 and below resize properly -->
+    <script src="SLM-Supported-File-Names_files/respond.js"></script>
+  </head>
+  <body>
+
+    <!--htdig_noindex-->
+    <div class="navbar navbar-inverse navbar-fixed-top hidden-print">
+      <header>
+        <div class="container">
+          <a id="helpLink" class="hidden-phone" href="javascript:;">Customer Service / Help</a>
+           <form id="searchBox" method="post" action="/cgi-bin/htsearch" enctype="application/x-www-form-urlencoded" class="navbar-form pull-right hidden-phone">
+              <input name="config" id="config" value="centers" type="hidden">
+              <input name="restrict" id="restrict" value="" type="hidden">
+              <input class="span2" name="words" id="words" placeholder="Search" type="text">
+              <button type="submit" class="btn">Search</button>
+           </form>
+          <a href="https://devcenters.arl.hpc.mil/index.html">
+            <img id="logo" class="hidden-phone" alt="HPCMP Logo" src="SLM-Supported-File-Names_files/HPCMPLogoWhite.png">
+          </a>
+        </div>
+      </header>
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="https://devcenters.arl.hpc.mil/index.html">Home</a></li>
+              <li class="dropdown">
+                <a class="hidden-phone" href="https://devcenters.arl.hpc.mil/about/index.html">About</a>
+                <a class="visible-phone dropdown-toggle" data-toggle="dropdown" href="https://devcenters.arl.hpc.mil/about/index.html">About</a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://devcenters.arl.hpc.mil/about/index.html">Who We Are</a></li>
+                  <li><a href="https://devcenters.arl.hpc.mil/news/index.html">News &amp; Publications</a></li>
+                  <li><a href="https://devcenters.arl.hpc.mil/about/contact.html">Customer Service</a></li>
+                  <li><a href="http://www.hpc.mil/" target="_blank">HPCMP</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="hidden-phone" href="https://devcenters.arl.hpc.mil/systems/unclassified.html">Systems</a>
+                <a class="visible-phone dropdown-toggle" data-toggle="dropdown" href="https://devcenters.arl.hpc.mil/systems/unclassified.html">Systems</a>
+                <div class="dropdown-menu span7">
+                  <div class="row-fluid">
+                    <ul class="span4">
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html">UNCLASSIFIED</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Copper">Copper <span>Cray XE6</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Garnet">Garnet <span>Cray XE6</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Haise">Haise <span>IBM iDataPlex</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Harold">Harold <span>SGI Altix ICE</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Kilrain">Kilrain <span>IBM iDataPlex</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Pershing">Pershing <span>IBM iDataPlex</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Predator">Predator <span>SGI UV</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Riptide">Riptide <span>IBM iDataPlex</span></a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/unclassified.html#Spirit">Spirit SGI ICE X</a></li>
+                    </ul> <!-- /.span4 -->
+                    <ul class="span4">
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/classified.html">CLASSIFIED</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/upcoming.html">UPCOMING</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/massStorage.html">MASS STORAGE</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/massStorage.html#archive">Archive</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/massStorage.html#slm">Storage Lifecycle<br>Management</a></li>
+                    </ul> <!-- /.span4 -->
+                    <ul class="span4">
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/nonallocated.html">NON-ALLOCATED</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/nonallocated.html#Lancer">Lancer</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/nonallocated.html#Talon">Talon</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/utility.html">UTILITY SERVERS</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/systems/srd.html">Secure Remote Desktop</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/summary.html">SYSTEMS SUMMARY</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/systems/status.html">SYSTEMS STATUS</a></li>
+                    </ul> <!-- /.span4 -->
+                  </div> <!-- /.row-fluid -->
+                </div> <!-- /.dropdown-menu -->
+              </li>
+              <li class="active dropdown">
+                <a class="hidden-phone" href="https://devcenters.arl.hpc.mil/users/index.html">For Users</a>
+                <a class="visible-phone dropdown-toggle" data-toggle="dropdown" href="https://devcenters.arl.hpc.mil/users/index.html">For Users</a>
+                <div class="dropdown-menu span7">
+                  <div class="row-fluid">
+                    <ul class="span4">
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html">GETTING STARTED</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#accounts">Obtaining an Account</a></li>
+                      <li class="hidden-phone">
+                        <a id="helpDrop" href="https://devcenters.arl.hpc.mil/users/index.html#help">Getting Help</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#kerberos">Kerberos &amp; Authentication</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#connect">Connecting to a System</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#environment">Computing Environment</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#compile">Compiling Code</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#queues">Queues</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/index.html#pbs">Running Jobs</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/expertise.html">HPC DOMAIN EXPERTISE</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://daac.hpc.mil/" target="_blank">DAAC</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://create.hpc.mil/" target="_blank">CREATE</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.hpc.mil/index.php/2013-08-29-16-03-23/software-applications-support-sas-overview/user-productivity-enhancement-technology-transfer-and-training" target="_blank">PETTT</a></li>
+                    </ul> <!-- /.span4 -->
+                    <ul class="span4">
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/documentation.html">DOCUMENTATION</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/tools.html">TOOLS</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://dashboard.hpc.mil/" target="_blank">User Dashboard</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://reservation.hpc.mil/" target="_blank">Advance Reservations</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://centers.hpc.mil/consolidated/bc/commonCapabilities.php" target="_blank">BC Common Capabilities</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://ezhpc.hpc.mil/" target="_blank">ezHPC</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/users/hpcPortal.html">HPC Portal</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://okc.erdc.hpc.mil/" target="_blank">Online Knowledge Center</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://ieapp.erdc.hpc.mil/" target="_blank">User Accounts Portal (pIE)</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://devcenters.arl.hpc.mil/software/">Software</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://www.uit.hpc.mil/" target="_blank">User Interface Toolkit</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://help.ccac.hpc.mil/" target="_blank">CCAC User Portal</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://vq.ccac.hpc.mil/" target="_blank">Visual Queue</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.arl.hpc.mil/special/cse.html" target="_blank">CSE</a></li>
+                    </ul> <!-- /.span4 -->
+                    <ul class="span4">
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/centers.html">HPC CENTERS</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.afrl.hpc.mil/" target="_blank">AFRL DSRC</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.arl.hpc.mil/" target="_blank">ARL DSRC</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.erdc.hpc.mil/" target="_blank">ERDC DSRC</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.mhpcc.hpc.mil/" target="_blank">MHPCC DSRC</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.navydsrc.hpc.mil/" target="_blank">Navy DSRC</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.ors.hpc.mil/" target="_blank">ORS</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/community.html">HPC COMMUNITY</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://www.hpc.mil/" target="_blank">DoD HPCMP</a></li>
+                      <li class="hidden-phone">
+                        <a href="http://centers.hpc.mil/consolidated/bc/index.php" target="_blank">Baseline Configuration</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://www.hpcmo.hpc.mil/bridge" target="_blank">User Advocacy Group</a></li>
+                      <li class="hidden-phone">
+                        <a href="https://www.hpcmo.hpc.mil/bridge" target="_blank">HPCMP Bridge</a></li>
+                      <li class="nav-main">
+                        <a href="https://devcenters.arl.hpc.mil/users/policies.html">POLICIES</a></li>
+                    </ul> <!-- /.span4 -->
+                  </div> <!-- /.row-fluid -->
+                </div> <!-- /.dropdown-menu -->
+              </li>
+              <li class="dropdown">
+                <a class="hidden-phone" href="https://devcenters.arl.hpc.mil/news/index.html">News &amp; Publications</a>
+                <a class="visible-phone dropdown-toggle" data-toggle="dropdown" href="https://devcenters.arl.hpc.mil/news/index.html">News &amp; Publications</a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://devcenters.arl.hpc.mil/news/index.html">Centers News</a></li>
+                  <li><a href="https://devcenters.arl.hpc.mil/news/systemsNews.html">Systems News</a></li>
+                  <li><a href="https://devcenters.arl.hpc.mil/news/hpcInsights.html">HPC Insights</a></li>
+                </ul>
+              </li>
+              <li><a href="https://dashboard.hpc.mil/private/">User Dashboard</a></li>
+            </ul>
+
+            <div class="row-fluid">
+              <div id="helpDiv" class="span12">
+                <div id="helpInfo">
+                  <h2 class="cntr">Customer Service</h2>
+                  <table class="table table-bordered table-striped">
+                    <tbody>
+                      <tr>
+                        <th scope="row">When to Contact CCAC</th>
+                        <td>Users should contact CCAC when assistance is needed for unclassified
+                          problems, issues, or questions.</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Hours of Operation</th>
+                        <td>8:00 a.m. - 11:00 p.m. Eastern, Monday - Friday (excluding Federal
+                          holidays).</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">CCAC Home Page</th>
+                        <td><a href="http://centers.hpc.mil/" title="Link to CCAC">http://centers.hpc.mil/</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Phone Number</th>
+                        <td>1-877-CCAC-039 (1-877-222-2039) or (937) 255-0679</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Fax Number</th>
+                        <td>(937) 656-9538</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Help E-mail</th>
+                        <td><a href="mailto:help@ccac.hpc.mil" title="Mailto:help@ccac.hpc.mil">help@ccac.hpc.mil</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Accounts E-mail</th>
+                        <td><a href="mailto:accounts@ccac.hpc.mil" title="Mailto:accounts@ccac.hpc.mil">accounts@ccac.hpc.mil</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">CCAC Manager E-mail</th>
+                        <td><a href="mailto:manager@ccac.hpc.mil" title="Mailto:manager@ccac.hpc.mil">manager@ccac.hpc.mil</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">After Hours</th>
+                        <td>Calls, e-mails and tickets received after normal operating hours
+                          will be addressed the following business day.</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Mailing Address</th>
+                        <td>DoD HPCMP Consolidated Customer Assistance Center (CCAC)<br>
+                          AFRL/RCM<br>
+                          2435 Fifth Street<br>
+                          Wright-Patterson Air Force Base, OH - 45433-7802
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Ticket Requests</th>
+                        <td>Active users may submit tickets from the
+                          <a href="https://help.ccac.hpc.mil/" target="_blank" title="Link to the CCAC User Portal/">Active User Help Ticket</a>.
+                          <br>Inactive users may submit tickets using the
+                          <a href="https://devcenters.arl.hpc.mil/about/inactiveUser.html">Inactive User Help Ticket</a>.
+                          <br>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div><!--/.helpInfo -->
+              </div><!--/.helpDiv -->
+            </div><!--/ row-fluid -->
+          </div><!--/.nav-collapse -->
+        </div><!-- /.container -->
+      </div><!-- /.navbar-inner -->
+    </div><!-- /.navbar -->
+    <!--/htdig_noindex-->
+    <div class="container">
+      <div class="row">
+        <div class="span2 sidebar visible-desktop .hidden-print">
+            <ul id="sidebarMenu" class="nav nav-list sidenav ">
+              <li><a href="https://devcenters.arl.hpc.mil/users/index.html">Getting Started</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/expertise.html">HPC Domain Expertise</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/documentation.html">Documentation</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/tools.html">Tools</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/centers.html">HPC Centers</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/community.html">HPC Community</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/policies.html">Policies</a></li>
+            </ul>
+        </div> <!-- /span2 -->
+      <div id="mainContent" class="span10">
+        <h2>SLM Supported File Names</h2>
+  
+        <h3>Introduction</h3>
+  
+        <p>The HCPMP is in the process of implementing a new archival storage service as part
+          of the Storage Lifecycle Management (SLM) project. To accommodate this new
+          archival storage service, users should be aware that new rules will be enacted that
+          could impact existing user data as well as future files stored on archive.</p>
+  
+        <h3>Summary</h3>
+  
+        <p>The new rules for storage archive include:</p>
+  
+        <ol>
+          <li>File and directory names cannot include ASCII control characters.</li>
+          <li>File and directory names cannot include the special characters SLASH, BACKSLASH,
+            or ASTERISK.</li>
+          <li>File and directory names cannot include SPACE as the first or last character.</li>
+          <li>No more than 250,000 files or subdirectories can be contained within a
+            directory.</li>
+          <li>Unix object types other than regular files and directories are not supported.</li>
+        </ol>
+  
+        <p>Please use the script <code>${SAMPLES_HOME}/slm/bad-files</code> to traverse your
+          files and directories and provide a list of the unsupported items. We request that
+          you examine your archive data for unsupported items, delete anything other than regular
+          directories and files, and re-name unsupported file and directory names.</p>
+         
+        <p>Users will be notified if they have unsupported file or directory names, unsupported
+          file types, or unsupported large object-count directories.</p>
+  
+        <p>Please update your archive scripts accordingly so that newly created files do not
+          contain these unsupported attributes. For more information see the details below.</p>
+  
+        <p>Thank you for your support of this initiative and please contact CCAC with
+          questions/concerns.</p>
+  
+        <h3>Details</h3>
+  
+        <p>The HCPMP is in the process of implementing a new archival storage service as part
+          of the Storage Lifecycle Management (SLM) project. The ARL, AFRL, ERDC, Navy, ORS,
+          and MHPCC DSRCs are preparing their archive systems to accommodate this upcoming
+          transition.</p>
+  
+        <p>We will need your help remediating existing files and directories on archive.
+          Once the transition is complete, users will not be able to see unsupported items on
+          the archival storage systems from the new user interface.</p>
+  
+        <h4>Container Files</h4>
+  
+        <p>Unsupported object types as well as unsupported directory and file names still can 
+          be stored on archive systems within a file container such as a tar file.</p>
+  
+        <h4>Unsupported File Types</h4>
+  
+        <p>Only regular files and directories will be supported.</p>
+        <p>Output from the <code>ls -l</code> command shows the file system object type code
+          as the first character.</p>
+  
+        <div class="table-generic">
+          <table class="table table-bordered table-condensed threeQuarter">
+            <caption>Supported and Unsupported File Types</caption>
+            <thead>
+              <tr>
+                <th>Object Type Code</th>
+                <th>Supported</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd">
+                <td class="cntr">d</td>
+                <td class="cntr">supported</td>
+                <td>the entry is a directory</td>
+              </tr>
+              <tr class="even">
+                <td class="cntr">-</td>
+                <td class="cntr">supported</td>
+                <td>the entry is an ordinary file</td>
+              </tr>
+              <tr class="odd">
+                <td class="cntr">D</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is a door.</td>
+              </tr>
+              <tr class="even">
+                <td class="cntr">l</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is a symbolic link.</td>
+              </tr>
+              <tr class="odd">
+                <td class="cntr">b</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is a block special file.</td>
+              </tr>
+              <tr class="even">
+                <td class="cntr">c</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is a character special file.</td>
+              </tr>
+              <tr class="odd">
+                <td class="cntr">p</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is a FIFO (or "named pipe") special file.</td>
+              </tr>
+              <tr class="even">
+                <td class="cntr">P</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is an event port.</td>
+              </tr>
+              <tr class="odd">
+                <td class="cntr">s</td>
+                <td class="cntr">unsupported</td>
+                <td>The entry is an AF_UNIX address family socket.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Existing objects of unsupported types in your archive files <em>will not</em> be
+          visible through the new service.</p>
+
+        <h4>Unsupported Characters in Object Names</h4>
+
+        <p>ASCII control characters and certain special characters will no longer be allowed.
+          Also, SPACES cannot be the first or last character in the name. Below are the specific
+          details of what is not supported:</p>
+
+        <ul>
+          <li>All ASCII control characters ASCII 00 to ASCII 31 (hex 00 to 1f), including:
+            <ul>
+              <li>TAB (ASCII 9, h09)</li>
+              <li>RETURN (ASCII 13, h0d)</li>
+              <li>DELETE (ASCII 127, h7f)</li>
+              <li>BACKSPACE (ASCII 8, h08)</li>
+            </ul>          
+          </li>
+          <li>SPACE (ASCII 32, h20, ' ') as leading or trailing characters</li>
+          <li>SLASH (ASCII 47, h2f, /)</li>
+          <li>BACKSLASH (ASCII 92, h5c \)</li>
+          <li>ASTERISK (ASCII 42, h2a, *)</li>
+          <li>Extended characters, ASCII 128 to ASCII 255</li>
+          <li>Unicode characters</li>
+        </ul>
+
+        <p>Existing objects in your archive files with unsupported characters in their names
+          will not be visible through SLM.</p>
+
+        <h4>Unsupported Large Object-Count Directories</h4>
+
+        <p>Large numbers of objects within a directory will be unsupported. Large means more
+          than 250,000 directories and/or files within a single directory. The command
+          <code>ls | wc -l</code> will produce a count of the number of objects within the
+            current directory.</p>
+
+        <h4>Users Will be Notified of Files That Need to be Removed or Re-named</h4>
+
+        <p>Users will be notified by CCAC if they have files with bad names, unsupported file
+          types, or unsupported large object-count directories.</p>
+
+        <p>We have provided a script at <code>${SAMPLES_HOME}/slm/bad-files</code> that will
+          traverse your directory structure and provide output containing the unsupported objects
+          and object names. The script can be used to review your archive holdings proactively
+          or to confirm that issues for which you received notification have been addressed.
+          We request that you examine your archive data for unsupported objects, delete anything
+          other than regular directories and files, and re-name unsupported object names.</p>
+
+        <p>Please update your scripts accordingly so that newly created files do not contain
+          these attributes.</p>
+
+        <p>Thank you for your continued support of this initiative and please contact CCAC
+          with questions/concerns.</p>
+
+        <h4>Unsupported Names/Objects CCAC E-mail Boiler Plate</h4>
+
+        <p>Notification e-mails from CCAC will have the following form:</p>
+
+        <p>Dear &lt;USER&gt;,</p>
+
+        <p>Some files you own, which are listed below, will not be supported by the new archival
+          storage service as part of the Storage Lifecycle Management (SLM) project. Archive
+          systems directory and file names will no longer support ASCII control characters,
+          some special characters or leading and trailing SPACE characters. In addition, only
+          regular files and directories will be supported. Also unsupported are large,
+          object-count directories.</p>
+
+        <p>We have provided a script at <code>${SAMPLES_HOME}/slm/bad-files</code> that will
+          traverse your directory structure and provide output containing the unsupported objects
+          and object names. The script can be used to review your archive holdings proactively
+          or to confirm that issues for which you received notification have been addressed.</p>
+
+        <p>CCAC URL: <a href="http://centers.hpc.mil/">http://centers.hpc.mil</a><br>
+          DSN: 785-0679<br>
+          Toll Free: 1-877-CCAC-039 (1-877-222-2039)<br>
+          Commercial: 1-937-255-0679<br>
+          FAX: 1-937-656-9538<br>
+          Emails: <a href="mailto:help@ccac.hpc.mil">help@ccac.hpc.mil</a>
+          (CCAC Service Center)</p>
+
+      </div> <!-- /#mainContent -->
+    </div> <!-- /.row -->
+  </div> <!-- /.container -->
+    <footer>
+      <div class="navbar navbar-inverse navbar-static-top">
+        <div class="navbar-inner">
+          <div class="container visible-desktop visible-tablet">
+            <ul class="nav">
+              <li><a href="https://devcenters.arl.hpc.mil/">Home</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/about/">About</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/systems/unclassified.html">Systems</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/users/">For Users</a></li>
+              <li><a href="https://devcenters.arl.hpc.mil/news/">News &amp; Publications</a></li>
+              <li><a href="https://dashboard.hpc.mil/">User Dashboard</a></li>
+            </ul>
+          </div><!-- /.container -->
+        </div><!-- /.navbar-inner -->
+      </div><!-- /.navbar -->
+      <p class="text-center warning"><em>WARNING!! This Department of Defense interest
+        computer system is subject to monitoring at all times.  Unauthorized access is
+        prohibited by Public Law 99-474 (The Computer Fraud and Abuse Act of 1986).  Users
+        are advised to read and agree to the following <a href="https://devcenters.arl.hpc.mil/security.html">Privacy
+        &amp; Security Notice</a>.  Date of Last Update: March 03, 2014</em></p>
+    </footer>
+<!-- javascript ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="SLM-Supported-File-Names_files/jquery.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8" src="SLM-Supported-File-Names_files/jquery_002.js"></script>
+<script type="text/javascript" charset="utf-8" src="SLM-Supported-File-Names_files/DT_bootstrap.js"></script>
+<script src="SLM-Supported-File-Names_files/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+<script src="SLM-Supported-File-Names_files/application.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  if( $(window).width() > 767 ) {
+    //Add Hover effect to menus
+    jQuery('ul.nav li.dropdown').hover(function() {
+      jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn();
+    }, function() {
+      jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut();
+    });
+
+    //Make the dropdown menu dissappear immediately when a menu item is clicked.
+    jQuery('ul.nav li.dropdown').click(function(){
+      jQuery(this).find('.dropdown-menu').stop(true, true).delay(0).hide();
+    });
+
+    //This method determines if the target element is a descendant of element b.
+    jQuery.fn.isChildOf = function(b){
+        return (this.parents(b).length > 0);
+    };
+  }
+
+  /* ON DOCUMENT READY */
+  $(document).ready(function(){
+    //how many items per page to show
+    var show_per_page = 1;
+    //getting the number of elements inside content div
+    var number_of_items = $('#content').children().size();
+    //calculate the number of pages we are going to have
+    var number_of_pages = Math.ceil(number_of_items/show_per_page);
+    
+    //set the value of our hidden input fields
+    $('#current_page').val(0);
+    $('#show_per_page').val(show_per_page);
+    
+    var navigation_html = '<div class="pagination pagination-centered">';
+    navigation_html += '<ul>';
+    
+    var current_link = 0;
+    while(number_of_pages > current_link){
+       navigation_html += '  <li>';
+       navigation_html += '<a class="page_link" href="javascript:go_to_page('+current_link+')" longdesc="'+current_link+'">'+(current_link + 1)+'</a>';
+       navigation_html += '  </li>';
+       current_link++;
+    }
+
+    navigation_html += '</ul>';
+    navigation_html += '</div>';
+    
+    $('#page_navigation').html(navigation_html);
+    
+    //add active_page class to the first page link
+    $('#page_navigation .page_link:first').addClass('active_page');
+    
+    //hide all the elements inside content div
+    $('#content').children().css('display', 'none');
+    
+    //and show the first n (show_per_page) elements
+    $('#content').children().slice(0, show_per_page).css('display', 'block');
+
+  /* bind the slideToggle method of #helpDiv to the click event on the helpLink, and on the the 
+     "Getting Help" dropdown and sidebar menus, so that when any of them are clicked, that
+     slideToggle is called on helpDiv.
+  */
+    $("#helpLink").bind('click',function(){
+      $("#helpDiv").slideToggle();
+    });
+
+    $("#helpDrop").bind('click',function(event){
+      $("#helpDiv").slideToggle();
+      (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+    });
+
+    $("#helpSub").bind('click',function(event){
+      $("#helpDiv").slideToggle();
+      (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+    });
+
+  /* bind an anonymous function to the mouseup event for the document, so that a click
+     anywhere on the page will call the slideUp event on helpDiv if helpDiv is currently
+     visible.  Clicks on helpLink are specifically excluded from this binding, because
+     it has it's own event handling.  Clicks on nav links are also excluded, because there
+     is no value in closing helpDiv if the user is navigating away from the page.
+  */
+    $(document).bind('mouseup',function(event){
+      if($(event.target).isChildOf("ul.nav")) return;
+      if(event.target.id == 'helpLink') return;
+      var helpDiv = $("#helpDiv");
+      if(!helpDiv.is(':hidden')) {
+        helpDiv.slideUp();
+      }
+    });
+
+  /* bind an anonymous function to the scroll event for the document, so that scrolling
+     the page will call the slideUp event on helpDiv if helpDiv is currently visible.
+  */
+    $(document).bind('scroll',function(event){
+      var helpDiv = $("#helpDiv");
+      if(!helpDiv.is(':hidden')) {
+        var html = jQuery('html');
+        helpDiv.slideUp();
+      }
+    });
+
+   /* only run this section if the sidenav does NOT have the class systemSidenav. */
+    if(! $('.sidenav').hasClass('systemSidenav')){
+      $(document).ready(function(){
+        var url = document.location.toString();
+        if (url.match('#')) {
+          var item = url.split('#')[1];
+          toggleSidebar(item);
+        }
+
+        $('#sidebarMenu').find('a').each(function(event){
+          var targetId = $(this).attr('href').split('#')[1];
+          /* the following if is solely to exclude the For Users -> Getting Help sidebar item. */
+          if(targetId != 'help'){
+            var target = $('#'.targetId);
+            if(target) $(this).bind('click',function(event){
+              toggleSidebar(targetId);
+            });
+          }
+        });
+      })
+    }
+
+   /* only run this section if the sidenav has the class systemSidenav. */
+    if($('.sidenav').hasClass('systemSidenav')){
+      /* bind an anonymous function to each collapsible region, so that once it is completely 
+         shown, it automatically scrolls to the top of the collapsible region.
+      */
+      $('#systems').find('.collapse').each(function(){
+        $(this).bind('shown',function(event){
+          var url = document.location.toString();
+          var targetId = '#' + $(event.target).attr('id').substr(8);
+          var page = url.split('#')[0];
+          var target = $(targetId);
+          var newTop = target.offset().top;
+          $("html:not(:animated),body:not(:animated)").animate({ scrollTop: newTop}, 400 );
+          window.location.hash = targetId;
+        });
+      });
+   
+      /* on page load, for systems pages, check the url to see if a hash tag is present and needs
+         to be opened */
+      var url = document.location.toString();
+      if (url.match('#')) {
+        var system = url.split('#')[1];
+        var link = $('#'+system).parent().find('.accordion-toggle');
+        link.click();
+        toggleSidebar(system);
+        moreLess(link);
+      } 
+   
+      /* bind an anonymous function to each System sidebar link (except for the overview) and
+         to each system status image, so that when clicked, a click is triggered on the matching
+         "More" link.
+      */
+      $('ul.systemSidenav li a').each(function(){
+        var url = $(this).attr('href');
+        if(url.match('#')){
+          var system = url.split('#')[1];
+          var head = $('#'+system).parent();
+          $(this).bind('click',function(event){
+            head.find('.accordion-toggle').click();
+            $(this).blur();
+            (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+          });
+
+          $('#' + system).find('.statusImg').bind('click',function(event){
+            head.find('.accordion-toggle').click();
+            $(this).blur();
+            (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+          });
+        }
+      });
+   
+      /* bind an anonymous function to each More link to toggle the hashtag when "More" is clicked
+         and to update the sidebar active state.
+      */ 
+      $('#systems').find('.accordion-toggle').each(function(){
+        var targetId = $(this).attr('href').substr(9);  // get the system name
+        var target = $('#'+targetId);
+        if(target) $(this).bind('click',function(event){
+          moreLess($(this));
+          var div = $('#collapse'+targetId);
+          if(div.hasClass('in')) {
+            toggleSidebar('');
+            (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+            if ( window.history && window.history.pushState ) { 
+              window.history.pushState('', '', window.location.pathname) 
+            } else { 
+              window.location.href = window.location.href.replace(/#.*$/, ''); 
+            } 
+          }else{
+            toggleSidebar(targetId);
+          }
+          $(this).blur();
+        });
+      });
+
+      /* bind an anonymous function to each unclassified and non-allocated system dropdown link so 
+         that when a dropdown link is clicked, a click is triggered on the matching "More" link.
+      */
+      var url = document.location.href.match(/[\/]([^\/]+)$/)[1];
+      if(url.match('#')) url = url.split('#')[0];
+      
+      $('li.active .dropdown-menu .nav-main a').each(function(){
+        var anchor = $(this);
+        var text = anchor.text();
+        if((url == 'unclassified.html' && text == 'UNCLASSIFIED') || 
+           (url == 'nonallocated.html' && text == 'NON-ALLOCATED')){
+          $(this).closest('li').nextAll('li').each(function(){
+            if($(this).hasClass('nav-main')) return false;
+            var first = $(this).children().first();
+            var system = first.attr('href').match(/([^#]+)$/)[0];
+            $(this).bind('click',function(event){
+              $('#' + system).parent().find('.accordion-toggle').click();
+              $(this).blur();
+              (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+            });
+          });
+        }
+      });
+    }
+  });
+  /* END OF DOCUMENT READY ---------------------------------------------------- */
+
+
+  function moreLess(clicked){
+    $('#systems').find('.accordion-toggle').each(function(){
+      var current = $(this);
+      if(clicked.attr('href') == current.attr('href')){
+        (current.text() == 'More Info') ? current.text('Less Info') : current.text('More Info');
+      }else{ 
+        current.text('More Info');
+      }
+    });
+  }
+
+  function toggleSidebar(sys){
+    var sidebar = $('#sidebarMenu');
+    if(sys == '') sidebar.find('li.active').removeClass('active');
+    else{
+      sidebar.find('li a').each(function(){
+        var url = $(this).attr('href');
+        if(url.match('#')) {
+          if(url.split('#')[1] == sys) 
+            $(this).parent().addClass('active');
+          else 
+            $(this).parent().removeClass('active');
+        }
+      });
+    }
+  }
+  
+  function previous(){
+    new_page = parseInt($('#current_page').val()) - 1;
+    //if there is an item before the current active link run the function
+    if($('.active_page').prev('.page_link').length==true){
+      go_to_page(new_page);
+    }
+  }
+  
+  function next(){
+    new_page = parseInt($('#current_page').val()) + 1;
+    //if there is an item after the current active link run the function
+    if($('.active_page').next('.page_link').length==true){
+      go_to_page(new_page);
+    }
+  }
+
+  function go_to_page(page_num){
+    //get the number of items shown per page
+    var show_per_page = parseInt($('#show_per_page').val());
+    
+    //get the element number where to start the slice from
+    start_from = page_num * show_per_page;
+    
+    //get the element number where to end the slice
+    end_on = start_from + show_per_page;
+    
+    //hide all children elements of content div, get specific items and show them
+    $('#content').children().css('display', 'none').slice(start_from, end_on).css('display', 'block');
+    
+    /*get the page link that has longdesc attribute of the current page and add active_page
+      class to it and remove that class from previously active page link*/
+    $('.page_link[longdesc=' + page_num +']').addClass('active_page').siblings('.active_page').removeClass('active_page');
+    
+    //update the current page input field
+    $('#current_page').val(page_num);
+  }
+
+  $("#collapseBtn").click(function() {
+    var btn = $("#collapseBtn .left");
+    var label = (btn.hasClass('open')) ? 'shut' : 'open';
+    btn.removeClass("open shut");
+    btn.addClass(label);
+  });
+</script>
+<script type="text/javascript">
+/**
+  * Check a href for an anchor. If exists, and in document, scroll to it.
+  * If href argument ommited, assumes context (this) is HTML Element,
+  * which will be the case when invoked by jQuery after an event
+  */
+function scroll_if_anchor(href) {
+   href = typeof(href) == "string" ? href : $(this).attr("href");
+
+    // You could easily calculate this dynamically if you prefer
+    var fromTop = 140;
+
+    // If our Href points to a valid, non-empty anchor, and is on the same page (e.g. #foo)
+    // Legacy jQuery and IE7 may have issues: http://stackoverflow.com/q/1593174
+    if(href.indexOf("#") == 0) {
+        var $target = $(href);
+
+        // Older browser without pushState might flicker here, as they momentarily
+        // jump to the wrong position (IE < 10)
+        if($target.length) {
+            $('html, body').animate({ scrollTop: $target.offset().top - fromTop });
+            if(history && "pushState" in history) {
+                history.pushState({}, document.title, window.location.pathname + href);
+                return false;
+            }
+        }
+    }
+}    
+
+// When our page loads, check to see if it contains and anchor
+scroll_if_anchor(window.location.hash);
+
+// Intercept all anchor clicks
+$("body").on("click", "a", scroll_if_anchor);
+</script>
+
+
+
+</body></html>

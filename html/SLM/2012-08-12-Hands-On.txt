@@ -1,0 +1,362 @@
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+Hands-On.txt
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+This file is a set of examples used in the Navy and CCAC workshops for
+ Hands On interactive practice with the Storage Lifecycle Management instance
+ at Navy.  These examples were done on the Navy Utility Server.
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Initialize
+
+. $SAMPLES_HOME/slm/init.sh
+or
+source $SAMPLES_HOME/slm/init.csh
+
+# Once initialized the current SLM environment can be displayed with:
+Senv
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+echo ${SLM_HOME}
+
+# For the Navy Pilot this is:
+/archive/${USER}/navy/katrina.m
+
+# For production the last will be different for different filesystems
+#  and the site will be different for different sites.
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Display Users in navyPilot group
+SgetG -u navyPilot
+
+# Display aliases associated with the User
+SgetU -alias ${USER}@HPCMP.HPC.MIL
+
+# Note that this hands on assumes that your Linux login on the US matches your
+#  kerberos principal.  If this is not true replace ${USER} with the appropriate value.
+
+# Display all the groups that the specified user belongs to.
+SgetU -g ${USER}@HPCMP.HPC.MIL
+
+Lists Users that have access to the group and what their level of access is.
+SgetG -a navyPilot
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Create a set of test files in a directory
+#  with three sub directories each with three files. 
+
+cd ${WORKDIR} ; mkdir ws1 ; cd ws1 ; \
+for i in {1..3}; do mkdir r${i} ; cd r${i} ; \
+ for j in {1..3}; do echo Test file t${j} > t${j} ; \
+ echo Run r${i} >> t${j} ; done ; \
+cd .. ; done ; cd ..
+
+# Rename one of the files to have a .txt extension. 
+
+mv ${WORKDIR}/ws1/r1/t2 ${WORKDIR}/ws1/r1/t2.txt
+
+#  List the files in the ws1 directory:
+for i in $( find ${WORKDIR}/ws1 -type f ); do ls -l $i ; done
+
+# Set group for some files.
+chgrp -R slmtest ${WORKDIR}/ws1/r2
+
+# Set group write for one of the directories recursively.
+chmod -R g+w ${WORKDIR}/ws1/r3
+
+# List the files and contents with:
+for i in $( find ${WORKDIR}/ws1 -type f ); do \
+ls -l --time-style=long-iso ${i} ; cat ${i} ; done
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Make a SLM collection
+Smkcoll wst1
+
+# Put a file into the new collection
+Sput ${WORKDIR}/ws1/r1/t1 wst1
+
+# List this in SLM
+Sls -l wst1
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# List the current collection
+Spwd
+
+# Change to home collection as known to SRB
+Scd
+Spwd
+
+# Attempt to create a collection
+Smkcoll test
+
+# Known issue - A user cannot write to the home collection as known to SRB
+
+# Display access to an object
+SgetD -a .
+
+# Change to top collection where you can write
+Scd ${SLM_HOME}
+Spwd
+
+# Display access to an object
+SgetD -a
+
+# Display access using -x and grep
+SgetD -x . | grep 'Effective Access'
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# List all objects in your navyPilot resource collection
+Sls -R -l /navy/katrina.m/${USER}
+
+# Known issue - Recursive operations may take over a minute to complete.
+
+# List all of your objects on the navyPilot resource
+Sls -R -l -policy "(DATA_OBJECT.owner_at_domain = ${USER}@HPCMP.HPC.MIL)" \
+/navy/katrina.m/${USER}
+
+# Note: Using a policy to select only objects you own will reduce the query time some.
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Examine the file you just put into the new collection.
+Scat wst1/t1
+
+# Get a file.
+mkdir ${WORKDIR}/ws2
+Sget wst1/t1 ${WORKDIR}/ws2
+
+#Check that the file retrieved matches the original.
+diff ${WORKDIR}/ws1/r1/t1 ${WORKDIR}/ws2/t1
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Put a second file into the same collection
+Sput ${WORKDIR}/ws1/r1/t2.txt wst1
+
+# List again
+Sls -l wst1
+
+# Note that SLM has set a type based on the extension.
+
+# We can set the type
+SmodD -type "Text Document" wst1/t1
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Now try ingesting a new file to an existing name
+Sput ${WORKDIR}/ws1/r2/t1 wst1/t1
+
+# We get an OBJECT_ALREADY_EXISTS error
+
+# To overwrite an object in SLM use the -f force option
+Sput -f ${WORKDIR}/ws1/r2/t1 wst1/t1
+
+# List again
+Sls -l wst1
+
+# Note that the type metadata remains.
+
+# We can see the available types with
+Stoken DataType
+
+# Examine the file you just overwrote:
+Scat wst1/t1
+
+# Note that it now is the file from Run r2
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Make a SLM collection
+Smkcoll wst2
+
+# Now ingest a directory recursively
+Sput -R ${WORKDIR}/ws1/* wst2
+
+# List this in SLM
+Sls -l wst2
+Sls -l -R wst2
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Retrieve a collection recursively
+Sget -R wst2 ${WORKDIR}/ws3
+
+ls -l ${WORKDIR}/ | grep ws
+
+# List the retrieved files
+find ${WORKDIR}/ws3 -type f | xargs ls -l
+
+# Note that group and permissions are set on the retrieved files like when ingested.
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Set the Retain_Time and Project recursively on all objects in a collection
+Sretain -r -p HPCMO92330SIS 90 wst2/r3
+
+# List objects in a collection that have a Retain_Time more than 31 days in the future.
+Sls -R -policy "(EXPRESSION.current_timestamp < Admin.Retain_Time - '31')
+ AND (DATA_OBJECT.data_type not like '*collection')" wst2
+
+# List objects in a collection that have a Retain_Time less than 31 days in the future.
+Sls -R -policy "(EXPRESSION.current_timestamp > Admin.Retain_Time - '31')
+ AND (DATA_OBJECT.data_type not like '*collection')" wst2
+
+# Set the Retain_Time and Project recursively for more objects
+Sretain -r -p HPCMO92330SIS 60 wst2/r1
+
+# Repeat the above listings and note that the sets are different.
+
+# List all the objects in order of Retain_Time with create time.
+Sls -R -l -policy "(DATA_OBJECT.data_type not like '*collection')\
+" -order "Admin.Retain_Time" -select "
+DATA_OBJECT.data_name,DATA_OBJECT.create_timestamp,Admin.Retain_Time\
+,Admin.Retention_Period" wst2
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Sdata using an object called marble
+Sput ${WORKDIR}/ws1/r1/t1 marble
+
+# Set file marble color attribute to red:
+Sdata -o marble color=red
+
+# Display it
+Sdata -o marble color
+
+# Set the size attribute for the marble file to large:
+Sdata -o marble size=large
+
+# Display it
+Sdata -o marble size
+
+# Display everything set so far
+Sdata -o marble
+
+# Set the type attribute metadata to opaque:
+Sdata -o marble type=opaque
+
+# Set the material metadata to glass
+Sdata -o marble material=glass
+
+# Display all user defined metadata for the file marble
+Sdata -o marble
+
+# Delete the size attribute metadata :
+Sdata -o marble -d size=
+
+# Verify it was deleted (show all user defined metadata):
+Sdata -o marble 
+
+# Change color attribute to blue, add size of small and delete type :
+Sdata -o marble -d size=small color=blue type=
+
+# Verify it
+Sdata -o marble
+
+# Think of a metadata value you might want to use and set it
+Sdata -o marble fee="fi fo fum"
+
+# Display it
+Sdata -o marble fee
+
+# Create another file, marble2 and set size=large, color=red, material=glass
+Sput ${WORKDIR}/ws1/r1/t1 marble2
+Sdata -o marble2 size=large color=red material=glass
+
+# Search all files that have size large
+Sdata --search size=large
+
+(one file should be returned, marble2)
+
+# Search all files that have material glass
+
+Sdata --search material=glass
+
+# Search all files that have material=glass and size=small
+
+Sdata --search material=glass AND size=small
+
+# The equivalent search using a policy statement is:
+
+Sls -R -policy "(Name_Value.Name like material)
+ AND (Name_value.value like 'glass')
+ AND DATA_OBJECT.data_id IN
+ (select DATA_OBJECT.data_id where
+ (Name_Value.Name like size)
+ AND (Name_value.value like 'small'))"
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Change all objects in one collection to use the collection for access control.
+Schmod -R -acl wst2/r2 wst2/r2
+Schmod -R -acl wst2/r3 wst2/r3
+
+# Give yourself all access to the objects
+Schmod -a ${USER}@HPCMP.HPC.MIL wst2/r2 wst2/r3
+
+# Note that recursion is not needed for the grant because access is controlled
+#  by rights set for the collection.
+
+# Report name and acl for test objects in the workshop collections.
+Sls -R -l -policy "(DATA_OBJECT.data_type not like '*collection')\
+" -select "DATA_OBJECT.data_name,\
+DATA_OBJECT.acl_collection_name,DATA_OBJECT.acl_data_name" wst\*
+
+# Allow a group read access to the collection.
+Schmod -r navyPilot wst2/r02
+Schmod -r navyPilot wst2/r03
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Simple queries
+
+# Name beginning with Test
+Sls -l -policy "(DATA_OBJECT.data_name like t\*)"
+# Unix group = 'staff'
+Sls -l -policy "(DATA_OBJECT.unix_group_name = 'staff')"
+# No DR Copy made
+Sls -l -policy "(DATA_REPLICAS.replica_status & 'SRB_STAT_ARCHIVED_02' = 'SRB_STAT_NONE')"
+# Offline
+Sls -l -policy "(DATA_REPLICAS.replica_status & 'SRB_STAT_OFFLINE' <> 'SRB_STAT_NONE')"
+# Online
+Sls -l -policy "(DATA_REPLICAS.replica_status & 'SRB_STAT_OFFLINE' = 'SRB_STAT_NONE')"
+# Project
+Sls -l -policy "(Admin.HPCMP_Project_ID = 'HPCMO92330SIS')"
+
+# Note that all these can be combined with not like collection to see only files.
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# Query for parts of name and path.
+Sls -R -policy "(DATA_OBJECT.data_name like '*txt')\
+and (DATA_OBJECT.collection_name like '*r1*')" wst2
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Some "Policy Management" pages are on the NGTS portal.
+https://ngtsmt.navo.hpc.mil/portal/page/portal/NGTS%20Portal/HPCMP_EUE/HEUE_Team/Customer_Experience_Workgroup/SRB%20doc/policy_mangement.htm
+
+This is from documentation included in a client install.
+ls -l ${SRB_HOME}/doc {/opt/slm/current/doc on US)
+User Guide - User Tasks - Policy Management
+/opt/slm/current/doc/srbUser/common/policy_mangement.htm
+${SRB_HOME}/doc/srbUser/common/policy_mangement.htm
+
+# This includes tables that list available SRB Data Object and Collection Attributes,
+#  SRB Expressions, and available operators. 
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+# List Dublin_Core scheme for an object
+Sscheme -l -scheme Dublin_Core wst1/t1
+
+# It doesn't exist
+
+# Look at a metadata specificaton file
+cat /p/cwfs/murakami/ws/Sscheme-file-test.txt
+
+# Use it to set metadata for an object
+Sscheme -w -file /p/cwfs/murakami/ws/Sscheme-file-test.txt wst1/t1
+
+# List Dublin_Core scheme for an object
+Sscheme -l -scheme Dublin_Core wst1/t1
+
+# Ingest the metadata specificaton file
+Sput /p/cwfs/murakami/ws/Sscheme-file-test.txt wst1
+
+# List Dublin_Core scheme for an object
+Sscheme -l -scheme Dublin_Core wst1/t2.txt
+
+# It doesn't exist
+
+# Look at a metadata specificaton file (Now in SLM)
+Scat wst1/Sscheme-file-test.txt
+
+# Use metadata specificaton file in SLM to set metadata for an object
+Sscheme -w -dobj wst1/Sscheme-file-test.txt wst1/t2.txt
+
+# List Dublin_Core scheme for an object
+Sscheme -l -scheme Dublin_Core wst1/t2.txt
+
+---:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+

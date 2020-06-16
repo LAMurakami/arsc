@@ -1,0 +1,116 @@
+# $Id: init.sh,v 1.10 2012/08/28 00:56:39 murakami Exp murakami $
+#
+# Initialize the environment for Storage Lifecycle Management (SLM).
+# The Storage Resource Broker (SRB) client will be initialized as a component.
+# 08/10/2011 LAM - Change most SRB to SLM (both uppercase and lowercase).
+# 4/26/2012 LAM - Modify to accomodate @STORAGE.HPC.MIL principal.
+#  At the current time only @HPCMP.HPC.MIL users can use @STORAGE.HPC.MIL realm.
+#  Added code to only Scd if Sinit succeeded
+#   this stops reporting of an error noise around Sinit error.
+# 6/19/2012 LAM - Change ${SLM_COLLECTION} to ${SLM_HOME} per request of
+#  Navy Workshop users.  Set the socket file path environment variable as part
+#  of fix for iTracker 6019 - Sshell is not working on the NAVY SLM instance.
+# 6/20/2012 LAM - Use ${SLM_HOME} instead of ${SRB_HOME} to determine if the
+#  environment is already set up so as to not conflict with use of the slm module.
+# 7/2/2012 LAM - Supress reporting of ${SRB_HOME} and change reporting of ${SLM_HOME}
+#  per suggestion of John Skinner (Navy DSRC) and approval of CEW.
+# 8/13/2012 LAM - Changed to use new -coll option for session default collection.
+# 8/27/2012 LAM - Added GREP_OPTIONS include '-n' fix.
+# 8/31/2012 LAM - Made Navy US Site / Machine modifications.
+# --:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Extract the kerberos principal from the current kerberos keylist.
+KLIST='/usr/local/krb5/bin/klist'
+SLM_PRINCIPAL=`${KLIST} | grep "Default principal" | cut -d ':' -f 2 | tr -d ' \t'`
+
+# Test SLM_PRINCIPAL before continuing
+if [ -z $SLM_PRINCIPAL ] ; then # SLM_PRINCIPAL was NOT retrieved from klist output
+echo Cannot initialize SLM - No kerberos ticket!
+else # SLM_PRINCIPAL was retrieved from klist output
+
+if [ $SLM_PRINCIPAL = 'Defaultprincipal' ] ; then # If we got 'Defaultprincipal'
+  SLM_PRINCIPAL=`${KLIST} | grep "Default principal" | cut -d ':' -f 3 \
+  | tr -d ' \t'` # GREP_OPTIONS include '-n' so we want field 3.
+fi #  If we got 'Defaultprincipal'
+
+if [ -z $SLM_HOME ] ; then # If we haven't already set up the environment
+
+# Set the socket file path environment variable
+
+SRB_SESSION_UNIX_DOMAIN_PATH=/dev/shm
+export SRB_SESSION_UNIX_DOMAIN_PATH
+
+echo Kerberos principal: $SLM_PRINCIPAL
+
+# Extract the SLM user name from the kerberos principal
+
+SLM_USER=`echo $SLM_PRINCIPAL | cut -d '@' -f 1`
+echo SLM User: $SLM_USER
+
+# Set the SLM collection for this DSRC
+
+SLM_HOME="/archive/${SLM_USER}/navy/katrina.m"; export SLM_HOME
+
+# Set the SRB_HOME value to where the most current SRB client is installed.
+SRB_HOME="/opt/slm/current"; export SRB_HOME
+# echo SLM Home: $SRB_HOME
+
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$SRB_HOME/lib/64; export LD_LIBRARY_PATH
+PATH=${PATH}:$SRB_HOME/bin; export PATH
+MANPATH=${MANPATH}:$SRB_HOME/man; export MANPATH
+
+STORAGE=`expr match $SLM_PRINCIPAL '\(.*\)@STORAGE\.HPC\.MIL'` # @STORAGE.HPC.MIL ?
+if [ -z $STORAGE ] ; then # If NOT @STORAGE.HPC.MIL
+
+SLM_AUTH_NAME="$SLM_PRINCIPAL"
+
+else # If @STORAGE.HPC.MIL
+
+SLM_AUTH_NAME="$SLM_USER@HPCMP.HPC.MIL"
+
+echo SLM Authentication Name: $SLM_AUTH_NAME
+
+fi # If NOT @STORAGE.HPC.MIL
+
+unset STORAGE
+
+# Set the value of the local MCAT servers for round robin use.
+
+SLM_HOST='mcat61.navo.hpc.mil,mcat62.navo.hpc.mil'
+echo SLM Host: $SLM_HOST
+
+# Set the default SLM resource to a local archive.
+
+SLM_RESOURCE='navy.katrina.m'
+echo SLM Resource: $SLM_RESOURCE
+
+# Set the SLM Classification level to the value for this DSRC
+
+SLM_CLASSIFICATION='SBU'
+echo SLM Classification Level: $SLM_CLASSIFICATION
+
+# Write SLM defaults
+
+Sinit -user ${SLM_AUTH_NAME} -host ${SLM_HOST} \
+-port 5625 -comm PLAIN_TEXT -auth KERBEROS_AUTH -coll ${SLM_HOME} \
+-rsrc ${SLM_RESOURCE} -classification ${SLM_CLASSIFICATION} -w
+
+unset SLM_HOST SLM_RESOURCE SLM_CLASSIFICATION SLM_USER SLM_AUTH_NAME
+
+fi # If we haven't already set up the environment
+
+# Initialize the SRB client
+
+if Sinit ; then # If Sinit exit status was 0
+
+# Set the current SLM collection to the collection for this DSRC.
+
+# echo Initial SLM Collection: ${SLM_HOME}
+echo 'Setting initial SLM Home Collection to ${SLM_HOME}'
+echo '${SLM_HOME}='${SLM_HOME}
+
+fi # end if Sinit exit status was 0
+
+fi # end if SLM_PRINCIPAL was retrieved from klist output
+
+unset KLIST SLM_PRINCIPAL

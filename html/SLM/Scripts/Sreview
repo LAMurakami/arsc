@@ -1,0 +1,348 @@
+#!/usr/bin/env perl
+# $Id: Sreview,v 1.8 2012/08/07 22:33:16 murakami Exp murakami $
+# See perl pod documentation at the end of this file
+
+use strict;
+use warnings;
+use Pod::Usage;
+use POSIX;
+use Time::Local qw(timelocal);
+use Getopt::Long;
+
+use constant PROGRAM => "Sreview";
+use constant VERSION => "1.3";
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## PROTOTYPES
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+sub parse_args;
+sub _error;
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## GLOBALS
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+my @OBJECTS;
+my $CMD;
+my $ARG;
+my $ERRORS = 0;
+my $RECURSIVE = 0;
+my $STATUS;
+my $DEBUG = 0;
+my $VERBOSE = 0;
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## BEGIN
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+if (! parse_args())
+  {
+    _error("failed to parse arguments");
+    exit(1);
+  }
+
+## Exit if $DEBUG is set before actually modifying files
+if ($DEBUG)
+  {
+    exit(0);
+  }
+
+# Set scheme info on all requested objects
+$CMD = 'Sscheme -w -val Admin.Last_Review_Time::[sysdate]';
+
+if ($RECURSIVE)
+  {
+    $CMD .= " -R";
+  }
+
+my $OBJSTR = join(' ', @OBJECTS);
+if ($OBJSTR =~ m/\*/)                            # If wildcard
+  {
+    printf("DEBUG: %s\n", $OBJSTR) if ($VERBOSE);
+    $OBJSTR =~ s/\*/\\\*/g;                      # Escape wildcard
+    printf("DEBUG: %s\n", $OBJSTR) if ($VERBOSE);
+  }
+
+$CMD .= sprintf(" %s", $OBJSTR);
+
+printf("DEBUG: %s\n", $CMD) if ($VERBOSE);
+
+$STATUS = system($CMD);
+
+if (($STATUS >> 8) != 0)
+  {
+    $ERRORS++;
+  }
+
+if ($ERRORS)
+  {
+    exit(1);
+  }
+
+exit(0);
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## SUBROUTINES
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      _debug -- print debug information
+#
+# SYNOPSIS
+#      _debug($fmt, $arg1[, $arg2]);
+#
+# DESCRIPTION
+#      If $VERBOSE is set to 1, prints $fmt and optional $args using printf to
+#      STDOUT.
+#
+# RETURN VALUES
+#      None.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub _debug
+{
+  my $fmt = shift(@_);
+  my @args = @_;
+  my $msg;
+
+  return if (! $VERBOSE);
+
+  $fmt = sprintf("DEBUG: %s%s", $fmt, ($fmt !~ /\n$/ ? "\n" : ""));
+
+  $msg = sprintf($fmt, @args);
+
+  printf($msg);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      _error -- print error information 
+# 
+# SYNOPSIS
+#      _error($fmt, $arg1[, $arg2]);
+#
+# DESCRIPTION
+#      Prints $fmt and options $args using printf to STDERR.
+#
+# RETURN VALUES
+#      None.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub _error
+{
+  my $fmt = shift(@_);
+  my @args = @_;
+  my $msg;
+
+  $fmt = sprintf("Sreview ERROR: %s%s", $fmt, ($fmt !~ /\n$/ ? "\n" : ""));
+
+  $msg = sprintf($fmt, @args);
+
+  printf(STDERR $msg);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      parse_args -- parse command line arguments
+#
+# SYNOPSIS
+#      $status = parse_args();
+#
+# DESCRIPTION
+#      The parse_args subroutine parses command line arguments provided by the
+#      @ARGV array.
+#
+# RETURN VALUES
+#      Upon successful completion a value of 1 is returned.  Otherwise, a value
+#      of 0 is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub parse_args
+{
+  my %args;
+  my $arg;
+  my $status;
+
+  GetOptions      
+    (
+      \%args,
+      "debug",
+      "verbose",
+      "recursive|r",
+      "version|v" => sub { printf("%s %s\n", PROGRAM, VERSION); exit(0); },
+      "help|h" => sub { pod2usage(-exitval => 0, -verbose => 1); },
+    ) or pod2usage(2);
+
+  # Args are objects/collections
+  if ($#ARGV == -1)
+    {
+      _error("must specifiy one or more objects or collections");
+      return(0);
+      pod2usage(2);
+    }
+
+  push(@OBJECTS, @ARGV);
+
+  # Parse remaining arguments
+  if (exists($args{verbose}))
+    {
+      $VERBOSE = 1;
+    }
+
+  if (exists($args{debug}))
+    {
+      $DEBUG = 1;
+    }
+
+  if (exists($args{recursive}))
+    {
+      $RECURSIVE = 1;
+    }
+
+  return(1);
+}
+
+
+__END__
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## POD DOCUMENTATION
+##
+## perldoc Sreview
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+=pod
+
+=head1 NAME
+
+B<Sreview> - set Admin.Last_Review_Time attribute.
+
+=head1 SYNOPSIS
+
+S<B<Sreview [options] objects|collections>>
+
+=head1 DESCRIPTION
+
+B<Sreview> is the command line interface to set I<"Last_Review_Time"> on
+Storage Lifecycle Management (SLM) objects. The B<Sreview> command updates the
+I<"Admin"> Scheme which is a System Schmeme that is automatically applied during
+ingestion of objects into SLM. The B<Sreview> command requires B<objects> or
+B<collections> to act upon.
+
+=head1 objects|collections
+
+The B<objects|collections> parameter is a required parameter. More than
+one B<object> and/or B<collection> can be specified. The
+B<objects|collections> parameter specifies the SLM objects and/or
+collections to act upon.
+
+=head1 OPTIONS
+
+The B<Sreview> command allows a number of options when setting I<"Admin"> Scheme
+attribute I<"Last_Review_Time"> and includes the B<-r> option
+which causes the attributes to be set recursively on objects within the
+collection[s].
+
+The options are as follows:
+
+=over 4
+
+=item B<-R>, B<-recursive>
+
+Specifies that the operation be applied recursively on objects within the
+collection[s]. The B<-R> option only works when collections are specified.
+
+=item B<-help>
+
+Print this help message and exit.
+
+=item B<-version>
+
+Print the program version and exit.
+
+=item B<-verbose>
+
+Print more verbose output during the execution of B<Sreview>.
+
+=back
+
+=head1 EXAMPLES
+
+=over 4
+
+=item Example 1 Setting Last_Review_Time for a single object.
+
+% S<Sreview MyObj>
+
+This command will set the Last_Review_Time for the object MyObj in the current
+collection to the current date and time.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme -w -val 'Admin.Last_Review_Time::[sysdate]' MyObj>
+
+=item Example 2 Setting Last_Review_Time for multiple objects.
+
+% S<Sreview MyObj MyObj2 ...>
+
+This command will set the Last_Review_Time for the objects listed in the current
+collection to the current date and time.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme -w -val 'Admin.Last_Review_Time::[sysdate]' MyObj MyObj2 ...>
+
+=item Example 3 Setting Last_Review_Time recursively on a collection
+
+% S<Sreview -R MyCol>
+
+This command will set the Last_Review_Time for the collection MyCol and all
+objects in the collection recursively to the current date and time.
+
+The equivalent native Sscheme command is:
+
+% S<Sscheme -w -val 'Admin.Last_Review_Time::[sysdate]' MyObj>
+
+=back
+
+=head1 SEE ALSO
+
+B<Sscheme(1)>, B<Sretain(1)>
+
+=head1 RELEASE NOTES
+
+=over 4
+
+=item Version 1.1 - June 28, 2012 - LAM@HTL
+
+Initial release.
+
+Stripped down version of Sretain to allow setting just the Admin.Last_Review_Time.
+
+=item Version 1.2 - June 28, 2012 - LAM@HTL
+
+Modified script to submit one 'Sscheme -w' command for all objects specified.
+
+=item Version 1.3 - August 7, 2012 - LAM@HTL
+
+Modified help and man page to specify "-R" instead of "-r" for recursion to match other Scommands.
+Modified to always escape any asterisk wildcard characters in the objects|collections argument.
+
+=back
+
+=cut

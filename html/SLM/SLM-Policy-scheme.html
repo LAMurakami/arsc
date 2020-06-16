@@ -1,0 +1,447 @@
+<html><head>
+
+<title>SLM Policy scheme</title>
+
+<!-- $Id: SLM-Policy-scheme.html,v 1.2 2018/01/15 08:43:36 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SLM Policy scheme
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+								<!-- bodytext -->
+
+<h1> <span id="SLM_Policy_scheme"> SLM Policy scheme </span></h1>
+<p>The SLM Policy scheme is one of the user accessible schemes.  See <a href="SgetS.html" title="SgetS">SgetS</a> for a complete list.
+</p>
+<h1> <span id="Metadata_Scheme:_Policy_-_Default_Values"> Metadata Scheme: Policy - Default Values </span></h1>
+<table border>
+
+<tr>
+<td> Attribute
+</td><td> Default Value
+</td><td> Description
+</td></tr>
+<tr>
+<td> Warning_Period_User
+</td><td> 28
+</td><td> Number of days before file gets deleted that user will receive a warning.
+</td></tr>
+<tr>
+<td> Warning_Period_PI
+</td><td> 15
+</td><td> Number of days before file gets deleted that PI will receive a warning.
+</td></tr>
+<tr>
+<td> Review_Period
+</td><td> 1096
+</td><td> Number of days before next review is required.
+</td></tr>
+<tr>
+<td> Max_Name_Value_Rows
+</td><td> 20
+</td><td> Maximum number of rows per object in the Name Value Scheme.
+</td></tr>
+<tr>
+<td> Max_Retention_Period
+</td><td> 30000
+</td><td> Maximum number of days an object can be retained in the archive.
+</td></tr>
+<tr>
+<td> Group_Soft_Quota
+</td><td> 1000000000
+</td><td> Soft Quota in Bytes not to be exceeded by any UNIX group name.
+</td></tr>
+<tr>
+<td> Group_Hard_Quota
+</td><td> 1500000000
+</td><td> Hard Quota in Bytes not to be exceeded by any UNIX group name.
+</td></tr>
+<tr>
+<td> Project_Soft_Quota
+</td><td> 10000000000
+</td><td> Soft Quota in Bytes not to be exceeded by any HSM Project ID.
+</td></tr>
+<tr>
+<td> Project_Hard_Quota
+</td><td> 15000000000
+</td><td> Hard Quota in Bytes not to be exceeded by any HSM Project ID.
+</td></tr></table>
+<h1> <span id="Metadata_Scheme:_Policy_-_columns"> Metadata Scheme: Policy - columns </span></h1>
+<table border>
+
+<tr>
+<td> Attribute Name
+</td><td> Position
+</td><td> Type
+</td><td> Constraints
+</td><td> Default
+</td><td> Display Size
+</td><td> Column Name
+</td><td> Column Type
+</td></tr>
+<tr>
+<td> Warning_Period_User
+</td><td> 1
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> warning_period_user
+</td><td> integer
+</td></tr>
+<tr>
+<td> Warning_Period_PI
+</td><td> 2
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> warning_period_pi
+</td><td> integer
+</td></tr>
+<tr>
+<td> Review_Period
+</td><td> 3
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> value
+</td><td> integer
+</td></tr>
+<tr>
+<td> Max_Name_Value_Rows
+</td><td> 4
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> max_name_value_rows
+</td><td> integer
+</td></tr>
+<tr>
+<td> Max_Retention_Period
+</td><td> 5
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> max_retention_period
+</td><td> integer
+</td></tr>
+<tr>
+<td> Group_Soft_Quota
+</td><td> 6
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> group_soft_quota
+</td><td> integer
+</td></tr>
+<tr>
+<td> Group_Hard_Quota
+</td><td> 7
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> group_hard_quota
+</td><td> integer
+</td></tr>
+<tr>
+<td> Project_Soft_Quota
+</td><td> 8
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> project_soft_quota
+</td><td> integer
+</td></tr>
+<tr>
+<td> Project_Hard_Quota
+</td><td> 9
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 12
+</td><td> project_hard_quota
+</td><td> integer
+</td></tr></table>
+<h1> <span id="Values_in_every_column_of_the_SLM_Policy_scheme"> Values in every column of the SLM Policy scheme </span></h1>
+<p>The following was omitted from the above table because the values are the same for every row:
+</p>
+<pre>Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+...
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+...
+</pre>
+<h1> <span id="SLM_Policy_scheme_-_native_output"> SLM Policy scheme - native output </span></h1>
+<pre>$ SgetS -x Policy | sed 's/^/ /'
+--------------------------- RESULTS ------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100056
+Metadata Attribute: Warning_Period_User
+Metadata Attribute Position: 1
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: warning_period_user
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100057
+Metadata Attribute: Warning_Period_PI
+Metadata Attribute Position: 2
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: warning_period_pi
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100058
+Metadata Attribute: Review_Period
+Metadata Attribute Position: 3
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: review_period
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100059
+Metadata Attribute: Max_Name_Value_Rows
+Metadata Attribute Position: 4
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: max_name_value_rows
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100060
+Metadata Attribute: Max_Retention_Period
+Metadata Attribute Position: 5
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: max_retention_period
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100061
+Metadata Attribute: Group_Soft_Quota
+Metadata Attribute Position: 6
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: group_soft_quota
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100062
+Metadata Attribute: Group_Hard_Quota
+Metadata Attribute Position: 7
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: group_hard_quota
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100063
+Metadata Attribute: Project_Soft_Quota
+Metadata Attribute Position: 8
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: project_soft_quota
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100055
+Metadata Scheme: Policy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: table
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_policy
+Metadata Attribute ID: 100064
+Metadata Attribute: Project_Hard_Quota
+Metadata Attribute Position: 9
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_policy
+Metadata Attribute Column Name: project_hard_quota
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+
+[16:07:19 Wed Jun 27] murakami@stutill-0002 ~
+</pre>
+<p><br />
+</p>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 9/12/2012 - LAM - I created a "Metadata Scheme: Policy - Default Values" table to match what is in the [ <a href="2012-05-11-SLM-System-Design-Specification.pdf" rel="nofollow">https://staffportal.arsc.edu/WO/ContractWork/HEUE/Design_Specifications/2012-05-11-SLM-System-Design-Specification.pdf</a> 05/11/2012 SLM System Design Specification (pdf)]
+<ul><li> This is in Table 8-2. Policy Attributes on page 139 of the pdf (numbered page 125 ).
+</li></ul>
+</li><li> 7/16/2012 - LAM - I still don't know how to see the values of the Policy table
+</li></ul>
+<pre>$ Sscheme -l -scheme Policy
+[16:53:15 Mon Jul 16] murakami@stutill-0001 ~
+</pre>
+<pre>$ Sscheme -w -scheme Policy rt-2012-06-28
+[16:56:43 Mon Jul 16] murakami@stutill-0001 ~
+</pre>
+<pre>$ Sscheme -l -scheme Policy rt-2012-06-28
+[16:57:12 Mon Jul 16] murakami@stutill-0001 ~
+</pre>
+<pre>$ Sscheme -d -scheme Policy rt-2012-06-28
+[16:58:04 Mon Jul 16] murakami@stutill-0001 ~
+</pre>
+<ul><li> 6/27/2012 - LAM - Created this page.
+</li><li> 6/4/2012 - Constantin Scheder Subject: RE: /virtual/expiring_files_user does not list a file I expect it to list
+<ul><li> Lawrence: Good find! I've attached a new version of the rebuild script which adds "read" access for everyone to the Policy scheme and all its attributes. That fixes the output of the expiring_files_user Virtual Collection.
+</li></ul>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 35/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1015-0!1!0!!en!2 and timestamp 20130813214541 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_Policy_scheme">
+https://intrawiki.arsc.edu/index.php/SLM_Policy_scheme</a>"
+<br> - Tuesday, August 13, 2013 @ 4:12:34 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SLM_Policy_scheme">1 SLM Policy scheme</a></li>
+<li><a href="#Metadata_Scheme:_Policy_-_Default_Values">2 Metadata Scheme: Policy - Default Values</a></li>
+<li><a href="#Metadata_Scheme:_Policy_-_columns">3 Metadata Scheme: Policy - columns</a></li>
+<li><a href="#Values_in_every_column_of_the_SLM_Policy_scheme">4 Values in every column of the SLM Policy scheme</a></li>
+<li><a href="#SLM_Policy_scheme_-_native_output">5 SLM Policy scheme - native output</a></li>
+<li><a href="#Revision_Log">6 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

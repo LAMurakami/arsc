@@ -1,0 +1,327 @@
+<html><head>
+<title>GA / Nirvana Bugzilla</title>
+<link rel="Shortcut Icon" href="../favicon.ico" />
+<!-- $Id: GA_Nirvana_Bugzilla.html,v 1.2 2018/01/15 08:55:36 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="HPCMP-logo.gif" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1 class="firstHeading"><a href="#toc">GA / Nirvana Bugzilla<br><a href="#toc">11/14/2012</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="DoD-Shield.gif" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+								<!-- bodytext -->
+				<p><br />
+</p>
+
+<h1> <span id="GA_.2F_Nirvana_Bugzilla"> <a href="https://www2.nirvanaware.com/bugzilla" class="external text" rel="nofollow">GA / Nirvana Bugzilla</a> </span></h1>
+<p><a href="https://intrawiki.arsc.edu/index.php/SRB_GA_/_Nirvana_iTracker" title="SRB GA / Nirvana iTracker">SRB GA / Nirvana iTracker</a> was replaced by <a href="https://www2.nirvanaware.com/bugzilla" rel="nofollow">the Bugzilla product</a> during the later part of October 2012.
+</p><p><a href="2012-10-16-Nirvana-Bugzilla.pdf" rel="nofollow">Bugzilla Email Ingestion (pdf)</a> document from GA / Nirvana
+</p><p><a href="2012-10-22-SLM-Bugzilla.pdf" rel="nofollow">SLM Support</a> document
+</p>
+<h1> <span id="Introduction"> Introduction </span></h1>
+<p>Both SAM-QFS and SRB cases can be opened via a single telephone number or web site and are serviced by a single SLM Support Account Manager.  SAM-QFS Cases opened through General Atomics (GA) will be recorded in GA's Bugzilla web site and forwarded to My Oracle Support (MOS) on behalf of the user.  Once the case is opened with Oracle, the Oracle service request (SR) number will be noted in the Bugzilla issue history.  Thereafter, as a minimum, the final resolution and closing date will also be recorded in Bugzilla.  All detailed case information can be found on the MOS system. In all cases, it is important that the required information be supplied so that the case can be resolved as quickly as possible.
+</p>
+<h2> <span id="SLM_Support_Account_Manager"> SLM Support Account Manager </span></h2>
+<p>The contact information for the SLM Support Account manager is:
+</p>
+<ul><li> Reid Bingham
+</li><li> +1 (858) 455-2361
+</li><li> reid.bingham@ga.com
+</li></ul>
+<p>For Oracle specific questions, you can contact the Oracle Service Account Manager directly:
+</p>
+<ul><li> Bryant Barnes
+</li><li> +1 (256) 828-2497
+</li><li> bryant.barnes@oracle.com
+</li></ul>
+<h2> <span id="SLM_Phone_Support"> SLM Phone Support </span></h2>
+<ul><li> Both SAM-QFS and SRB cases can be opened via the SLM Support number: +1 (858) 877-0500.
+<ul><li> Specify serial number <b>1190</b>.
+</li><li> SAM-QFS case information will be collected and submitted to My Oracle Support (MOS).  
+<ul><li> Alternately, cases can be opened directly via the Oracle support number: +1 (800) 223-1711.
+</li><li> Specify Support Identifier <b>17139274</b>.
+</li></ul>
+</li></ul>
+</li></ul>
+<h1> <span id="Obtaining_a_Bugzilla_Account"> Obtaining a Bugzilla Account </span></h1>
+<p>To obtain a Bugzilla Account, send an e-mail request from your primary email address stating your association with the "HPCMP SLM Project" to:  SRBsupport@ga.com.  You will be sent e-mail containing account log-in instructions.  Once your account is created, login to Bugzilla via <a href="https://www2.nirvanaware.com/bugzilla" rel="nofollow">https://www2.nirvanaware.com/bugzilla</a>, and change your password upon first login.
+</p>
+<h1> <span id="Bugzilla_Web_Interface"> Bugzilla Web Interface </span></h1>
+<h2> <span id="Prerequisites"> Prerequisites </span></h2>
+<ul><li> Must already have a GA / Nirvana Bugzilla account.
+<ul><li> See Obtaining a Bugzilla Account above.
+</li></ul>
+</li></ul>
+<h2> <span id="Bugzilla_Search"> Bugzilla Search </span></h2>
+<p>The GA / Nirvana Bugzilla Web Interface allows rich (and complex) functionality for searching for bugs.  The header and footer of each page provides a quick search field that actually creates a search based on what is entered.  The header and footer of each page also provides a link to the search page that has Simple search and Advanced Search tabs.
+</p>
+<h3> <span id="Quick_search"> Quick search </span></h3>
+<p>Typing just a number in the search box will take you directly to the bug with that ID.
+</p><p>If you put a word or series of words in the search box, Bugzilla will search the Product, Component, Summary, and Comment fields for your word or words.  Searching is case-insensitive and Bugzilla is not really searching for words but is searching for strings. For example, searching for "cat" would also find bugs that contain it as part of other words such as a bug mentioning "<b>cat</b>agory", "<b>cat</b>ch" or even "certifi<b>cat</b>e".
+</p><p>The "Status" of "RESOLVED" or "CLOSED" are omitted From the default search of other than just a number.
+</p>
+<h3> <span id="Simple_search"> Simple search </span></h3>
+<p>A simple search allows you to select "Status", "Product" and a list of words.  Bugzilla will search bug descriptions and comments for those words and return a list of matching bugs sorted by relevance.
+</p>
+<h3> <span id="Advanced_Search"> Advanced Search </span></h3>
+<p>When using Advanced Search the "Product", "Component", "Status", and "Resolution" are always part of the search.  The default does not preselect a "Product", "Component", "Status", or "Resolution".  If you inadvertently select a value in one of these fields that allow multiple selections you can de-select by using the &lt;control&gt; key and the mouse (the same way you select multiple items).
+</p><p>You can change your default search options by, going to Advanced Search, checking the box for "and remember these as my default search options", then click search
+</p>
+<h1> <span id="Bugzilla_Email_Ingestion"> Bugzilla Email Ingestion </span></h1>
+<p>Bugzilla has an add-on that allows user to submit new bugs through e-mail. A procmail init script is placed in a user's home directory. This script redirects the bug into a parser and call Bugzilla API to create or update a bug through a defined template. If a user deviates from this template, system will send a reply message with the error message. If a bug submission is successful, system will write a confirmation e-mail.
+</p>
+<h2> <span id="Prerequisites_2"> Prerequisites </span></h2>
+<ul><li> Must already have a GA / Nirvana Bugzilla account.
+<ul><li> See Obtaining a Bugzilla Account above.
+</li></ul>
+</li><li> Must set email preferences.
+<ol><li> Log in to Bugzilla <a href="https://www2.nirvanaware.com/bugzilla" rel="nofollow">https://www2.nirvanaware.com/bugzilla</a> with your username and password.
+</li><li> Click Preferences link near the top of the page.
+</li><li> Click Email Preferences tab.
+</li><li> Click Enable All Mail button.
+</li><li> Scroll down to the end of the page and click Submit Changes.
+</li></ol>
+</li></ul>
+<h2> <span id="Known_Issues_.28some_by_design_or_configuration.29"> Known Issues (some by design or configuration) </span></h2>
+<ul><li> Bugzilla cannot handle e-mail replies with quoted or attached previous messages correctly.
+<ul><li> If not careful, the bug will be populated with the old comments duplicated in the bug comment list.
+</li><li> User should clear e-mail body prior to typing a new comment.
+</li></ul>
+</li><li> Bugzilla handles plain/text messages best.
+<ul><li> If you send a Rich Text (HTML) Only (text/html) email Bugzilla will reject it with the following:
+<ul><li> Your message did not contain any text. Bugzilla does not accept HTML-only email, or HTML email with attachments.
+</li></ul>
+</li><li> If you send a HTML e-mail (versus regular text e-mail) from a Microsoft email client or through a Microsoft Exchange email server, the bug created may have two additional attachments (one .dat file and .html file. Both of these are your e-mail file).
+<ul><li> You may delete these manually by logging in to Bugzilla.
+</li></ul>
+</li><li> Bugzilla may handle email sent as "Plain and Rich (HTML) Text" well depending on the client.  A message that is sent as a multipart/alternative email with text/plain and text/html parts will have the text/plain part entered as a new comment and the text/html part discarded.
+</li><li> I would not trust anything but plain text message that are being sent though a Microsoft Exchange server or Microsoft email client to be handled correctly by Bugzilla.
+</li></ul>
+</li><li> Error messages that user will get may be confusing.
+<ul><li> The parameter names required for an email bug submission may not match the names reported in errors or the names viewed in the web interface.
+<ul><li> For example the message received if the required @op_sys parameter is missing is:
+<ul><li> You must select/enter a OS.
+</li></ul>
+</li></ul>
+</li></ul>
+</li><li> The manual says an e-mail signature is ignored but in practice the email signature may be inserted in the bug.
+<ul><li> To prevent this problem, insert two lines prior to the signature with the first being a blank line and the second containing only '--' (without the quotes).
+</li><li> This method does not always seem to work so it is probably best to clear the signature unless you want this in the description or comments of the bug.
+</li></ul>
+</li><li> Features and or parameters found in some documentation may be disabled in this instance of Bugzilla i.e. alias.
+</li></ul>
+<h2> <span id="Opening_a_new_Bug_using_email"> Opening a new Bug using email </span></h2>
+<h3> <span id="Settings_and_Valid_parameters"> Settings and Valid parameters </span></h3>
+<ul><li> Destination e-mail address&nbsp;: srbissues@nirvanacare.com
+</li><li> Every bug must be associated with a product.
+<ul><li> The @product parameter is required when submitting a new bug.
+<ul><li> The product a bug is being reported against controls the rest of the parameters allowed some of which may be required. 
+</li></ul>
+</li></ul>
+</li><li> See the "Products @product Required" section above for additional required and optional parameters.
+</li></ul>
+<h1> <span id="Products_.40product_Required"> Products @product <b>Required</b> </span></h1>
+<p>Every bug must be associated with a product.  The @product parameter is required when submitting a new bug.  The product a bug is being reported against controls the rest of the parameters allowed, some of which may be required.
+</p>
+<h2> <span id="Test"> Test </span></h2>
+<ul><li> Components @component <b>Required</b>
+<ul><li> Test
+</li></ul>
+</li><li> Version @version <b>Required</b>
+<ul><li> unspecified
+</li></ul>
+</li><li> Severity
+<ul><li> Inquiry
+</li><li> Minor
+</li><li> Major
+</li><li> Critical
+</li></ul>
+</li><li> Hardware @platform
+<ul><li> --
+</li></ul>
+</li><li> OS @op_sys
+<ul><li> Unknown
+</li><li> All
+</li></ul>
+</li></ul>
+<h2> <span id="Bugzilla"> Bugzilla </span></h2>
+<ul><li> Components @component <b>Required</b>
+<ul><li> Email Interface
+</li><li> Web Interface
+</li></ul>
+</li></ul>
+<h2> <span id="Customer_-_HPCMP_SAM"> Customer - HPCMP SAM </span></h2>
+<ul><li> Components @component <b>Required</b>
+</li></ul>
+<p>Both SAM-QFS and SRB cases can be opened via the GA / Nirvana Bugzilla system.
+</p><p>SAM-QFS case information will be collected and submitted to My Oracle Support (MOS).
+</p><p>SAM-QFS Cases opened through General Atomics (GA) will be recorded in GA's Bugzilla web site and forwarded to My Oracle Support (MOS) on behalf of the user.  Once the case is opened with Oracle, the Oracle service request (SR) number will be noted in the Bugzilla issue history.  Thereafter, as a minimum, the final resolution and closing date will also be recorded in Bugzilla.  All detailed case information can be found on the MOS system. In all cases, it is important that the required information be supplied so that the case can be resolved as quickly as possible.
+</p><p>Alternately, cases can be opened directly via MOS though: <a href="https://support.oracle.com" rel="nofollow">https://support.oracle.com</a>.
+</p>
+<h2> <span id="Customer_-_HPCMP_SRB"> Customer - HPCMP SRB </span></h2>
+<ul><li> Components @component <b>Required</b>
+<ul><li> Acommands
+</li><li> API
+</li><li> Authentication
+</li><li> Daemons
+</li><li> DAI
+</li><li> Documentation
+</li><li> Gateways
+</li><li> Java Admin
+</li><li> Java Client
+</li><li> MCAT DB
+</li><li> MCAT Server
+</li><li> Other
+</li><li> Scommands
+</li><li> SRB Agent
+</li><li> Web Client
+</li></ul>
+</li><li> @summary <b>Required</b> - A brief description of the bug being filed.
+<ul><li> <b>NOTE:</b> This field is substituted with subject line of e-mail if not specified
+</li></ul>
+</li><li> Version @version <b>Required</b>
+<ul><li> A version of the product above; the version the bug was found in.
+</li><li> Other
+</li><li> SRB 2010 other build
+</li><li> SRB 2012 R1
+</li><li> SRB 2012 R1 SP1
+</li><li> SRB 2012 R1 SP2
+</li><li> SRB 2012
+</li><li> SRB 2012 R2
+</li><li> SRB 2012 R2 SP1
+</li><li> SRB 2012 R3
+</li><li> SRB 2012 R3 SP1
+</li><li> SRB 2012 R3 SP2
+</li></ul>
+</li><li> OS @op_sys <b>Required</b> - The operating system the bug was discovered on. Sample values:
+<ul><li> Unknown
+</li><li> All
+</li><li> AIX PPC 32bit
+</li><li> AIX PPC 64bit
+</li><li> HP-UX PARISC 32bit
+</li><li> HP-UX PARISC 64bit
+</li><li> Linux IA64 64bit
+</li><li> Linux x86 32bit
+</li><li> Linux x86 64bit
+</li><li> Solaris SPARC 32bit
+</li><li> Solaris SPARC 64bit
+</li><li> Solaris x86 32bit
+</li><li> Solaris x86 64bit
+</li><li> Window x86 32bit
+</li></ul>
+</li><li> Hardware @platform <b>Required</b> - What type of hardware the bug was experienced on. Sample values:
+<ul><li> -- (reads double dashes)
+</li></ul>
+</li><li> @priority (string) Defaulted - What order the bug will be fixed in by the developer, compared to the developer's other bugs. Sample values:
+<ul><li> Low
+</li><li> Normal
+</li><li> High
+</li></ul>
+</li><li> @severity (string) Defaulted - How severe the bug is. Sample values:
+<ul><li> Inquiry
+</li><li> Minor
+</li><li> Major
+</li><li> Critical
+</li></ul>
+</li><li> @cf_itracker_issue_id - Old iTracker issue number.
+</li><li> @alias (string) - A brief alias for the bug that can be used instead of a bug number when accessing this bug.
+<ul><li> Must be unique in all of this Bugzilla.
+</li></ul>
+</li><li> @assigned_to (username) - A user to assign this bug to, if you don't want it to be assigned to the component owner.
+</li><li> @cc (array) - An array of usernames to CC on this bug.
+</li><li> @qa_contact (username) - If this installation has QA Contacts enabled, you can set the QA Contact here if you don't want to use the component's default QA Contact.
+</li><li> @status (string) - The status that this bug should start out as. Note that only certain statuses can be set on bug creation.
+</li><li> @target_milestone (string) - A valid target milestone for this product.
+</li></ul>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 11/12/2012 - LAM - Updated the Bugzilla Search -&gt; Advanced Search section of this page to reflect the change in the default search made by Martin Margo for <a href="https://www2.nirvanaware.com/bugzilla/show_bug.cgi?id=1700" rel="nofollow">Bug 1700</a> <a href="https://rt.arsc.edu/Ticket/Display.html?id=40701" class="external text" rel="nofollow">RT 40701</a> - Search by "iTracker Entry ID" is not working in GA / Nirvana Bugzilla.
+</li><li> 11/2/2012 - LAM - Created a separate <a href="https://intrawiki.arsc.edu/index.php/GA_/_Nirvana_Bugzilla_Cases" title="GA / Nirvana Bugzilla Cases">GA / Nirvana Bugzilla Cases</a> page for the cases I am tracking so they are not in this page.
+<ul><li> Posted the <a href="https://staffportal.arsc.edu/WO/ContractWork/HEUE/Bugzilla/2012-10-22-SLM-Bugzilla.pdf" rel="nofollow">SLM Support</a> document I got from Gene today (as 'SLM Support-20121022-v2 2.doc') to the Staff Portal after making a pdf version and changing the name.
+</li><li> Updated this document with information from the new support document.
+</li></ul>
+</li><li> 10/30/2012 - LAM - Added "Bugzilla Search" within a new "Bugzilla Web Interface" section towards the top of the document.
+<ul><li> Moved the Products section to behind the "Bugzilla Email Ingestion" section.
+</li><li> The new "Bugzilla Search" documentation includes what was learned from <a href="https://www2.nirvanaware.com/bugzilla/show_bug.cgi?id=1700" rel="nofollow">Bug 1700</a> <a href="https://rt.arsc.edu/Ticket/Display.html?id=40701" class="external text" rel="nofollow">RT 40701</a> - Search by "iTracker Entry ID" is not working in GA / Nirvana Bugzilla.
+</li></ul>
+</li><li> 10/19/2012 - LAM - Replaced the 10/10/2012 pdf link with the newer <a href="https://staffportal.arsc.edu/WO/ContractWork/HEUE/Bugzilla/2012-10-16-Nirvana-Bugzilla.pdf" rel="nofollow">10/16/2012 Bugzilla Email Ingestion (pdf)</a> document from GA / Nirvana.
+<ul><li> The new pdf was received as a reply to an email I had sent noting that I wanted to test adding additional comments and it would go quicker if I had documentation.  My reply had additional comments about things I had noted and his answered those.  My reply was a response to his inquiry: Have you had a chance to test our Bugzilla and its e-mail interface again? 
+</li><li> From: "Margo, Martin" Date: Tue, 16 Oct 2012 17:15:32 -0700 Subject: RE: Pilot project for Bugzilla both web and e-mail interface.
+</li></ul>
+</li><li> 10/11/2012 - LAM - Created this page.  Created links to the <a href="https://staffportal.arsc.edu/WO/ContractWork/HEUE/Bugzilla/2012-10-10-Nirvana-Bugzilla.pdf" rel="nofollow">Bugzilla Email Ingestion (pdf)</a> document from GA / Nirvana and some bugs that have been created.
+</li><li> 10/10/2012 - LAM - Created: <a href="https://rt.arsc.edu/Ticket/Display.html?id=40592" rel="nofollow">RT 40592</a> Beta tester for GA / Nirvana Bugzilla facility
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 115/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1121-0!1!0!!en!2 and timestamp 20121114191951 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/GA_/_Nirvana_Bugzilla">
+https://intrawiki.arsc.edu/index.php/GA_/_Nirvana_Bugzilla</a>"
+<br> - Wednesday, November 14, 2012 @ 10:25:35 AM (Alaska Time)</div>
+<ul>
+<li><a href="#GA_.2F_Nirvana_Bugzilla">1 GA / Nirvana Bugzilla</a></li>
+<li><a href="#Introduction">2 Introduction</a>
+<ul>
+<li><a href="#SLM_Support_Account_Manager">2.1 SLM Support Account Manager</a></li>
+<li><a href="#SLM_Phone_Support">2.2 SLM Phone Support</a></li>
+</ul>
+</li>
+<li><a href="#Obtaining_a_Bugzilla_Account">3 Obtaining a Bugzilla Account</a></li>
+<li><a href="#Bugzilla_Web_Interface">4 Bugzilla Web Interface</a>
+<ul>
+<li><a href="#Prerequisites">4.1 Prerequisites</a></li>
+<li><a href="#Bugzilla_Search">4.2 Bugzilla Search</a>
+<ul>
+<li><a href="#Quick_search">4.2.1 Quick search</a></li>
+<li><a href="#Simple_search">4.2.2 Simple search</a></li>
+<li><a href="#Advanced_Search">4.2.3 Advanced Search</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#Bugzilla_Email_Ingestion">5 Bugzilla Email Ingestion</a>
+<ul>
+<li><a href="#Prerequisites_2">5.1 Prerequisites</a></li>
+<li><a href="#Known_Issues_.28some_by_design_or_configuration.29">5.2 Known Issues (some by design or configuration)</a></li>
+<li><a href="#Opening_a_new_Bug_using_email">5.3 Opening a new Bug using email</a>
+<ul>
+<li><a href="#Settings_and_Valid_parameters">5.3.1 Settings and Valid parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#Products_.40product_Required">6 Products @product Required</a>
+<ul>
+<li><a href="#Test">6.1 Test</a></li>
+<li><a href="#Bugzilla">6.2 Bugzilla</a></li>
+<li><a href="#Customer_-_HPCMP_SAM">6.3 Customer - HPCMP SAM</a></li>
+<li><a href="#Customer_-_HPCMP_SRB">6.4 Customer - HPCMP SRB</a></li>
+</ul>
+</li>
+<li><a href="#Revision_Log">7 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

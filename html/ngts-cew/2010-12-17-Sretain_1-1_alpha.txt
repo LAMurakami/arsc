@@ -1,0 +1,1427 @@
+#!/usr/bin/env perl
+# $Id: Sretain,v 1.7 2010/12/18 00:57:58 murakami Exp $
+# See perl pod documentation at the end of this file
+
+use strict;
+use warnings;
+use Pod::Usage;
+use POSIX;
+use Time::Local;
+use Getopt::Long;
+
+$Carp::CarpLevel = 1;
+
+use constant PROGRAM => "Sretain";
+use constant VERSION => "1.1 alpha";
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## PROTOTYPES
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+sub srb_date;
+sub get_user_type;
+sub convert_date;
+sub convert_days;
+sub is_leap_year;
+sub days_per_year;
+sub days_per_month;
+sub calc_date;
+sub parse_args;
+sub verify_project;
+sub _error;
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## GLOBALS
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+my $DEFAULT_SRB_HOME = "/opt/nirvana/srb";
+my %SRB_AUTH_INFO;
+my @OBJECTS;
+my @SCHEME_PARAMS;
+my $CMD;
+my $DAYS;
+my $ARG;
+my $LIST_SCHEME = 0;
+my $DEFAULT_SCHEME = "Admin Scheme";
+my $ERRORS = 0;
+my $RECURSIVE = 0;
+my $STATUS;
+my $DEBUG = 0;
+my $VERBOSE = 0;
+my $DATE_STR;
+my $CURR_TIME = time();
+my %CURR_DATE =
+    (
+      YEAR => ((localtime($CURR_TIME))[5] + 1900),
+      MONTH => ((localtime($CURR_TIME))[4] + 1),
+      DAY => (localtime($CURR_TIME))[3]
+    );
+
+# List of metadata parameters
+my %OPTION_PARAMS =
+  (
+    LAST_REVIEW =>
+      {
+        SUPER => 0,
+        VALUE => srb_date(),
+        SCHEME => "Admin Scheme",
+        COLUMN => "Last Review Time",
+      },
+
+    ADMIN_HOLD =>
+      {
+        SUPER => 1,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Admin Hold",
+      },
+
+    NEXT_REVIEW =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Next Review Time",
+      },
+
+    PROJECT =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "HPCMP Project ID",
+      },
+
+    PRE_WARNING =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Pre-Warning Period",
+      },
+
+    RETENTION_DAYS =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Retention Period",
+      },
+
+    RETAIN_THROUGH =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Retain-Through",
+      },
+
+    ARCHIVE =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Archive Behavior",
+      },
+
+    IMMEDIATE =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Archive Behavior",
+      },
+
+    DR =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "DR Behavior",
+      },
+
+    PURGE =>
+      {
+        SUPER => 0,
+        VALUE => undef,
+        SCHEME => "Admin Scheme",
+        COLUMN => "Purge Behavior",
+      },
+  );
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## BEGIN
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# Set $SRB_HOME if not already set
+if (! exists($ENV{SRB_HOME}))
+  {
+    if (-d ($DEFAULT_SRB_HOME))
+      {
+        $ENV{SRB_HOME} = $DEFAULT_SRB_HOME;
+      }
+  }
+
+# Add $SRB_HOME/bin to $PATH
+if ($ENV{PATH} !~ /$ENV{SRB_HOME}\/bin/)
+  {
+    $ENV{PATH} = sprintf("%s:%s/bin", $ENV{PATH}, $ENV{SRB_HOME});
+  }
+
+if (! parse_args())
+  {
+    _error("failed to parse arguments");
+    exit(1);
+  }
+
+## Exit if $DEBUG is set before actually modifying files
+if ($DEBUG)
+  {
+    exit(0);
+  }
+
+# Set scheme info on all requested objects
+foreach (@OBJECTS)
+  {
+    $CMD = sprintf("Sscheme %s -w -val '%s' %s",
+        $RECURSIVE ? "-R" : "",
+        join(',', @SCHEME_PARAMS),
+        $_);
+
+    printf("DEBUG: %s\n", $CMD) if ($VERBOSE);
+
+    $STATUS = system($CMD);
+
+    if (($STATUS >> 8) != 0)
+      {
+        $ERRORS++;
+      }
+  }
+
+if ($ERRORS)
+  {
+    exit(1);
+  }
+
+## List scheme elements if requested
+if ($LIST_SCHEME)
+  {
+    foreach (@OBJECTS)
+      {
+        $CMD = sprintf("Sscheme %s -l -scheme \"%s\" %s",
+            $RECURSIVE ? "-r" : "",
+            $DEFAULT_SCHEME,
+            $_);
+
+        system($CMD);
+      }
+  }
+
+exit(0);
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## SUBROUTINES
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      _debug -- print debug information
+#
+# SYNOPSIS
+#      _debug($fmt, $arg1[, $arg2]);
+#
+# DESCRIPTION
+#      If $VERBOSE is set to 1, prints $fmt and optional $args using printf to
+#      STDOUT.
+#
+# RETURN VALUES
+#      None.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub _debug
+{
+  my $fmt = shift(@_);
+  my @args = @_;
+  my $msg;
+
+  return if (! $VERBOSE);
+
+  $fmt = sprintf("DEBUG: %s%s", $fmt, ($fmt !~ /\n$/ ? "\n" : ""));
+
+  $msg = sprintf($fmt, @args);
+
+  printf($msg);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      _error -- print error information 
+# 
+# SYNOPSIS
+#      _error($fmt, $arg1[, $arg2]);
+#
+# DESCRIPTION
+#      Prints $fmt and options $args using printf to STDERR.
+#
+# RETURN VALUES
+#      None.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub _error
+{
+  my $fmt = shift(@_);
+  my @args = @_;
+  my $msg;
+
+  $fmt = sprintf("ERROR: %s%s", $fmt, ($fmt !~ /\n$/ ? "\n" : ""));
+
+  $msg = sprintf($fmt, @args);
+
+  printf(STDERR $msg);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      parse_args -- parse command line arguments
+#
+# SYNOPSIS
+#      $status = parse_args();
+#
+# DESCRIPTION
+#      The parse_args subroutine parses command line arguments provided by the
+#      @ARGV array.
+#
+# RETURN VALUES
+#      Upon successful completion a value of 1 is returned.  Otherwise, a value
+#      of 0 is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub parse_args
+{
+  my %args;
+  my $arg;
+  my $status;
+
+  GetOptions      
+    (
+      \%args,
+      "debug",
+      "verbose",
+      "next_review=s",
+      "hold!",
+      "archive!",
+      "immediate!",
+      "list|l",
+      "purge!",
+      "dr!",
+      "project|p=s",
+      "recursive|r",
+      "version|v" => sub { printf("%s %s\n", PROGRAM, VERSION); exit(0); },
+      "help|h" => sub { pod2usage(-exitval => 0, -verbose => 1); },
+    ) or pod2usage(2);
+
+  if ($#ARGV == -1)
+    {
+      _error("must specify retention days and one or more object or collection");
+      pod2usage(2);
+    }
+
+  # Get retention period
+  $arg = shift(@ARGV);
+
+  if ($arg =~ /^\d+[d|w|m|f|y]$/)
+    {
+      $OPTION_PARAMS{RETENTION_DAYS}{VALUE} = convert_days($arg);
+    }
+  else
+    {
+      $OPTION_PARAMS{RETENTION_DAYS}{VALUE} = delta_dates({ end_date => $arg });
+
+      if (! defined($OPTION_PARAMS{RETENTION_DAYS}{VALUE}))
+        {
+          _error("invalid retention date specified");
+          return(0);
+        }
+    }
+
+  if (! defined($OPTION_PARAMS{RETENTION_DAYS}{VALUE}))
+    {
+      _error("invalid retention day specified '%s'",
+          $arg);
+      return(0);
+    }
+
+  push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%d",
+      $OPTION_PARAMS{RETENTION_DAYS}{SCHEME},
+      $OPTION_PARAMS{RETENTION_DAYS}{COLUMN},
+      $OPTION_PARAMS{RETENTION_DAYS}{VALUE}));
+
+  # Remaining args are objects/collections
+  if ($#ARGV == -1)
+    {
+      _error("must specifiy one or more objects or collections");
+      return(0);
+      pod2usage(2);
+    }
+
+  push(@OBJECTS, @ARGV);
+
+  # Parse remaining arguments
+  if (exists($args{verbose}))
+    {
+      $VERBOSE = 1;
+    }
+
+  if (exists($args{debug}))
+    {
+      $DEBUG = 1;
+    }
+
+  if (exists($args{recursive}))
+    {
+      $RECURSIVE = 1;
+    }
+
+  if (exists($args{list}))
+    {
+      $LIST_SCHEME = 1;
+    }
+
+  if (exists($args{archive}) || exists($args{immediate}))
+    {
+      if ((exists($args{archive}) && ! $args{archive}) && exists($args{immediate}))
+        {
+          _error("cannot specify --noarchive and --immediate");
+          return(0);
+        }
+
+      push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+          $OPTION_PARAMS{ARCHIVE}{SCHEME},
+          $OPTION_PARAMS{ARCHIVE}{COLUMN},
+          (exists($args{immediate}) ? "immediate" :
+              ($args{archive} ? "yes" : "no"))));
+    }
+
+  if (! defined($OPTION_PARAMS{LAST_REVIEW}{VALUE}))
+    {
+      my $ctime = time();
+      my ($year, $month, $day);
+
+      $year = (localtime($ctime))[5] + 1900;
+      $month = (localtime($ctime))[4] + 1;
+      $day = (localtime($ctime))[3];
+
+      $OPTION_PARAMS{LAST_REVIEW}{VALUE} =
+          srb_date({year => $year, month => $month, day => $day});
+    }
+
+  push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+      $OPTION_PARAMS{LAST_REVIEW}{SCHEME},
+      $OPTION_PARAMS{LAST_REVIEW}{COLUMN},
+      $OPTION_PARAMS{LAST_REVIEW}{VALUE}));
+
+  if (exists($args{next_review}))
+    {
+      if ($args{next_review} =~
+          /\d{2,4}[-\/]\d{2}[-\/]\d{2,4}/)
+        {
+          $arg = srb_date({date => $args{next_review}});
+        }
+      elsif ($args{next_review} =~ /\d+[a-z]/)
+        {
+          $arg = srb_date({n_days => $args{next_review}});
+        }
+      else
+        {
+          $arg = undef;
+        }
+
+      if (! defined($arg))
+        {
+          _error("invalid date specified for next review time '%s'",
+              $args{next_review});
+          return(0);
+        }
+   
+      push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+          $OPTION_PARAMS{NEXT_REVIEW}{SCHEME},
+          $OPTION_PARAMS{NEXT_REVIEW}{COLUMN},
+          $arg));
+    }
+
+  if (exists($args{dr}))
+    {
+      push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+          $OPTION_PARAMS{DR}{SCHEME},
+          $OPTION_PARAMS{DR}{COLUMN},
+          ($args{dr} ? "yes" : "no")));
+    }
+
+  if (exists($args{purge}))
+    {
+      push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+          $OPTION_PARAMS{PURGE}{SCHEME},
+          $OPTION_PARAMS{PURGE}{COLUMN},
+          ($args{purge} ? "yes" : "no")));
+    }
+
+  # Must be "superuser" or "sysadmin" user type to set "Admin Hold"
+  if (exists($args{hold}))
+    {
+      $arg = get_user_type();
+
+      if (! defined($arg))
+        {
+          _error("failed to get user type");
+          return(0);
+        }
+
+      if ($arg ne "superuser" && $arg ne "sysadmin")
+        {
+          _error("cannot set \"Admin Hold\" as a non-admin user (%s)",
+              $arg);
+          return(0);
+        }
+
+      push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+          $OPTION_PARAMS{ADMIN_HOLD}{SCHEME},
+          $OPTION_PARAMS{ADMIN_HOLD}{COLUMN},
+          ($args{hold} ? "yes" : "no")));
+    }
+
+  if (exists($args{project}))
+    {
+      if (! verify_project($args{project}))
+        {
+          _error("invalid project code '%s'", $args{project});
+          return(0);
+        }
+
+      push(@SCHEME_PARAMS, sprintf("\$\$%s::%s\$\$%s",
+          $OPTION_PARAMS{PROJECT}{SCHEME},
+          $OPTION_PARAMS{PROJECT}{COLUMN},
+          $args{project}));
+    }
+
+  _debug("Scheme parameters:");
+  _debug("--------------------");
+  foreach $arg (@SCHEME_PARAMS)
+    {
+      _debug("%s", $arg);
+    }
+  _debug("--------------------");
+
+  _debug("%s", join(',', @SCHEME_PARAMS));
+
+  return(1);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      get_user_type -- return user type
+#
+# SYNOPSIS
+#      $user_type = get_user_type();
+#
+#      $user_type = get_user_type({ user => $user, scheme => $scheme });
+#
+# DESCRIPTION
+#      Returns the SRB user type assigned to the current user or the user
+#      specified by the user hash argument.  Optionally specify an
+#      authentication scheme to specify.  Specifying the authentication scheme
+#      may be necessary if a user has multiple authentication schemes defined.
+#
+# RETURN VALUES
+#      Upon successful completion the SRB user type is returned.  Otherwise,
+#      the undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub get_user_type
+{
+  my ($args) = @_;
+  my $cmd;
+  my $user = undef;
+  my $scheme = undef;
+  my $type = undef;
+  my $pd;
+  my $buf;
+
+  if (exists($args->{user}))
+    {
+      $user = $args->{user};
+    }
+
+  if (exists($args->{scheme}))
+    {
+      $scheme = $args->{scheme};
+    }
+
+  if (! defined($user) || ! defined($scheme))
+    {
+      $cmd = "Senv";
+
+      if (! open($pd, "$cmd 2>&1 |"))
+        {
+          return(undef);
+        }
+
+      while ($buf = <$pd>)
+        {
+          chomp($buf);
+
+          _debug("\$buf = %s", $buf);
+
+          if (! defined($user) && $buf =~ /SRB_USER_NAME\s+'([^ ]*)'/)
+            {
+              $user = $1;
+            }
+
+          if (! defined($scheme) && $buf =~ /SRB_AUTH_SCHEME\s+'([^ ]*)'/)
+            {
+              $scheme = $1;
+            }
+        }
+
+      close($pd);
+    }
+
+  if (! defined($user) || ! defined($scheme))
+    {
+      return(undef);
+    }
+
+  $cmd = sprintf("SgetU -l -scheme %s %s",
+      $scheme, $user);
+
+  if (! open($pd, "$cmd 2>&1 |"))
+    {
+      return(undef);
+    }
+
+  while ($buf = <$pd>)
+    {
+      chomp($buf);
+
+      _debug("\$buf = %s", $buf);
+
+      if ($buf =~ /User Type:\s+([^ ]*)/)
+        {
+          $type = $1;
+        }
+    }
+
+  close($pd);
+
+  return($type);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      srb_date -- returns an SRB formatted date string
+#
+# SYNOPSIS
+#      $str = srb_date();
+#
+#      $str = srb_date({ n_days => $day_spec });
+#
+#      $str = srb_date({ date => $date_spec });
+#
+# DESCRIPTION
+#      The subroutine srb_date returns the current date and time in SRB if no
+#      arguments are specified.  If n_days are specified then the date returned
+#      is n_days from the current time.  Alternatively the date argument can be
+#      specified.  The date formats supported are as follows:
+#
+#      YYYY-MM-DD or YYYY/MM/DD
+#
+#      MM-DD-YYYY or MM/DD/YYYY
+#
+#      The SRB date format is as follows:
+#
+#      YYYY-MM-DD.HH.MM.SS.0000
+#
+# RETURN VALUES
+#      Upon successful completion a date string formatted for SRB is returned.
+#      Otherwise, the undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub srb_date
+{
+  my ($args) = @_;
+  my ($year, $month, $day);
+  my $n_days = 0;
+  my ($curr_time, $hour, $min, $sec);
+  my $date_str;
+  my $status;
+  my $srb_fmt = "%.4d-%.2d-%.2d-%.2d.%.2d.%.2d";
+
+  $curr_time = time();
+
+  $hour = (localtime($curr_time))[2];
+  $min = (localtime($curr_time))[1];
+  $sec = (localtime($curr_time))[0];
+
+  if (! defined($args))
+    {
+      $year = (localtime($curr_time))[5] + 1900;
+      $month = (localtime($curr_time))[4] + 1;
+      $day = (localtime($curr_time))[3];
+    }
+
+  # Check for defined year, month, day
+  if (! exists($args->{date}))
+    {
+      if (exists($args->{year}))
+        {
+          $year = $args->{year};
+        }
+
+      if (exists($args->{month}))
+        {
+          $month = $args->{month};
+        }
+
+      if (exists($args->{day}))
+        {
+          $day = $args->{day};
+        }
+    }
+
+  # Convert days arugment to an integer of days
+  if (exists($args->{n_days}))
+    {
+      $n_days = convert_days($args->{n_days});
+
+      if (! defined($n_days))
+        {
+          return(undef);
+        }
+    }
+
+  # Get the date and add days if necessary
+  if (exists($args->{date}))
+    {
+      my @date_ents = split("[-\/]", $args->{date});
+
+      if (length($date_ents[0]) == 4)
+        {
+          $year = (! exists($args->{year}) ? $date_ents[0] : $args->{year});
+          $month = (! exists($args->{month}) ? $date_ents[1] : $args->{month});
+          $day = (! exists($args->{day}) ? $date_ents[2] : $args->{day});
+        }
+      else
+        {
+          $year = (! exists($args->{year}) ? $date_ents[2] : $args->{year});
+          $month = (! exists($args->{month}) ? $date_ents[0] : $args->{month});
+          $day = (! exists($args->{day}) ? $date_ents[1] : $args->{day});
+        }
+    }
+
+  $status = calc_date($year, $month, $day, $n_days);
+
+  if (! defined($status))
+    {
+      return(undef);
+    }
+
+  $year = $status->{YEAR};
+  $month = $status->{MONTH};
+  $day = $status->{DAY};
+
+  $date_str = sprintf($srb_fmt, $year, $month, $day, $hour, $min, $sec);
+
+  return($date_str);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      is_leap_year -- check is a year is a leap year
+#
+# SYNOPSIS
+#      $status = is_leap_year($year);
+#
+# DESCRIPTION
+#      The subroutine is_leap_year checks if $year is a leap year.
+#
+# RETURN VALUES
+#      If $year is a leap year then 1 is returned.  Otherwise, 0 is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub is_leap_year
+{
+  my $year = shift(@_);
+
+  return($year % 4 == 0 && ($year % 100 != 0 || $year % 400 == 0));
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      days_per_year -- returns the number of days in a given year
+#
+# SYNOPSIS
+#      $status = days_per_year($year);
+#
+# DESCRIPTION
+#      The subroutine days_per_year returns the number of days in $year.
+#
+# RETURN VALUES
+#      Returns the number of days in $year.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub days_per_year
+{
+  my $year = shift(@_);
+
+  if ($year < 1900)
+    {
+      return(undef);
+    }
+
+  return(365 + is_leap_year($year));
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      days_per_month -- returns the number of days in a given month and year
+#
+# SYNOPSIS
+#      $status = days_per_month($year, $month);
+#
+# DESCRIPTION
+#      The subroutine days_per_month returns the number of days in $month and
+#      $year. 
+#
+# RETURN VALUES
+#      Returns the number of days in $month and $year.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub days_per_month
+{
+  my $year = shift(@_);
+  my $month = shift(@_);
+
+  if ($month < 1 || $month > 12)
+    {
+      return(undef);
+    }
+
+  return($month == 2 ?
+      28 + is_leap_year($year) : 30 + ($month + ($month >=8)) % 2);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      convert_days -- converts day[suffix] into a number of days
+#
+# SYNOPSIS
+#      $status = convert_days($day_spec);
+#
+# DESCRIPTION
+#      The subroutine convert_days returns the number of days converted from
+#      $day_spec.  The $day_spec is a number followed by an optional suffix:
+#
+#      d - days
+#      w - week (7 days)
+#      m - month (30.4368541 days)
+#      f - fiscal month (30 days)
+#      y - years (365.24225 days)
+#
+# RETURN VALUES
+#      Upon successful completion the number of days modified by the optional
+#      suffix is returned.  Otherwise if an invalid suffix is provided, the
+#      undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub convert_days
+{
+  my $spec = shift(@_);
+  my ($num, $unit);
+  my $days;
+
+  ($num, $unit) = $spec =~ /(\d+)([a-z]?)/;
+
+  if (length($unit) && $unit !~ /[d|w|m|f|y]/)
+    {
+      return(undef);
+    }
+
+  unit:
+    {
+      ($unit eq "d") && do
+        {
+          $days = $num;
+          last unit;
+        };
+
+      ($unit eq "w") && do
+        {
+          $days = $num * 7;
+          last unit;
+        };
+
+      ($unit eq "m") && do
+        {
+          $days = $num * 30.4368541;
+          last unit;
+        };
+
+      ($unit eq "f") && do
+        {
+          $days = $num * 30;
+          last unit;
+        };
+
+      ($unit eq "y") && do
+        {
+          $days = ceil($num * 365.24225);
+          last unit;
+        };
+
+      do
+        {
+          $days = $num;
+          last unit;
+        }
+    }
+
+  return($days);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#
+# SYNOPSIS
+#
+# DESCRIPTION
+#
+# RETURN VALUES
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub delta_dates
+{
+  my ($args) = shift(@_);
+  my ($y1, $m1, $d1, $H1, $M1, $S1, $e1);
+  my ($y2, $m2, $d2, $H2, $M2, $S2, $e2);
+  my @ents;
+  my $delta_days;
+
+  if (! exists($args->{start_date}))
+    {
+      ($y1, $m1, $d1, $H1, $M1, $S1) = (localtime(time()))[5,4,3,2,1,0];
+    }
+  else
+    {
+      if ($args->{start_date} !~
+          /^([0-9]{2,4})[-\/]([0-9]{2})[-\/]([0-9]{2,4})$/)
+        {
+          _error("invalid start date specified (%s)", $args->{start_date});
+          return(undef);
+        }
+
+      if (length($1) == 4)
+        {
+          $y1 = ($1 - 1900);
+          $m1 = ($2 - 1);
+          $d1 = $3;
+        }
+      else
+        {
+          $y1 = ($3 - 1900);
+          $m1 = ($1 - 1);
+          $d1 = $2;
+        }
+    }
+
+  if (! exists($args->{end_date}))
+    {
+      ($y2, $m2, $d2, $H2, $M2, $S2) = (localtime(time()))[5,4,3,2,1,0];
+    }
+  else           
+    {            
+      if ($args->{end_date} !~        
+          /^([0-9]{2,4})[-\/]([0-9]{2})[-\/]([0-9]{2,4})$/)
+        {        
+          _error("invalid end date specified (%s)", $args->{end_date});
+          return(undef);
+        }        
+                 
+      if (length($1) == 4)
+        {        
+          $y2 = ($1 - 1900);
+          $m2 = ($2 - 1);
+          $d2 = $3;
+        }        
+      else       
+        {        
+          $y2 = ($3 - 1900);
+          $m2 = ($1 - 1);
+          $d2 = $2;
+        }        
+    }
+
+  $e1 = timelocal($S1, $M1, $H1, $d1, $m1, $y1);
+  $e2 = timelocal($S2, $M2, $H2, $d2, $m2, $y2);
+
+  if (! defined($e1) || ! defined($e2))
+    {
+      _error("invalid date specified");
+      return(undef);
+    }
+
+  $delta_days = (($e2 - $e1) / (24 * 60 * 60)) + 1;
+
+  return($delta_days);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      calc_date -- calculates the date n_days from the current date
+#
+# SYNOPSIS
+#      $status = calc_date($year, $month, $day, $n_days);
+#
+# DESCRIPTION
+#      The subroutine calc_date returns the year, month and day calculated from
+#      either the current date plus $n_days specified or the date calculated
+#      from the $year, $month and $day specified.
+#
+# RETURN VALUES
+#      Returns a hash reference with YEAR, MONTH and DAY elements.  If $n_days
+#      are not specified the undefined value is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub calc_date
+{
+  my $year = shift(@_);
+  my $month = shift(@_);
+  my $day = shift(@_);
+  my $n_days = convert_days(shift(@_));
+  my $curr_time;
+  my %res;
+  my $nd;
+  my $yy;
+  my $mm;
+
+  if (! defined($n_days))
+    {
+      return(undef);
+    }
+
+  if (! defined($year) || ! defined($month) || ! defined($day))
+    {
+      $curr_time = time();
+      $year = defined($year) ? $year : ((localtime($curr_time))[5] + 1900);
+      $month = defined($month) ? $month : ((localtime($curr_time))[4] + 1);
+      $day = defined($day) ? $day : (localtime($curr_time))[3];
+    }
+
+  $nd = $n_days;
+
+  if ($nd == 0)
+    {
+      $res{YEAR} = $year;
+      $res{MONTH} = $month;
+      $res{DAY} = $day;
+
+      return(\%res);
+    }
+
+  $nd += $day - 1;
+
+  while ($month > 1)
+    {
+      --$month;
+      $nd += days_per_month($year,$month);
+    }
+
+  for ( ; ; ++$year)
+    {
+      $yy = days_per_year($year);
+
+      if ($yy > $nd)
+        {
+          last;
+        }
+
+      $nd -= $yy;
+    }
+
+  for ( ; ; ++$month)
+    {
+      $mm = days_per_month($year, $month);
+
+      if ($mm > $nd)
+        {
+          last;
+        }
+
+      $nd -= $mm;
+    }
+
+  $day = $nd + 1;
+
+  $res{YEAR} = $year;
+  $res{MONTH} = $month;
+  $res{DAY} = $day;
+
+  return(\%res);
+}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+# NAME
+#      verify_project - verifies a project ID is formatted correctly
+#
+# SYNOPSIS
+#      $status = verify_project($id);
+#
+# DESCRIPTION
+#      The subroutine verify_project checks to make sure that $id is a 13-digit
+#      number.
+#
+# RETURN VALUES
+#      If $id is valid, 1 is returned.  Otherwise, 0 is returned.
+#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+sub verify_project
+{
+  my $project = shift(@_);
+
+  if (length($project) > 13 || $project !~ /[1-9A-Z]{1,13}/)
+    {
+      return(0);
+    }
+
+  return(1);
+}
+
+__END__
+
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+##
+## POD DOCUMENTATION
+##
+## perldoc Sretain
+##
+##::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+=pod
+
+=head1 NAME
+
+B<Sretain> - set SRB retention attributes.
+
+=head1 SYNOPSIS
+
+S<B<Sretain [options] days|date objects|collections>>
+
+=head1 DESCRIPTION
+
+B<Sretain> is the command line interface to set a I<"Retention Period"> on
+Storage Resource Broker (SRB) objects. The B<Sretain> command updates the
+I<"Admin Scheme"> which is a System Schmeme that is automatically applied during
+ingestion of objects into SRB. The B<Sretain> command requires a B<days> or
+B<date> argument for the retention period and B<objects> or
+B<collections> to act upon. The I<"Last Review Time"> is set automatically by
+the B<Sretain> command.
+
+=head1 days|date
+
+The B<days|date> parameter is a required parameter. The
+B<days|date> parameter determines the new I<"Retention Period"> to be
+set on Storage Resource Broker (SRB) objects. The B<days|date>
+parameter can be specified in a variety of formats.
+
+=over 4
+
+=item B<integer[d|w|m|y]>
+
+Specifies I<"Retention Period"> in integer days of duration from the current
+date.  Modifiers are available for days B<d>, weeks B<w>, months B<m> and years
+B<y>.
+
+=item B<yyyy/mm/dd>
+
+Specifies a fixed date for the end of the I<"Retention Period"> in
+year/month/day format.
+
+=item B<yyyy-mm-dd>
+
+Specifies a fixed date for the end of the I<"Retention Period"> in
+year-month-day format. 
+
+=item B<mm/dd/yyyy>
+
+Specifies a fixed date for the end of the I<"Retention Period"> in
+month/day/year format. 
+
+=item B<mm-dd-yyyy>
+
+Specifies a fixed date for the end of the I<"Retention Period"> in
+month-day-year format.
+
+=back
+
+=head1 objects|collections
+
+The B<objects|collections> parameter is a required parameter. More than
+one B<object> and/or B<collection> can be specified. The
+B<objects|collections> parameter specifies the SRB objects and/or
+collections to act upon.
+
+=head1 OPTIONS
+
+The B<Sretain> command allows a number of options to set I<"Admin Scheme">
+attributes besides the I<"Retention Period"> and includes the B<-r> option
+which causes the attributes to be set recursively on objects within the
+collection[s].
+
+The options are as follows:
+
+=over 4
+
+=item B<-r>
+
+Specifies that the operation be applied recursively on objects within the
+collection[s]. The B<-r> option only works when collections are specified.
+
+=item B<-next_review=days|date>
+
+Specify the B<date> or number of B<days> until the next review.
+
+=item B<-archive|-immediate|-noarchive>
+
+Specifies whether the object is archived, archived immediately, or not archived
+(I<"Archive Behavior"> attribute).
+
+=item B<-dr|-nodr>
+
+Specifies whether the object is sent to the DR system (I<"DR Behavior">
+attribute).
+
+=item B<-purge|-nopurge>
+
+Specifies whether the object is released after archive. (I<"Purge Behavior">
+attribute).
+
+=item B<-next_review days|date>
+
+Specifies the next review time in either B<days> or B<date> in the format
+specified earlier.
+
+=item B<-hold>
+
+Specifies that the I<"Admin Hold"> column be set to yes.  B<This is an
+administrator only option.>
+
+=item B<-p project_id>
+
+Specifies the project ID that this object is a member of.
+
+=item B<-help>
+
+Print this help message and exit.
+
+=item B<-version>
+
+Print the program version and exit.
+
+=item B<-verbose>
+
+Print more verbose output during the execution of B<Sretain>.
+
+=back
+
+=head1 ADMIN SCHEME
+
+The admin scheme is a System Schmeme that is automatically applied during
+ingestion of objects into SRB. The admin scheme has the following attributes:
+
+=over 4
+
+=item I<Archive Behavior>
+
+Specifies whether the object is archived, archived immediately, or not archived.
+
+=item I<DR Behavior>
+
+Specifies whether the object is sent to the DR system.
+
+=item I<Purge Behavior>
+
+Specifies whether the object is released after archive.
+
+=item I<Retention Period>
+
+Identifies the number of days the object is retained in the archive.
+
+=item I<Retain-Through>
+
+Identifies the date the object will be retained through.
+
+=item I<Pre-Warning Period>
+
+Identifies the number of days prior to the end of the retention period that the
+user should be warned.
+
+=item I<Last Review Time>
+
+Identifies when the object was last reviewed. Automatically updated by
+B<Sretain>.
+
+=item I<Next Review Time>
+
+Identifies when the archive policy is due to be reviewed by the user.
+
+=item I<Admin Hold>
+
+Identifies whether the object is prevented from expiration and purge (not user
+modifiable).
+
+=item I<HPCMP Project ID>
+
+Identifies the HPCMP project that the object or collection belongs to.
+The value must be uppercase alphanumeric.
+
+=back
+
+=head1 Metadata Attribute Population Algorithm - Step Description
+
+=over 4
+
+=item 1.
+
+If the attribute is a string list then the value must be one of the strings
+specified for the string list.  The system uses values supplied directly by the
+user (does not apply for System Master Schemes).
+
+=item 2.
+
+If the user does not supply a value, i.e. the value is "null", then the system
+uses the user default value associated with the attribute column.
+
+=item 3.
+
+If there is no user default value, the system uses the administrator default
+value associated with the attribute column.
+
+=item 4.
+
+If there is no administrator default value, the system inherits the value from
+the Parent Collection.
+
+=item 5.
+
+If none of the above conditions are met then the system leaves the value as
+"null". (From SRB User guide (2010 Alpha version)
+
+=back
+
+=head1 EXAMPLES
+
+Example 1 Setting retention time to 90 days
+
+=over 2
+
+% S<Sretain 90d MyObj>
+
+=back
+
+This command will set the retention period for the object MyObj in the current
+collection to 90 days from the current date.
+
+Example 2 Setting retention time to 3 months
+
+=over 2
+
+% S<Sretain 3m MyObj>
+
+=back
+
+This command will set the retention period for the object MyObj in the current
+collection to 3 months from the current date.
+
+Example 3 Setting retention time to 90 days for an object in a collection
+
+=over 2
+
+% S<Sretain 90d MyCol/MyObj>
+
+=back
+
+This command will set the retention period for the object MyObj in the
+collection MyCol to 90 days from the current date.
+
+Example 4 Setting retention time to 6 months using regular expressions
+
+=over 2
+
+% S<Sretain 6m 'MyObj*'>
+
+=back
+
+This command will set the retention period for any objects matching 'MyObj*' in
+the current collection to 6 months from the current date.
+
+Example 5 Setting retention time to a specfic date recursively on a collection
+
+=over 2
+
+% S<Sretain -r 05/20/2011 MyCol>
+
+=back
+
+This command will set the retention period for the collection MyCol and all
+objects in the collection recursively to 05/20/2011
+
+=head1 SEE ALSO
+
+B<Sscheme(1)>, B<Sls(1)>, B<Senv(1)>
+
+=head1 RELEASE NOTES
+
+=over 4
+
+=item Version 1.0 - July 23, 2010
+
+=over 4
+
+=item *
+
+Initial release.
+
+=back
+
+=item Version 1.1 - December 17, 2010 - LAM@ARSC
+
+=over 4
+
+=item *
+
+Modified to accept uppercase alphanumberic project and short project option.
+Modified pod examples to match implemented syntax.
+
+=back
+
+=back
+
+=cut

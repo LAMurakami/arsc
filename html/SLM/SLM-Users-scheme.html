@@ -1,0 +1,227 @@
+<html><head>
+
+<title>SLM Users scheme</title>
+
+<!-- $Id: SLM-Users-scheme.html,v 1.2 2018/01/15 08:37:15 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SLM Users scheme
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+								<!-- bodytext -->
+
+<h1> <span id="SLM_Users_scheme"> SLM Users scheme </span></h1>
+<p>The SLM Users scheme is one of the user accessible schemes.  See <a href="SgetS.html" title="SgetS">SgetS</a> for a complete list.
+</p><p>The SLM Users scheme is created when a user sets attribute values for a Data Object using Sscheme.
+</p>
+<ul><li> The SLM Users scheme allows a high character count, arbitrary value designed by the user.
+<ul><li> The value can be data in XML format
+</li></ul>
+</li></ul>
+<h1> <span id="Metadata_Scheme:_Users_-_columns"> Metadata Scheme: Users - columns</span></h1>
+<table border>
+
+<tr>
+<td> Attribute Name
+</td><td> Position
+</td><td> Type
+</td><td> Constraints
+</td><td> Default
+</td><td> Display Size
+</td><td> Column Name
+</td><td> Column Type
+</td></tr>
+<tr>
+<td> ROW_ID
+</td><td> 0
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_VALUE &#124; SRB_COLUMN_NOT_NULL
+</td><td> -1
+</td><td> 12
+</td><td> row_id
+</td><td> integer
+</td></tr>
+<tr>
+<td> XML
+</td><td> 1
+</td><td> text
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 2147483647
+</td><td> xml
+</td><td> clob
+</td></tr>
+<tr>
+<td> Source
+</td><td> 2
+</td><td> string[256]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 30
+</td><td> source
+</td><td> varchar(255)
+</td></tr>
+<tr>
+<td> Relation
+</td><td> 3
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 10
+</td><td> relation
+</td><td> integer
+</td></tr></table>
+<h1> <span id="Values_in_every_column_of_the_SLM_Users_scheme"> Values in every column of the SLM Users scheme </span></h1>
+<p>The following was omitted from the above table because the values are the same for every row:
+</p>
+<pre>Metadata Scheme: Users
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_users
+...
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_users
+...
+</pre>
+<h1> <span id="SLM_Users_scheme_-_native_output"> SLM Users scheme - native output </span></h1>
+<pre>SgetS -x Users | sed 's|^| |'
+--------------------------- RESULTS ------------------------------
+Metadata Scheme ID: 100020
+Metadata Scheme: Users
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_users
+Metadata Attribute ID: 100021
+Metadata Attribute: ROW_ID
+Metadata Attribute Position: 0
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_VALUE | SRB_COLUMN_NOT_NULL
+Metadata Attribute Default: -1
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_users
+Metadata Attribute Column Name: row_id
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100020
+Metadata Scheme: Users
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_users
+Metadata Attribute ID: 100022
+Metadata Attribute: XML
+Metadata Attribute Position: 1
+Metadata Attribute Type: text
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 2147483647
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_users
+Metadata Attribute Column Name: xml
+Metadata Attribute Column Type: clob
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100020
+Metadata Scheme: Users
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_users
+Metadata Attribute ID: 100023
+Metadata Attribute: Source
+Metadata Attribute Position: 2
+Metadata Attribute Type: string[256]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 30
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_users
+Metadata Attribute Column Name: source
+Metadata Attribute Column Type: varchar(255)
+
+-----------------------------------------------------------------
+Metadata Scheme ID: 100020
+Metadata Scheme: Users
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_users
+Metadata Attribute ID: 100024
+Metadata Attribute: Relation
+Metadata Attribute Position: 3
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 10
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_users
+Metadata Attribute Column Name: relation
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+
+[12:22:30 Thu Jan 24] murakami@akustdsl-0001 ~
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 1/24/2013 - LAM - Updated for change of Users.XML DsiplaySize from 1024 to  2147483647 (2GB -1).  This change was made on the HTL SLM instance but has not yet been made on other instances.  This change is included in the rebuild script of 1/24/2013 or later.
+</li><li> 1/27/2012 - LAM - First posted to NGTS portal.
+</li><li> 8/28/2011 - LAM - Created this page.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 30/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:525-0!1!0!!en!2 and timestamp 20130813224444 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_Users_scheme">
+https://intrawiki.arsc.edu/index.php/SLM_Users_scheme</a>"
+<br> - Tuesday, August 13, 2013 @ 4:05:14 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SLM_Users_scheme">1 SLM Users scheme</a></li>
+<li><a href="#Metadata_Scheme:_Users_-_columns">2 Metadata Scheme: Users - columns</a></li>
+<li><a href="#Values_in_every_column_of_the_SLM_Users_scheme">3 Values in every column of the SLM Users scheme</a></li>
+<li><a href="#SLM_Users_scheme_-_native_output">4 SLM Users scheme - native output</a></li>
+<li><a href="#Revision_Log">5 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

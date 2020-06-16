@@ -1,0 +1,327 @@
+<html><head>
+
+<title>SLM HSM_Copy scheme</title>
+
+<!-- $Id: SLM-HSM-Copy-scheme.html,v 1.2 2018/01/15 08:40:08 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SLM HSM_Copy scheme
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+								<!-- bodytext -->
+
+<h1> <span id="SLM_HSM_Copy_scheme"> SLM HSM_Copy scheme </span></h1>
+<p>The SLM HSM_Copy scheme is one of the user accessible schemes.  See <a href="SgetS.html" title="SgetS">SgetS</a> for a complete list.
+</p><p>The SLM HSM_Copy scheme is created &amp; maintained automatically by the Ssync daemon.
+</p><p>The SLM HSM_Copy scheme has attributes related to the Tape and DR copies including Copy_Number and Media_Type.
+</p>
+<h1> <span id="Metadata_Scheme:_HSM_Copy_-_columns"> Metadata Scheme: HSM_Copy - columns</span></h1>
+<table border>
+
+<tr>
+<td> Attribute Name
+</td><td> Position
+</td><td> Type
+</td><td> Constraints
+</td><td> Default
+</td><td> Display Size
+</td><td> Column Name
+</td><td> Column Type
+</td></tr>
+<tr>
+<td> ROW_ID
+</td><td> 0
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_VALUE &#124; SRB_COLUMN_NOT_NULL
+</td><td> -1
+</td><td> 12
+</td><td> row_id
+</td><td> integer
+</td></tr>
+<tr>
+<td> Copy_Number
+</td><td> 1
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 1
+</td><td> copy_number
+</td><td> integer
+</td></tr>
+<tr>
+<td> Creation_Timestamp
+</td><td> 2
+</td><td> timestamp
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 30
+</td><td> creation_timestamp
+</td><td> timestamp (4) with local time zone
+</td></tr>
+<tr>
+<td> VSN_Count
+</td><td> 3
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 1
+</td><td> vsn_count
+</td><td> integer
+</td></tr>
+<tr>
+<td> VSN
+</td><td> 4
+</td><td> string[32]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 8
+</td><td> vsn
+</td><td> varchar(32)
+</td></tr>
+<tr>
+<td> Media_Type
+</td><td> 5
+</td><td> string[8]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 4
+</td><td> media_type
+</td><td> varchar(8)
+</td></tr>
+<tr>
+<td> Position
+</td><td> 6
+</td><td> long
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 10
+</td><td> position
+</td><td> number
+</td></tr>
+<tr>
+<td> File_Offset
+</td><td> 7
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 5
+</td><td> file_offset
+</td><td> integer
+</td></tr></table>
+<h1> <span id="Values_in_every_column_of_the_SLM_HSM_Copy_scheme"> Values in every column of the SLM HSM_Copy scheme </span></h1>
+<p>The following was omitted from the above table because the values are the same for every row:
+</p>
+<pre>Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+...
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+...
+</pre>
+<h1> <span id="SLM_HSM_Copy_scheme_-_native_output"> SLM HSM_Copy scheme - native output </span></h1>
+<pre>SgetS -x HSM_Copy
+--------------------------- RESULTS ------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: ROW_ID
+Metadata Attribute Position: 0
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_VALUE | SRB_COLUMN_NOT_NULL
+Metadata Attribute Default: -1
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: row_id
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: Copy_Number
+Metadata Attribute Position: 1
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 1
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: copy_number
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: Creation_Timestamp
+Metadata Attribute Position: 2
+Metadata Attribute Type: timestamp
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 30
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: creation_timestamp
+Metadata Attribute Column Type: timestamp (4) with local time zone
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: VSN_Count
+Metadata Attribute Position: 3
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 1
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: vsn_count
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: VSN
+Metadata Attribute Position: 4
+Metadata Attribute Type: string[32]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 8
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: vsn
+Metadata Attribute Column Type: varchar(32)
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: Media_Type
+Metadata Attribute Position: 5
+Metadata Attribute Type: string[8]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 4
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: media_type
+Metadata Attribute Column Type: varchar(8)
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: Position
+Metadata Attribute Position: 6
+Metadata Attribute Type: long
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 10
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: position
+Metadata Attribute Column Type: number
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM_Copy
+Allow Multiple Rows: 1
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm_copy
+Metadata Attribute: File_Offset
+Metadata Attribute Position: 7
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 5
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm_copy
+Metadata Attribute Column Name: file_offset
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+
+[13:51:22 Wed Sep 28] murakami@akustdsl-0001 ~
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 1/27/2012 - LAM - First posted to NGTS portal.
+</li><li> 8/28/2011 - LAM - Created this page.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 30/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:523-0!1!0!!en!2 and timestamp 20130813223839 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_HSM_Copy_scheme">
+https://intrawiki.arsc.edu/index.php/SLM_HSM_Copy_scheme</a>"
+<br> - Tuesday, August 13, 2013 @ 2:55:26 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SLM_HSM_Copy_scheme">1 SLM HSM_Copy scheme</a></li>
+<li><a href="#Metadata_Scheme:_HSM_Copy_-_columns">2 Metadata Scheme: HSM_Copy - columns</a></li>
+<li><a href="#Values_in_every_column_of_the_SLM_HSM_Copy_scheme">3 Values in every column of the SLM HSM_Copy scheme</a></li>
+<li><a href="#SLM_HSM_Copy_scheme_-_native_output">4 SLM HSM_Copy scheme - native output</a></li>
+<li><a href="#Revision_Log">5 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

@@ -1,0 +1,43 @@
+<title>Xming - X Server for Microsoft Windows</title>
+<link rel="stylesheet" type="text/css" href="../lam.css" />
+
+<center><h1>Xming - X Server for Microsoft Windows</h1></center>
+
+This documentation was made using the Xming 6.9.0.31 version that was released to the public domain 2 November 2007.
+<p>
+A tiny 2.2 MB installation file was downloaded from: <a href="http://sourceforge.net/projects/xming/">http://sourceforge.net/projects/xming/</a>.  Xming is available under a number of licenses including the BSD License, GNU Library or Lesser General Public License (LGPL),
+MIT License, Public Domain, and the zlib/libpng License.  Newer versions are available from <a href="http://www.straightrunning.com/XmingNotes/">http://www.straightrunning.com/XmingNotes/</a> for a limited time after making a donation.  Wikipedia has <a href="http://en.wikipedia.org/wiki/Xming">an article on Xming</a>.
+
+<p>Xming is reported to run on Windows 7, Windows Vista, Windows XP and Microsoft Windows Server 2003.  This documentation was created by installing Xming on a Windows XP machine.
+
+<p>I found Xming incredibly easy to install on a Windows XP machine from an account with administrative rights.  A set of <a href="#Install">screen images</a> was created during the install but almost no options were changed from the defaults.  The exceptions were to select that an SSH client not be installed along with Xming server and to have a desktop icon be created.  No SSH client was installed because the latest version of PuTTY was already installed and Xming works with PuTTY.  The entire installation including capturing the screen shots took only a few minutes.
+<p>
+<table><tr><td>
+<img src="09-Task-Bar-Icon.jpg" alt="taskbar icon"></td><td>Starting the Xming server doesn't seem to do much but will leave a new <img src="13-icon.jpg" alt="X icon"> icon in the taskbar.</td></tr></table>
+<table><tr><td>To enable X11 forwarding as the default in the PuTTY configuration for a saved session perform the following:
+<ol><li>Select the session from the saved session in the "Session" panel and click "Load".
+<p><li>Use the "Connection - SSH - X11" panel, and <b>check the �Enable X11 forwarding� box</b>.
+<p><li>Go back to the "Session" panel and click "Save".
+</ol>
+For most that is all there is to it.
+If your X display is somewhere unusual, you will need to enter its location in the �X display location� box of the "Connection - SSH - X11" panel; if this is left blank, PuTTY will try to find a sensible default in the environment, or use the primary local display (:0) if that fails.<p>I found entering an X display location of PuTTY was not necessary for Xming.
+</td><td><img src="10-PuTTY-Configuration.jpg" alt="PuTTY Configuration"></td></tr></table>
+<table><tr><td><img src="11-xlogo.jpg" alt="xlogo application"></td><td valign="top"><center><h2>Testing</h2></center><b>To test</b> that everything is working, open a new session with X11 forwarding enabled. and <b>type xlogo</b>.  You could also use xeyes, xclock or any X application installed on the machine you have connected to.  The xlogo application is almost always installed and in the default path of any server that allows you to run X window applications.<p>It is always best to insure everything is working with xlogo or another lightweight X windows application before trying to configure and run a more complex X windows application.
+</td></tr></table>
+<table><tr><td valign="top"><center><h2>Troubleshooting</h2></center>If you start an X application on the target machine but haven't started the Xming X server on the local PC you will get a "Can't open display" error.<p>The Xming server doesn't need to be started before you open the PuTTY session.<p>If you do get the "Can't open display" error and find that the Xming server is not running, start the server and try again.<p>The "Can't open display" error without a display name may indicate that X11 forwarding is not enabled.
+</td><td><img src="12-xerror.jpg" alt="display error"></td></tr></table>
+
+<center><a name="Install"><h2>Installing Xming - X Server for Microsoft Windows</h2></a>
+
+<img src="01-Install.jpg" alt="Installing Xming 1"><br>
+<img src="02-Install.jpg" alt="Installing Xming 2"><br>
+<img src="03-Install-No-PuTTY.jpg" alt="Installing Xming - No SSH client"><br>
+<img src="04-Install.jpg" alt="Installing Xming 4"><br>
+<img src="05-Install.jpg" alt="Installing Xming 5"><br>
+<img src="06-Install.jpg" alt="Installing Xming 6"><br>
+<img src="07-Install.jpg" alt="Installing Xming 7"><br>
+<img src="08-Install-Launch.jpg" alt="Installing Xming complete"></center>
+
+<p align="right">This documentation page was created Tuesday, March 30, 2010<br>by <a href="http://people.arsc.edu/~murakami/">Lawrence A. Murakami</a> of Fairbanks, Alaska.
+<br><a href="http://www.arsc.edu/misc/Disclaimer.html">
+ARSC Personal WebPage Disclaimer</a>.</p>

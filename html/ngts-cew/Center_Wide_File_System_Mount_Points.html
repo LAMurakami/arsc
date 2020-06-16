@@ -1,0 +1,123 @@
+<html><head>
+<title>Center Wide File System Mount Points</title>
+<!-- $Id: Center_Wide_File_System_Mount_Points.html,v 1.5 2011/07/01 00:58:59 murakami Exp murakami $ -->
+
+
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.blue { color: blue; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1>Center Wide File System Mount Points<br><a href="#Revision_log">6/30/2011</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+
+<ul>
+<p><li>All three of the mount points detailed below are available to all nodes on the
+ Utility Server (US)<br>(US login nodes and US compute nodes).
+<p><li>If a DSRC desires an alternate path to $HOME and $WORKDIR this could be provided
+ with a symbolic link.
+<p><li>Only the $CENTER mount point will be available to HPC login nodes.
+<p><li>None of the mount points will be available to the HPC compute nodes.
+<p><li>HPCs will have a transfer queue where batch jobs will have access to
+ the $CENTER mount point and that HPCs $WORKDIR.
+<p><li>The sizing is based on the Petabyte system that will initially be deployed
+ to four of the six DSRCs.  The Maui DRSC, ORS and TDS systems will be smaller.
+</ul>
+
+<ol type="1">
+<li><dl><dt>/u/home/$USER; = $HOME
+<br>10 TB in size
+<br>SRB Not active
+<br>Quotas in place - 10 GB per user
+<dd><p>This mount point is for the home directories and application directories
+for the Utility Server. $HOME will not be defined as a resource in the
+ Storage Resource Broker (SRB) and files will not be automatically registered in SRB.
+This area will also be where the applications for the Utility Server will
+be installed.
+<p>Applications may have Environment variables such as:
+<br>/u/home/CSI - $CSI_HOME or /u/home/APP - $APP
+<p>The quotas would be in place like normal for home directories. CEW suggests starting
+the quota using the following formula:
+   (0.75 * (size of file system)/((Number of applications * 3) + (Number of
+Users))
+<p>The reason for multiplying the number of application by three is because
+ BCT policy requires three versions of each software application be kept
+ active.
+</dl>
+<li><dl><dt>/u/work/$USER; = $WORKDIR
+<br>200 TB in size
+<br>SRB Not Active
+<br>Quotas in place - 100 TB per user
+<br>Standard HPC Scrubbing in place.
+<dd><p>This mount point is for the local workspace for the Utility Server.
+$WORKDIR will not be defined as a resource in the Storage Resource Broker (SRB)
+ and files will not be automatically registered in SRB. This
+should not be under SRB because we do not want the additional load of
+placing files into SRB that the users have no intention of keeping. The
+applications can and do create temporary files while the applications are
+running and it would be difficult to configure a SRB
+scanning agent to avoid these files. The quota in place on this
+file system would only protect the file system from runaway processes, CEW
+suggests that the quota be set at 100 TB per user.
+</dl>
+<li><dl><dt>/p/cwfs/$USER; = $CENTER
+<br>790+ TB in size
+<br>SRB Active (when it can be)
+<br>Quotas in place - 200 TB per user
+<br>SRB removal of files over thirty days.
+<dd><p>This file system is the center wide file system of the
+center. $CENTER will be defined as a resource in the Storage Resource Broker
+ (SRB) and files will be automatically registered in SRB.
+The default retention period is 30 days and files can be removed after
+that retention period has expired. The quota in place on this file system
+would only protect the file system from runaway processes and or copies.
+CEW suggests that the quota be set at 200 TB per user.
+</dl>
+
+<h3><a name="Revision_log">Revision log</a></h3>
+<dl>
+<dt>10/25/2010 - LAM - Initial version posted to NGTS portal
+<dd><ul><li>This is mostly from Don Cable's email of 9/3/2010
+ and Lawrence A. Murakami's email of 8/30/2010.  There is some input
+ from some other emails in that date range.
+<li>This topic was introduced to the Customer Experience Workgroup (CEW) prior to the
+ 8/16/2010 Call where it was initially discussed.
+<li>This was discussed in detail in the 9/13/2010 CEW Call.
+<li>The initial version of this document as posted was reviewed in the 10/25/2010
+ CEW Call.
+</ul>
+<dt>10/26/2010 - LAM - Revised based on emails to CEW list and my noticing an error.
+<dd><ul><li>Added leading bullets stating where mount points will be available.
+<li>Added user to Environment Variables.
+</ul>
+<dt>10/27/2010 - LAM - Revised based on emails to CEW list and a call with Reid Bingham.
+<dd><ul><li>Added date in heading which will be in NGTS description so versions can be identified.
+<li>Added this revision log section.
+<li>Added bullet on sizing to the initial section.
+<li>Added bullet on symbolic link to the initial section.
+<li>Capitalized CSI and APPS in the Applications Environment variables statement based in input from NAVO.
+</ul>
+<dt>6/22/2011 - LAM - Revised based on emails, US admins, CWFS admins and CEW calls of this month.
+<dd><ul><li>All Panasas mount points will now be in a /u subdirectory instead of root
+<li>Removed &lt;center&gt; from cwfs path.
+<li>Changed ARSC to ORS.
+<li>Reworded many sentences to be from CEW point of view (removed I which was Don)
+</ul>
+<dt>6/30/2011 - LAM - Revised based on emails and US admins and CWFS admins and CEW calls of this week
+<dd><ul><li>CWFS Panasas mount points ($CENTER) will now be in a /p subdirectory instead of a /u directory.
+<li>ERDC mounts a foreign file system at /u on HPCs.
+<li>$HOME and $WORKDIR mountpoints remain the same.  These mount points are only on Utility servers.
+</ul>
+</dl>
+</body>
+</html>

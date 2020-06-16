@@ -1,0 +1,119 @@
+.\" $Id: Sdata.1,v 1.3 2010/08/02 22:42:43 murakami Exp murakami $
+.\"
+.\" 20100528 - LAM Created initial man page from James Ianni's email
+.\" 20100802 - LAM Added some examples
+
+.TH Sdata 1 "August 2, 2010 " ""
+
+.SH NAME
+.B
+Sdata
+\- Set/modify/delete/show metadata on objects within a collection
+
+.SH SYNOPSIS
+.B
+Sdata {-R} [-o|--object] object_name {[-p|--project]PROJECT} {-c <collection>}
+.B
+{keyword{={value}} {;keyword{={value}}  ...} {OPTIONS}
+
+.SH DESCRIPTION
+.B
+Sdata
+allows one to display, set, change or delete keyword-value pairs
+or the project in the Storage Resource Broker (SRB) metadata.
+
+.SH OPTIONS
+.TP
+.B
+-c, --collection
+set the collection to operate
+.TP
+.B
+-f, --force
+ignore nonexistent files, never prompt
+.TP
+.B
+-h,--help 
+display this help and exit
+.TP
+.B
+-i, --interactive
+prompt before setting metadata
+.TP
+.B
+-o, --object
+SRB object or objects
+.TP
+.B
+-p, --project
+set the project code for object
+.TP
+.B
+-R, --recursive
+operate on SRB object metadata contents recursively
+.TP
+.B
+-v, --verbose
+explain what is being done
+.TP
+.B
+--version
+output version information and exit
+.TP
+.B
+-x, --xml
+
+.SH keyword{={value}}
+For each object_name, the {keyword{={value}}|..} will perform actions:
+.TP
+.B
+"keyword" is NOT provided,
+all metadata associated with object_name is displayed to standard output
+.TP
+.B
+"keyword" is provided,
+metadata associated with keyword is displayed to standard output
+.TP
+.B
+"keyword=" is provided,
+metadata associated with keyword is DELETED
+.TP
+.B
+"keyword=value" is provided,
+metadata associated with "keyword" is inserted/changed to "value"
+.PP
+Multiple {keyword{={value}} values are delimited by a semi-colon, ";".
+.PP
+For the Title, Creator, Subject, Description, Publisher, Contributor, Creation Date, Type, Document ID, and Rights names
+metadata values will be stored in the "Dublin Core" scheme.  The values for all other names will be
+stored in the "Name Value" scheme.  At the current time the "Name Value" scheme is limited to 20
+name value pairs.
+.SH EXAMPLES
+.TP
+.B
+Sdata -o MyObj "Creator=John Doe"
+This command will set the Creator attribute for the object MyObj in the current collection to "John Doe".
+.TP
+.B
+Sdata -o MyObj
+This command will display all metadata to standard output for the object MyObj in the current collection.
+.TP
+.B
+Sdata -o MyObj "Creator="
+This command will DELETE the Creator attribute value for the object MyObj in the current collection to "John Doe".
+.TP
+.B
+Sdata -o MyObj "Creator=John Doe;Description=A model of some type;Type=Input"
+This command will set the Creator attribute to "John Doe", the Description attribute to
+"A model of some type", and the Type attribute to "Input"
+for the object MyObj in the current collection.
+.TP
+.B
+Sdata -R -c user/ModelA/Input "Description=A model of some type;Type=Input"
+This command will set the Description attribute to "A model of some type",
+and the Type attribute to "Input" for all objects recursively in the user/ModelA/Input.
+
+.SH MORE
+??? Needed ????
+.P
+Sdata also does something else?

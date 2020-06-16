@@ -1,0 +1,323 @@
+<title>SLM HSM scheme</title>
+
+<!-- $Id: SLM-HSM-scheme.html,v 1.2 2018/01/15 08:38:55 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+SLM HSM scheme
+
+</a></h1>
+</center>
+<br class="clearit"><hr>
+								<!-- bodytext -->
+
+<h1> <span id="SLM_HSM_scheme"> SLM HSM scheme </span></h1>
+<p>The SLM HSM scheme is one of the user accessible schemes.  See <a href="SgetS.html" title="SgetS">SgetS</a> for a complete list.
+</p>
+<h1> <span id="Metadata_Scheme:_HSM_-_columns"> Metadata Scheme: HSM - columns</span></h1>
+<table border>
+
+<tr>
+<td> Attribute Name
+</td><td> Position
+</td><td> Type
+</td><td> Constraints
+</td><td> Default
+</td><td> Display Size
+</td><td> Column Name
+</td><td> Column Type
+</td></tr>
+<tr>
+<td> ROW_ID
+</td><td> 0
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_VALUE &#124; SRB_COLUMN_NOT_NULL
+</td><td> -1
+</td><td> 12
+</td><td> row_id
+</td><td> integer
+</td></tr>
+<tr>
+<td> Inode
+</td><td> 1
+</td><td> long
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 15
+</td><td> inode
+</td><td> number
+</td></tr>
+<tr>
+<td> Gen
+</td><td> 2
+</td><td> long
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 15
+</td><td> gen
+</td><td> number
+</td></tr>
+<tr>
+<td> Residence_Timestamp
+</td><td> 3
+</td><td> timestamp
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 30
+</td><td> residence_timestamp
+</td><td> timestamp (4) with local time zone
+</td></tr>
+<tr>
+<td> Attribute_Timestamp
+</td><td> 4
+</td><td> timestamp
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 30
+</td><td> attribute_timestamp
+</td><td> timestamp (4) with local time zone
+</td></tr>
+<tr>
+<td> Checksum
+</td><td> 5
+</td><td> string[64]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 40
+</td><td> checksum
+</td><td> varchar(64)
+</td></tr>
+<tr>
+<td> Checksum_Algorithm
+</td><td> 6
+</td><td> string[8]
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 1
+</td><td> checksum_algorithm
+</td><td> varchar(8)
+</td></tr>
+<tr>
+<td> HSM_Project_ID
+</td><td> 7
+</td><td> integer
+</td><td> SRB_COLUMN_DEFAULT_TO_NULL &#124; SRB_COLUMN_NULLABLE
+</td><td>
+</td><td> 10
+</td><td> hsm_project_id
+</td><td> integer
+</td></tr></table>
+<h1> <span id="Values_in_every_column_of_the_SLM_HSM_scheme"> Values in every column of the SLM HSM scheme </span></h1>
+<p>The following was omitted from the above table because the values are the same for every row:
+</p>
+<pre>Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+...
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+...
+</pre>
+<h1> <span id="SLM_HSM_scheme_-_native_output"> SLM HSM scheme - native output </span></h1>
+<pre>$ SgetS -x HSM
+--------------------------- RESULTS ------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: ROW_ID
+Metadata Attribute Position: 0
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_VALUE | SRB_COLUMN_NOT_NULL
+Metadata Attribute Default: -1
+Metadata Attribute Display Size: 12
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: row_id
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: Inode
+Metadata Attribute Position: 1
+Metadata Attribute Type: long
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 15
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: inode
+Metadata Attribute Column Type: number
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: Gen
+Metadata Attribute Position: 2
+Metadata Attribute Type: long
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 15
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: gen
+Metadata Attribute Column Type: number
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: Residence_Timestamp
+Metadata Attribute Position: 3
+Metadata Attribute Type: timestamp
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 30
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: residence_timestamp
+Metadata Attribute Column Type: timestamp (4) with local time zone
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: Attribute_Timestamp
+Metadata Attribute Position: 4
+Metadata Attribute Type: timestamp
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 30
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: attribute_timestamp
+Metadata Attribute Column Type: timestamp (4) with local time zone
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: Checksum
+Metadata Attribute Position: 5
+Metadata Attribute Type: string[64]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 40
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: checksum
+Metadata Attribute Column Type: varchar(64)
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: Checksum_Algorithm
+Metadata Attribute Position: 6
+Metadata Attribute Type: string[8]
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 1
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: checksum_algorithm
+Metadata Attribute Column Type: varchar(8)
+
+-----------------------------------------------------------------
+Metadata Scheme: HSM
+Allow Multiple Rows: 0
+Is System Scheme: 0
+Metadata Scheme Type: master
+Metadata Scheme Status: SRB_OBJECT_ENABLED
+Metadata Scheme Table: SRB_hsm
+Metadata Attribute: HSM_Project_ID
+Metadata Attribute Position: 7
+Metadata Attribute Type: integer
+Metadata Attribute Constraints: SRB_COLUMN_DEFAULT_TO_NULL | SRB_COLUMN_NULLABLE
+Metadata Attribute Default: 
+Metadata Attribute Display Size: 10
+Metadata Attribute Status: SRB_OBJECT_ENABLED
+Metadata Attribute Table: SRB_hsm
+Metadata Attribute Column Name: hsm_project_id
+Metadata Attribute Column Type: integer
+
+-----------------------------------------------------------------
+
+[13:34:54 Wed Sep 28] murakami@akustdsl-0001 ~
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 1/27/2012 - LAM - First posted to NGTS portal.
+</li><li> 8/28/2011 - LAM - Created this page.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 30/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:522-0!1!0!!en!2 and timestamp 20130813214342 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/SLM_HSM_scheme">
+https://intrawiki.arsc.edu/index.php/SLM_HSM_scheme</a>"
+<br> - Tuesday, August 13, 2013 @ 2:30:33 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SLM_HSM_scheme">1 SLM HSM scheme</a></li>
+<li><a href="#Metadata_Scheme:_HSM_-_columns">2 Metadata Scheme: HSM - columns</a></li>
+<li><a href="#Values_in_every_column_of_the_SLM_HSM_scheme">3 Values in every column of the SLM HSM scheme</a></li>
+<li><a href="#SLM_HSM_scheme_-_native_output">4 SLM HSM scheme - native output</a></li>
+<li><a href="#Revision_Log">5 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

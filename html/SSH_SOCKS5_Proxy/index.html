@@ -1,0 +1,128 @@
+<html><head>
+<title>SSH SOCKS5 Proxy</title>
+<!-- $Id: index.html,v 1.1 2019/07/09 21:19:27 ubuntu Exp ubuntu $ -->
+
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+dt { color: #a02712}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+</head><body>
+
+<!-- Begin ARSC Intranet Head section -->
+<a name="Top" href="/About">
+<img src="../UAF_logo_93x83.gif"
+alt="UAF Logo" border="0" width="93" height="83" style="float: right;"/></a>
+<a href="/">
+<img src="../arsc_acronym_4color.gif"
+alt="ARSC Logo" border="0" width="78" height="50" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+SSH SOCKS5 Proxy<br><a href="#toc">12/17/2012</a>
+
+</h1>
+</center>
+<!-- End ARSC Intranet Head section -->
+								<!-- bodytext -->
+
+<h1> <span id="SSH_SOCKS5_Proxy"> SSH SOCKS5 Proxy </span></h1>
+
+<h2> <span id="Procedure"> Procedure </span></h2>
+<h3> <span id="Linux_SSH_SOCKS5_Proxy"> Linux SSH SOCKS5 Proxy </span></h3>
+<dl><dd>OpenSSH supports dynamic port forwarding (SOCKS tunnels specified via a subset of the SOCKS protocol) through a remote SSH server that allows the user to create a local SOCKS proxy.
+</dd></dl>
+<dl><dd><pre>ssh -f -C2qTnN -D 1080 &lt;username&gt;@&lt;remote SSH server&gt;</pre>
+</dd></dl>
+<dl><dd>The Linux procedure also works on OS X.
+</dd></dl>
+<h4> <span id="The_options_used_in_the_SSH_command"> The options used in the SSH command </span></h4>
+<dl><dd><dl><dt>-f</dt><dd>Requests ssh to go to background just before command execution.  A password dialog will occur before ssh goes to the background.
+</dd><dt>-C</dt><dd>compression
+</dd><dt>-2</dt><dd>protocol version 2 only.
+</dd><dt>-q</dt><dd>Quiet mode
+</dd><dt>-T</dt><dd>Disable pseudo-tty allocation.
+</dd><dt>-n</dt><dd>prevents reading from stdin. This must be used when ssh is run in the background.
+</dd><dt>-N</dt><dd>Do not execute a remote command. Useful for just forwarding ports (protocol version 2 only).
+</dd><dt>-D</dt><dd>[bind_address&nbsp;: ] port - local "dynamic" application-level port forwarding
+</dd></dl>
+</dd></dl>
+<h4> <span id="Ending_the_SOCKS5_proxy"> Ending the SOCKS5 proxy </span></h4>
+<dl><dd> Find the PID of the background job supporting the proxy with:
+</dd><dd><pre>ps -ef | grep 'ssh -f' | grep -v grep</pre>
+</dd><dd> End the job with:
+</dd><dd><pre>kill -9 &lt;PID&gt;</pre>
+</dd></dl>
+<h3> <span id="Firefox_proxy_configuration"> Firefox proxy configuration </span></h3>
+<dl><dd>In Firefox: Edit -&gt; Preferences -&gt; <a href="Firefox-Preferences-1.jpeg" rel="nofollow">Advanced -&gt; Network -&gt; Settings</a> -&gt; <a href="Firefox-Preferences-2.jpeg" class="external text" rel="nofollow">Manual proxy configuration</a>
+</dd><dd>SOCKS Proxy 127.0.0.1 Port 1080
+</dd><dd>Check the box for "SOCKS v5"
+</dd></dl>
+<dl><dd>In Firefox: about:config <a href="Firefox-Preferences-3.jpeg" rel="nofollow">network.proxy.socks_remote_dns true</a>
+</dd></dl>
+<dl><dd>The proxies configuration in Firefox can be toggled between "No Proxy" and "Manual proxy configuration" without affecting the proxy configuration details.
+</dd></dl>
+<h3> <span id="Windows_SSH_SOCKS5_Proxy"> Windows SSH SOCKS5 Proxy </span></h3>
+<dl><dd>PuTTY is a Win32 SSH client that also supports local creation of SOCKS (dynamic) tunnels through remote SSH servers.
+</dd></dl>
+<dl><dd><i>PuTTY Win32 SSH could be used as the client on a Windows machine with a similar Firefox configuration.</i>
+</dd></dl>
+<h2> <span id="More_Information"> More Information </span></h2>
+<h3> <span id="Definitions"> Definitions </span></h3>
+<dl><dt>SOCKS</dt><dd> SOCKet Secure (<a href="http://en.wikipedia.org/wiki/SOCKS" rel="nofollow">SOCKS</a>) is an Internet protocol that routes network packets between a client and server through a proxy server. SOCKS5 additionally provides authentication so only authorized users may access a server.
+</dd><dt>OpenSSH</dt><dd> OpenBSD Secure Shell is a set of computer programs providing encrypted communication sessions over a computer network using the SSH protocol.
+</dd><dt>SSH</dt><dd> Secure Shell (SSH) is a cryptographic network protocol for secure data communication, remote shell services or command execution and other secure network services between two networked computers that connects, via a secure channel over an insecure network, a server and a client (running SSH server and SSH client programs, respectively). The protocol specification distinguishes two major versions that are referred to as SSH-1 and SSH-2. The encryption used by SSH is intended to provide confidentiality and integrity of data over an unsecured network, such as the Internet.
+</dd><dt>Intranet</dt><dd> A computer network that uses Internet Protocol technology to share information, operational systems, or computing services within an organization.
+</dd><dt>Internet</dt><dd> A global network of networks that consists of millions of private, public, academic, business, and government networks, that are linked by a broad array of electronic, wireless and optical networking technologies using the standard Internet protocol suite.
+</dd></dl>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 96/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1188-0!1!0!!en!2 and timestamp 20121217185508 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="/About">
+https://intrawiki.arsc.edu/index.php/SSH_SOCKS5_Proxy</a>"
+<br> - Monday, December 17, 2012 @ 1:36:47 PM (Alaska Time)</div>
+<ul>
+<li><a href="#SSH_SOCKS5_Proxy">1 SSH SOCKS5 Proxy</a>
+<ul>
+
+<li><a href="#Procedure">1.4 Procedure</a>
+<ul>
+<li><a href="#Linux_SSH_SOCKS5_Proxy">1.4.1 Linux SSH SOCKS5 Proxy</a>
+<ul>
+<li><a href="#The_options_used_in_the_SSH_command">1.4.1.1 The options used in the SSH command</a></li>
+<li><a href="#Ending_the_SOCKS5_proxy">1.4.1.2 Ending the SOCKS5 proxy</a></li>
+</ul>
+</li>
+<li><a href="#Firefox_proxy_configuration">1.4.2 Firefox proxy configuration</a></li>
+<li><a href="#Windows_SSH_SOCKS5_Proxy">1.4.3 Windows SSH SOCKS5 Proxy</a></li>
+</ul>
+</li>
+<li><a href="#More_Information">1.5 More Information</a>
+<ul>
+<li><a href="#Definitions">1.5.1 Definitions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+</body></html>

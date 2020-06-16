@@ -1,0 +1,595 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>README</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+/*
+ * This document has been created with Marked.app <http://markedapp.com>.
+ * Copyright 2011 Brett Terpstra
+ * ---------------------------------------------------------------------------
+ * Please leave this notice in place, along with any additional credits below.
+ *
+ * Byword.css theme is based on Byword.app <http://bywordapp.com>
+ * Authors: @brunodecarvalho, @jpedroso, @rcabaco
+ * Copyright 2011 Metaclassy, Lda. <http://metaclassy.com>
+ */
+ 
+html {
+	font-size: 62.5%; /* base font-size: 10px */
+}
+
+body {
+    background-color: #f2f2f2;
+    color: #3c3c3c;
+    
+    /* Change font size below */
+	font-size: 1.7em; 
+	line-height: 1.4em;
+	
+	/* Change font below */
+
+	/* Sans-serif fonts */	
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	
+	/* Serif fonts */
+	/*
+	font-family: "Cochin", "Baskerville", "Georgia", serif;
+	-webkit-font-smoothing: subpixel-antialiased;
+	*/
+	
+	/* Monospaced fonts */
+	/*
+	font-family: "Courier New", Menlo, Monaco, mono;
+	-webkit-font-smoothing: antialiased;
+	*/
+}
+a {
+    color: #308bd8;
+    text-decoration:none;
+}
+a:hover {
+    text-decoration: underline;
+}
+/* headings */
+h1, h2, h3 {
+    line-height:1.2em;
+    margin-top:32px;
+    margin-bottom:12px;
+	 border-bottom:1px solid #ddd
+}
+h1:first-child {
+    margin-top:0;
+	 /*border-bottom:1px solid #ddd*/
+}
+h4, h5, h6 {
+    margin-top:12px;
+    margin-bottom:0;
+}
+h5, h6 {
+    font-size:0.9em;
+    line-height:1.0em;
+}
+/* end of headings */
+p {
+    margin:0 0 24px 0;
+}
+p:last-child {
+    margin:0;
+}
+#wrapper hr {
+    width: 100%;
+    margin: 3em auto;
+    border: 0;
+    color: #eee;
+    background-color: #ccc;
+    height: 1px;
+    -webkit-box-shadow:0px 1px 0px rgba(255, 255, 255, 0.75);
+}
+/* lists */
+ol {
+    list-style: outside decimal;
+}
+ul {
+    list-style: outside disc;
+}
+ol, ul {
+    padding-left:0;
+    margin-bottom:24px;
+}
+ol li {
+    margin-left:28px;
+}
+ul li {
+    margin-bottom:8px;
+    margin-left:16px;
+}
+ol:last-child, ul:last-child {
+    margin:0;
+}
+li > ol, li > ul {
+    padding-left:12px;
+}
+dl {
+    margin-bottom:24px;
+}
+dl dt {
+    font-weight:bold;
+    margin-bottom:8px;
+}
+dl dd {
+    margin-left:0;
+    margin-bottom:12px;
+}
+dl dd:last-child, dl:last-child {
+    margin-bottom:0;
+}
+/* end of lists */
+pre {
+    white-space: pre-wrap;
+    width: 96%;
+    margin-bottom: 24px;
+    overflow: hidden;
+    padding: 3px 10px;
+    -webkit-border-radius: 3px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+}
+blockquote {
+    margin-left: 0;
+    margin-right: 0;
+    width: 96%;
+    padding: 0 10px;
+    border-left: 3px solid #ddd;
+    color: #777;
+}
+table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-spacing: 0;
+}
+table th {
+    padding: 3px 10px;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+table tr {
+}
+table td {
+    padding: 3px 10px;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+caption {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+figure {
+    display: block;
+    text-align: center;
+}
+#wrapper img {
+    border: none;
+    display: block;
+    margin: 1em auto;
+    max-width: 100%;
+}
+figcaption {
+    font-size: 0.8em;
+    font-style: italic;
+}
+mark {
+    background: #fefec0;
+    padding:1px 3px;
+}
+
+
+/* classes */
+
+.markdowncitation {
+}
+.footnote {
+    font-size: 0.8em;
+    vertical-align: super;
+}
+.footnotes ol {
+    font-weight: bold;
+}
+.footnotes ol li p {
+    font-weight: normal;
+}
+
+/* custom formatting classes */
+
+.shadow {
+    -webkit-box-shadow: 0 2px 4px #999;
+}
+
+.source {
+    text-align: center;
+    font-size: 0.8em;
+    color: #777;
+    margin: -40px;
+}
+
+@media screen {
+	.inverted, .inverted #wrapper {
+	    background-color: #1a1a1a !important;
+	    color: #bebebe !important;
+	    
+	   	/* SANS-SERIF */	
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+		-webkit-font-smoothing: antialiased !important;
+		
+		/* SERIF */
+		/*
+		font-family: "Cochin", "Baskerville", "Georgia", serif !important;
+		-webkit-font-smoothing: subpixel-antialiased !important;
+		*/
+		/* MONO */
+		/*
+		font-family: "Courier", mono !important;
+		-webkit-font-smoothing: antialiased !important;
+		*/
+	}
+	.inverted a {
+	    color: #308bd8 !important;
+	}
+	.inverted hr {
+	    color: #666 !important;
+	    border: 0;
+	    background-color: #666 !important;
+	    -webkit-box-shadow: none !important;
+	}
+	.inverted pre {
+	    background-color: #222 !important;
+	    border-color: #3c3c3c !important;
+	}
+	.inverted code {
+	    background-color: #222 !important;
+	    border-color: #3c3c3c !important;
+	}
+	.inverted blockquote {
+	    border-color: #333 !important;
+	    color: #999 !important;
+	}
+	.inverted table {
+	    border-color: #3c3c3c !important;
+	}
+	.inverted table th {
+	    background-color: #222 !important;
+	    border-color: #3c3c3c !important;
+	}
+	.inverted table td {
+	    border-color: #3c3c3c !important;
+	}
+	.inverted mark {
+	    background: #bc990b !important;
+	    color:#000 !important;
+	}
+    .inverted .shadow { -webkit-box-shadow: 0 2px 4px #000 !important; }
+	#wrapper {
+        background: transparent;
+        margin: 40px;
+    }
+}
+
+/* Printing support */
+@media print {
+	body {
+		overflow: auto;
+	}
+    img, pre, blockquote, table, figure {
+        page-break-inside: avoid;
+    }
+    pre, code {
+		border: none !important;
+	}
+	#wrapper {
+        background: #fff;
+        position: relative;
+        text-indent: 0px;
+        padding: 10px;
+        font-size:85%;
+    }
+    .footnotes {
+        page-break-before: always;
+    }
+}
+
+
+pre {
+	margin:1em 0;
+	font-size: .8em;
+	background-color:#eee;
+	border:1px solid #ddd;
+	padding:5px;
+	line-height:1.5em;
+	color:#444;
+	overflow:auto;
+	-webkit-box-shadow:rgba(0,0,0,0.07) 0 1px 2px inset;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;border-radius:3px;
+}
+pre code {
+	padding:0;
+	font-size: 1.0em
+	background-color:#eee;
+	border:none;
+}
+code {
+	font-size: 1.0em
+	background-color:#f8f8ff;
+	color:#444;
+	padding:0 .2em;
+	border:1px solid #dedede;
+}
+pre,code{font:.9em Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;}
+
+</style>
+
+</head>
+<body class="normal">
+  <div id="wrapper">
+      <h1>PBS/SLM Integration</h1>
+
+<h2>INSTALLATION</h2>
+
+<p>Installation is relatively simple. Run ./install.sh from the package directory
+and follow instructions. The script will install the core files for the project
+and only leave a few items to be configured. </p>
+
+<ul>
+<li>Review items in samples/ directory and in $PBS_HOME/slm_priv
+
+<ul>
+<li>Make sure pbs_slm.conf has appropriate values.</li>
+<li>Make sure that srb_init.sh and sshell_init.sh have correct environment variables and any needed commands.</li>
+<li>Set up basic speed table for same-site transfers. See &#8216;Maintaining transfer speed lookup table&#8217; section below.</li>
+</ul></li>
+</ul>
+
+<h2>CONFIGURATION FILES</h2>
+
+<p>All configuration files are located in $PBS_HOME/slm_priv/.</p>
+
+<ul>
+<li><p>slm_init.sh &#8211;
+This is the shell script header that will be put at the beginning of every
+automatically generated stage-in and stage-out script. </p></li>
+<li><p>sshell_init.sh &#8211;
+This is the shell script that is executed by any hooks/python scripts that
+need to talk to SRB. This script is executed as the user that the job
+in question belongs to.</p></li>
+<li><p>site_map &#8211;
+A mapping of SRB &#8216;Resource Name&#8217; values to actual site names.<br/>
+Example: </p>
+
+<pre><code>samqfs-00.pbs.hpcmp.hpc.mil.local@STORAGE.HPC.MIL.LOCAL:GroomLake2
+</code></pre></li>
+<li><p>staging_prologue/epilogue.sh &#8211;
+These files contain a shell function and a sample call to it that should
+be added to the site prologue/epilogue that exists on data staging nodes.</p></li>
+<li>pbs_slm.conf &#8211; Sample base configuration file that should reside in $PBS_HOME/slm_priv.
+
+<ul>
+<li>wallt_buffer &#8211; Buffer to be added to estimate made for stage-in jobs.</li>
+<li>local_site &#8211; The name of your site, used in combination with site_maps and the speed tables.</li>
+<li>krb_path &#8211; Path to kerberos installation on server system.</li>
+<li>data_queue &#8211; Queue that transfer jobs should be submitted to.</li>
+<li>rsub_user &#8211; If needed, a designated user that reservations should be submitted by.(Optional)</li>
+<li>resv_confirm_delay &#8211; Force the rsub commands issues by the scripts to wait N seconds for the reservation to be confirmed before moving on. (Optional, but recommended)</li>
+<li>lock_file_timeout &#8211; (seconds)How long the scanning script should wait for the lock to become available before exiting. Default is 30.</li>
+<li>log_level &#8211; Log level specification. Options in order of increasing verbosity are INFO, DEBUG, DEBUG2, DEBUG3.</li>
+</ul></li>
+</ul>
+
+<h2>MAINTAINING TRANSFER SPEED LOOKUP TABLE</h2>
+
+<p>The &#8216;speed table&#8217; is used to store network speeds between sites. In the future
+this is planned to be an automated process but at the moment no service is
+known that can provide the information so manual entry is required.</p>
+
+<p>The program tt_client.py is located in $PBS_EXEC/sbin/ and is to be used for
+maintaining the lookup table that the project uses for transfer times. Usage
+for the command can be displayed with the -h option. Please note that network
+speeds for both directions TO and FROM must be specified in the table. The site
+names used should be the site names aliased to slm Resource Names in the
+site_map file.</p>
+
+<p>Example:</p>
+
+<pre><code>tt_client.py -s ARSC ARL 30 # 30Mb/s from ARSC -&gt; ARL
+tt_client.py -s ARL ARSC 25 # 25Mb/s from ARL -&gt; ARSC
+</code></pre>
+
+<h2>SCRIPTS DIRECTORY</h2>
+
+<p>Any staging jobs that have not been submitted will have scripts located in
+$PBS_HOME/slm_priv/scripts. Once submitted the jobs get moved into the
+old/ sub-directory and are renamed to be tagged with the job-id that they are
+for. Because job-id&#8217;s aren&#8217;t available when these scripts are first created
+they will have seemingly random number&#8217;s for file names to avoid collisions.
+The file-names can be seen in qstat -f for reference so you can go and look
+at job scripts in that directory before they are submitted. All scripts are
+700 and owned by the user however.</p>
+
+<h2>&#8216;DUMMY&#8217; RESERVATION</h2>
+
+<p>There is a bug with versions of PBS Pro earlier than 11.1 that can cause a server crash when a
+job is moved out of a reservation, and the reservation is deleted. Since this
+is fairly common in the operation of these scripts, we need a work-around
+to prevent the crash. Moving the job into an intermediate reservation that is
+relatively permanent, will prevent the crash. Because of this we need to create
+a &#8216;dummy&#8217; reservation far into the future that takes up the entire system. If
+it is sufficiently far into the future (say, 5+ years) there is no way it will
+interfere with day to day scheduling, and can be left alone. Once the
+reservation is created, the value must be made available to any scripts that require it. To do this, run the following command in qmgr:</p>
+
+<p><code>
+set server resources_available.slm_resv = &lt;RNNN&gt;
+</code></p>
+
+<h2>DEBUG logging for hooks</h2>
+
+<p>Debug for the submit time hook can be enabled by placing it&#8217;s name in the
+debug_hooks server resource:</p>
+
+<p>set server resources_available.debug_hooks+=&#8220;parse_stage_directives&#8221;</p>
+
+<p>Three levels of debug output from the hook are available. The lowest amount
+is shown in the example above. To change the level you would change the
+value for the hook in debug_hooks:</p>
+
+<pre><code>set server resources_available.debug_hooks-=&quot;parse_stage_directives&quot;
+set server resources_available.debug_hooks+=&quot;parse_stage_directives=&lt;level&gt;&quot;
+</code></pre>
+
+<p>The valid levels are currently 2 and 3.</p>
+
+<h2>LOGS</h2>
+
+<p>Messages from the hooks are placed in the server log. Messages from
+&#8216;pre_cycle_scan&#8217; are placed in $PBS_HOME/slm_logs/<date>.</p>
+
+<h2>USAGE</h2>
+
+<h3>Automatic generation of stage scripts</h3>
+
+<p>In order to have the system automatically generate staging scripts you can use the directives slmstagein/slmstageout. </p>
+
+<h5>Basic syntax</h5>
+
+<p>Stage in:</p>
+
+<pre><code>&lt;slmcollection&gt;/&lt;slmfile&gt;@&lt;filesystem path on staging node&gt;/&lt;filename&gt;[:perms=&lt;mask&gt;:force=&lt;y|n&gt;]
+</code></pre>
+
+<p>Stage out:</p>
+
+<pre><code>&lt;path to file on stage node&gt;/&lt;file&gt;@&lt;slm collection&gt;/&lt;slm file name&gt;
+</code></pre>
+
+<h5>Example</h5>
+
+<pre><code>#PBS -l slmstagein=\&quot;biggerfiles/bigfile@myworkdir/hugefile:perms=0700,bigfile@myworkdir/abg\&quot;
+#PBS -l slmstageout=myworkdir/bigresultfile@biggerfiles/myresults
+</code></pre>
+
+<h5>Optional flags for slmstagein/out</h5>
+
+<p>You can specify optional flags on stage in to change the behavior of the scripts. They can be specified on the end of each file with :flag=value.</p>
+
+<ul>
+<li>stage in
+
+<ul>
+<li>perms
+
+<ul>
+<li>Tells the system that you want all your files changed to the permission bit settings you enter for &lt;permissions&gt;.</li>
+<li>Values: standard unix file mode bits (eg, 0700, 0755, etc)</li>
+</ul></li>
+</ul></li>
+<li>stage out
+
+<ul>
+<li>force
+
+<ul>
+<li>Tells Sput to overwrite existing files in the collection when staging out.</li>
+<li>Values: y or n</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h5>Options for stage job err/out delivery</h5>
+
+<p>The following options can be used to control where the stdout and stderr of staging jobs is delivered. These are PBS resources, specified with -l.</p>
+
+<ul>
+<li>stage in
+
+<ul>
+<li>sino &#8211; Becomes -o for stage in.</li>
+<li>sine &#8211; Becomes -e for stage in.</li>
+<li>sinj &#8211; Becomes -j for stage in.</li>
+</ul></li>
+<li>stage out
+
+<ul>
+<li>souto &#8211; Becomes -o for stage out.</li>
+<li>soute &#8211; Becomes -e for stage out.</li>
+<li>soutj &#8211; Becomes -j for stage out.</li>
+</ul></li>
+</ul>
+
+<h5>Using environment variable substitution</h5>
+
+<p>For certain directives environment variable substitution is supported. Environment variables in #PBS directives are indicated with %{VARNAME}. This is only supported when using the automated stage in/out functionality.</p>
+
+<p>Supported directives: </p>
+
+<ul>
+<li>sino</li>
+<li>sine</li>
+<li>souto</li>
+<li>soutj</li>
+<li>slmstagein</li>
+<li>slmstageout</li>
+</ul>
+
+<p>If a variable is not present in the submit environment and/or not passed in with -v, it will be simply translated to ${VARNAME}. This is particularly useful for filenames in the source of stageout/destination of stage in. If the variable name is translated to ${VARNAME} that environment variable is then evaluated inside the stage job script itself.</p>
+
+<h5>What happens after you submit</h5>
+
+<p>When the system notes a job with these directives it will perform several actions during submission:</p>
+
+<ul>
+<li>Create a stage-in script</li>
+<li>Create a stage-out script</li>
+<li>Estimate stage-in walltime based on file size and network transfer speeds
+ obtained from the speed table noted above.</li>
+<li>Set a wall time for stage-out to 24hrs, this will be changed in a future
+ release.</li>
+</ul>
+
+<p>When stage-in walltime + buffer + current time = estimated start time of your
+job, the stage-in job will be submitted to the transfer queue. Future releases
+are going to include a buffer for this submit time to accommodate average queue
+wait times.</p>
+
+<p>If your job is eligible to run sooner than the initial estimate the system will
+submit the stage-in job and immediately create a reservation for your job that
+is now+stage-in walltime. Once your stage-in job finishes your job will be
+returned to it&#8217;s original queue.</p>
+
+<h3>Using your own staging scripts</h3>
+
+<p>You also have the option of writing your own staging scripts but letting the system handle when they should be submitted. To perform this simply use the following keywords. <strong>Please Note</strong> that unlike the automatically generated scripts, using this method requires you to specify a walltime.</p>
+
+<ul>
+<li>stinscr &#8211; Location of the stage in script</li>
+<li>stoutscr &#8211; Location of the stage out script</li>
+<li>stinwallt &#8211; The walltime to use when submitting the stage in script.</li>
+<li>stoutwallt &#8211; The walltime to use when submitting the stage out script</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code>#PBS -l stinscr=/path/to/stage/script
+#PBS -l stoutscr=/path/to/stage/script
+#PBS -l stinwallt=HH:MM:SS
+#PBS -l stoutwallt=HH:MM:SS
+</code></pre>
+    </div>
+</body>
+</html>

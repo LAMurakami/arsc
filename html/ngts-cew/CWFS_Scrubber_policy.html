@@ -1,0 +1,106 @@
+<html><head>
+<title>CWFS Scrubber policy</title>
+<!-- $Id$ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.blue1 { color: blue; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1 class="firstHeading"><a href="#toc">CWFS Scrubber policy<br>9/19/2011</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+
+<h1><span></span> <span class="mw-headline" id="CWFS_Scrubber_policy"> CWFS Scrubber policy </span></h1>
+
+<p>The Center-Wide File System (CWFS) is the panasas high performance shared file system supporting the Utility Server.  The largest of the three mount points, $CENTER, is also mounted on all HPC login nodes at a center.  Some references to the CWFS in other HEUE documents may be referring to only the $CENTER mount which is roughly 80% of the entire CWFS capacity.  A previous document contains more detail on the
+ <a href="Center_Wide_File_System_Mount_Points.html" rel="nofollow">Center Wide File System Mount Points</a>.
+</p>
+<h2><span></span> <span class="mw-headline" id=".2Fu.2Fhome.2F.24USER_.3D_.24HOME"> /u/home/$USER = $HOME </span></h2>
+<p>All user files in the $HOME directory will be backed up and are not subject to deletion.  The total size of files in the $HOME directory will limited by a quota of 10 GB per user.
+</p>
+<h2><span></span> <span class="mw-headline" id=".2Fu.2Fwork.2F.24USER_.3D_.24WORKDIR"> /u/work/$USER = $WORKDIR </span></h2>
+
+<p>All user files and directory structures in $WORKDIR that have not been modified within 10 days are subject to deletion.
+</p><p>This omits the "accessed/" clause in the BCT <a href="http://www.ccac.hpc.mil/consolidated/bc/policies.php?choice=workspace" rel="nofollow">Minimum Scratch Space Retention Time Policy Update: 11 June 2009</a>.
+</p><p>The accessed clause will not be honored because this field is not updated on the panasus files system.
+</p>
+<h2><span></span> <span class="mw-headline" id=".2Fp.2Fcwfs.2F.24USER_.3D_.24CENTER"> /p/cwfs/$USER = $CENTER </span></h2>
+<p>All user files and directory structures in $CENTER that have not been modified within 30 days are subject to deletion.
+</p><p>This omits the "accessed/" clause in the BCT <a href="http://www.ccac.hpc.mil/consolidated/bc/policies.php?choice=workspace" rel="nofollow">Minimum Scratch Space Retention Time Policy Update: 11 June 2009</a> but uses a much longer retention period.
+
+</p><p>The $CENTER file system will be defined within SLM as a resource.  Users can enroll files on $CENTER in SLM with Sregister and then use Sretain to set Archive attribute and a Retain-Through date.  SLM will then control archiving of these files and removal from $CENTER after 30 days.  Note that archiving of these files is not immediate but will performed by a SLM daemon at a later time.  Deleting a file from $CENTER that has been registered and marked for archive but not yet archived will result in and SLM error when the daemon tries to archive that file and the file will not be archived.
+</p><p>Files that have not been enrolled in SLM with Sregister will be removed from $CENTER by a separate process.  This separate process will not delete files that have been enrolled in SLM with Sregister.  Note that files placed in SLM with Sput do not make the file on $CENTER known to SLM.
+</p>
+<h1><span></span> <span class="mw-headline" id="Revision_log"> Revision log </span></h1>
+<ul><li> 15 August, 2011 HEUE Call - CEW begins discussion on $CENTER Scrubber policy.
+<ul><li> What is policy implemented on HPCs?  Information from each center representative taken as an action item.
+</li></ul>
+</li><li> 22 August, 2011 HEUE Call - CEW decides discussion on $CENTER Scrubber policy must consider CWFS as a resource.
+
+<ul><li> Lawrence is to bring this up on Tuesday 23 August, 2011 HEUE call.
+</li></ul>
+</li><li> 23 August, 2011 HEUE Call - <a href="CWFS_as_a_SRB_resource.html" title="CWFS as a SRB resource"> CWFS as a SLM resource</a> as an agenda item.
+<ul><li> This was to help define conditions related to a CWFS Scrubber policy which CEW has been tasked to create.
+</li><li> It was decided that centers will make the Center-Wide File System (CWFS) an SLM resource and that users can Sregister manually then use Sretain to set Archive attribute.
+</li><li> Once an object is registered to SLM, additional metadata could be added with Sretain, Sdata or native SRB commands.
+</li><li> During the call the following three basis scenarios were considered:
+
+</li></ul>
+</li></ul>
+<ol><li> CWFS is a SLM resource and files are automatically registered.  Users can then use Sretain to set Archive attribute.
+</li><li> <b>CWFS is a SLM resource.  Users can Sregister manually then use Sretain to set Archive attribute.</b>
+</li><li> SLM is unaware of CWFS
+</li></ol>
+<ul><li> <a href="../../2011-09-12-CEW-Agenda.html" rel="nofollow">9/12/2011 CEW Agenda and Call Notes</a>
+<ul><li> Lawrence took as an action item to write up what CEW has so far.
+
+</li></ul>
+</li></ul>
+<ul><li> Reviewed on 9/19/2011 CEW call
+<ul><li> Lawrence took as an action item to replace SRB with SLM.
+</li></ul>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 28/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:446-0!1!0!!en!2 and timestamp 20110919195405 -->
+
+				<!-- /bodytext -->
+								<!-- bodytext -->
+
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/CWFS_Scrubber_policy">https://intrawiki.arsc.edu/index.php/CWFS_Scrubber_policy</a>"</div>
+<ul>
+<li><a href="#CWFS_Scrubber_policy"><span class="tocnumber">1</span> <span class="toctext">CWFS Scrubber policy</span></a>
+<ul>
+<li><a href="#.2Fu.2Fhome.2F.24USER_.3D_.24HOME"><span class="tocnumber">1.1</span> <span class="toctext">/u/home/$USER = $HOME</span></a></li>
+<li><a href="#.2Fu.2Fwork.2F.24USER_.3D_.24WORKDIR"><span class="tocnumber">1.2</span> <span class="toctext">/u/work/$USER = $WORKDIR</span></a></li>
+
+<li><a href="#.2Fp.2Fcwfs.2F.24USER_.3D_.24CENTER"><span class="tocnumber">1.3</span> <span class="toctext">/p/cwfs/$USER = $CENTER</span></a></li>
+</ul>
+</li>
+<li><a href="#Revision_log"><span class="tocnumber">2</span> <span class="toctext">Revision log</span></a></li>
+</ul>
+</td></tr></table>
+</body></html>

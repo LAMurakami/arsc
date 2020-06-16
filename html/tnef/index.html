@@ -1,0 +1,78 @@
+<html><head>
+<title>Decode email attachments</title>
+<!-- $Id: index.html,v 1.2 2019/07/09 21:04:42 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+<link rel="Shortcut Icon" href="../favicon.ico" />
+</head><body>
+<!-- Begin ARSC Intranet Head section -->
+<a name="Top" href="/About">
+<img src="../UAF_logo_93x83.gif"
+alt="UAF Logo" border="0" width="93" height="83" style="float: right;"/></a>
+<a href="..">
+<img src="../arsc_acronym_4color.gif"
+alt="ARSC Logo" border="0" width="78" height="50" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+Decode email attachments<br>5/4/2012
+
+</h1>
+</center>
+<!-- End ARSC Intranet Head section -->
+								<!-- bodytext -->
+</p>
+<h1> <span id="Decode_email_attachments"> Decode email attachments </span></h1>
+<p>Modern email clients can handle attachments of various types and automatically handle the encoding and decoding of these attachments.
+</p><p>The most common problem with email attachments results from users of Microsoft Exchange and Outlook.  When email with attachments from users of Microsoft Exchange and Outlook are received by users not using these products they often see a winmail.dat attachment that the email client cannot decode.
+</p>
+<h2> <span id="Decode_email_with_Microsoft_MS-TNEF_MIME_attachments"> Decode email with Microsoft MS-TNEF MIME attachments </span></h2>
+<p>The tnef application can decode most attachments from users of Microsoft Exchange and Outlook.
+</p><p><a href="/man/tnef" rel="nofollow">tnef - decode Microsoft's Transport Neutral Encapsulation Format (TNEF)</a>
+</p><p>The tnef application is open source under GNU General Public License (GPL) and available at:
+<a href="https://github.com/verdammelt/tnef" rel="nofollow">https://github.com/verdammelt/tnef</a>
+</p>
+<pre>tnef --body-pref all --number-backups -f winmail.dat
+</pre>
+<p>The above extracts all attachment types from the winmail.dat file and uses numbering if more than one attachment exists in the file with the same name. 
+</p>
+<h2> <span id="Base64_Encode.2FDecode"> Base64 Encode/Decode </span></h2>
+<p>In some cases the decoded attachment may still have sections in base64 encoding.  Split the base 64 encoded sections (not including the description area) into separate text files and decode them with <a href="openssl.html" rel="nofollow">OpenSSL</a>.
+</p><p>Base64 encoding is a standard method for converting 8-bit binary information into a limited subset of ASCII characters for safe transport through e-mail systems, and other systems that are not 8-bit safe. With OpenSSL, it is very easy to encode and decode Base64 data.  Note that it may be helpful to name the output file with what is specified in the "name=" line in the attachment.
+</p><p>Encode myfile in base64 encoding:
+</p>
+<pre>openssl enc -base64 -in myfile -out myfile.b64
+</pre>
+<p>Decode myfile.b64 which is encoded in base 64 encoding:
+</p>
+<pre>openssl enc -d -base64 -in myfile.b64 -out myfile.decrypt
+</pre>
+<!-- 
+NewPP limit report
+Preprocessor node count: 18/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:392-0!1!0!!en!2 and timestamp 20120504171226 -->
+<p align="right"><a href="#Top">This documentation page</a> was retrieved from<br><a href="/About">
+https://intrawiki.arsc.edu/index.php/Decode_email_attachments</a>
+<br>Friday, May 4, 2012 @ 10:04:55 AM (Alaska Time)</div><br>by <a href="http://arsc.lam1.us">Lawrence A. Murakami</a> of Fairbanks, Alaska.
+<br><a name="Disclaimer" href="/About">
+ARSC Personal WebPage Disclaimer</a>.</p>
+
+
+				<!-- /bodytext -->
+</body></html>

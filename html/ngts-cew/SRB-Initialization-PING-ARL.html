@@ -1,0 +1,171 @@
+<html><head>
+<title>SRB Initialization PING ARL</title>
+<!-- $Id: SRB-Initialization.html,v 1.1 2010/10/14 17:04:28 murakami Exp murakami $ -->
+<style type="text/css">
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em;
+  margin-left: 3%; margin-right: 3%;}
+.purple { color: purple; }
+a[href]:hover { background: #c1dbd4 }
+a:hover img { background: white }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1>SRB Initialization PING ARL <a href="#Revision_log">12/03/2010</a></h1>
+
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+
+<p>Contents:
+
+<a href="#Initialization_script">Initialization script</a> &nbsp;
+<a href="#output">output</a> &nbsp;
+<a href="#public">public</a> &nbsp;
+<a href="#ping_ARL">ping at ARL</a>
+
+<p>This SRB Initialization script is modifed from the
+<a href="SRB-Initialization.html#Initialization_script">original example script example</a>
+that was included in the <a href="SRB-Initialization.html">SRB Initialization
+ recommendation</a> by the HEUE CEW.
+
+<h3><a name="Initialization_script">SRB Initialization script PING ARL - BASH</a></h3>
+The below script is a working example of initialization in bash format which should also work in ksh or sh.
+<br>If this script is saved as srb_init.sh you can source it with "source srb_init.sh".
+<p>This version has values for the enviroment on ping at ARL.  <b>Differences</b> from the ARSC version
+<b>have been bolded</b>.
+<p>The example script below does not include error checking.
+
+<pre width="90%"># Initialize the environment for the Storage Recource Broker (srb).
+# --:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+<b># Add kerberos stuff to the path
+PATH=/usr/krb5/bin:$PATH; export PATH</b>
+
+# Extract the kerberos principal from the current kerberos keylist.
+
+SRB_PRINCIPAL=`klist | grep "Default principal" | cut -d ':' -f 2 | tr -d ' \t'`
+echo Default principal: $SRB_PRINCIPAL
+
+# Extract the SRB user name from the kerberos principal
+
+SRB_USER=`echo $SRB_PRINCIPAL | cut -d '@' -f 1`
+echo SRB User: $SRB_USER
+
+# Set the value of the local MCAT servers for round robin use.
+
+SRB_HOST='<b>mcata.arl.hpc.mil,mcatb.arl.hpc.mil,mcatc.arl.hpc.mil</b>'
+echo SRB Host: $SRB_HOST
+
+# Set the default SRB resource to a local archive.
+
+SRB_RESOURCE='<b>arl.msas8.EMC</b>'
+echo SRB Resource: $SRB_RESOURCE
+
+# Set the SRB Classification level to the value for this DSRC
+
+SRB_CLASSIFICATION='<b>SRB_LEVEL_01</b>'
+echo SRB Classification Level: $SRB_CLASSIFICATION
+
+# Set the SRB collection for this DSRC
+
+SRB_COLLECTION='~/<b>arl</b>'
+echo SRB Collection: $SRB_COLLECTION
+
+# Set the SRB_HOME value to where the most current SRB client is installed.
+
+SRB_HOME=<b>/opt/nirvana/srb/current</b>; export SRB_HOME
+echo SRB Home: $SRB_HOME
+
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$SRB_HOME/lib/64; export LD_LIBRARY_PATH
+PATH=${PATH}:$SRB_HOME/bin; export PATH
+MANPATH=${MANPATH}:$SRB_HOME/man; export MANPATH
+
+# Initialize the SRB client
+
+Sinit -user ${SRB_PRINCIPAL} -host ${SRB_HOST} \
+-port 5625 -comm PLAIN_TEXT -auth KERBEROS_AUTH \
+-rsrc ${SRB_RESOURCE} -classification ${SRB_CLASSIFICATION}
+
+# Set the current SRB collection to the collection for this DSRC.
+
+Scd ${SRB_COLLECTION}
+
+# Use awk to determine a path without duplicate or empty entries while preserving order
+PATH=$(echo $PATH | awk -F: '
+{ a[$1]; printf "%s",$1;
+  for(i=2;i<=NF;i++){ if($i ~ /\//) {
+    if(!($i in a)){ a[$i];
+    printf "%s%s",FS,$i; } } };
+  printf "\n"; }')
+export PATH
+
+LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | awk -F: '
+{ a[$1]; printf "%s",$1;
+  for(i=2;i<=NF;i++){ if($i ~ /\//) {
+    if(!($i in a)){ a[$i];
+    printf "%s%s",FS,$i; } } };
+  printf "\n"; }')
+export LD_LIBRARY_PATH
+
+MANPATH=$(echo $MANPATH | awk -F: '
+{ a[$1]; printf "%s",$1;
+  for(i=2;i<=NF;i++){ if($i ~ /\//) {
+    if(!($i in a)){ a[$i];
+    printf "%s%s",FS,$i; } } };
+  printf "\n"; }')
+export MANPATH
+</pre>
+
+
+<h3><a name="output">Below is the output from sourcing this script on ping at ARL when all is working:</a></h3>
+<pre width="90%">$ source /usr/people/murakami/srb_init.sh
+Default principal: murakami@HPCMP.HPC.MIL
+SRB User: murakami
+SRB Host: mcata.arl.hpc.mil,mcatb.arl.hpc.mil,mcatc.arl.hpc.mil
+SRB Resource: arl.msas8.EMC
+SRB Classification Level: SRB_LEVEL_01
+SRB Collection: ~/arl
+SRB Home: /opt/nirvana/srb/current
+
+Welcome to SRB.
+Your User Name is "murakami@HPCMP.HPC.MIL".
+Your Default Classification is "SRB_LEVEL_01".
+Your Default Resource is "arl.msas8.EMC".
+Your Home Collection is "/archive/murakami".
+
+[14:36:28 Fri Dec 03] murakami@ping-l2.arl.hpc.mil ~</pre>
+
+<h3><a name="public">This script has been made public on ping at ARL.</a></h3>
+
+Any user logged on to ARL with a bash ksh or sh shell should be able source this script with the following:
+
+<ul><li><pre width="80%">source /usr/people/murakami/srb_init.sh</pre></ul>
+
+<h3><a name="ping_ARL">ping at ARL</a></h3>
+
+<ul>
+<li>You can only access ping at ARL after first getting on another ARL machine such as mjm or harold.
+<li>When you originally get your ticket it must be address-less.
+<li>If you go through harold your credentials are not forwarded by default.
+<br> &nbsp; You can address this two ways:
+<ul>
+ <li>You can use the -K option with ssh to make the credentials forward.
+ <li>Updated your ~/.ssh/config on harold to include the following:
+<pre width="70%">Host *
+GSSAPIAuthentication yes
+GSSAPIDelegateCredentials yes</pre>
+This makes your ticket forward by default.
+</ul></ul>
+
+<h3><a name="Revision_log">Revision log</a></h3>
+<dl>
+<dt>12/03/2010 - LAM - Initial version created from <a href="SRB-Initialization.html">SRB Initialization</a>.
+<dd><ul><li>This version has been modified for the environment of PING at ARL.</ul>
+</dl>
+
+</body></html>

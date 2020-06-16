@@ -1,0 +1,697 @@
+<html><head>
+
+<title>2013 NAVY & ARL SLM Early Adopters Training Hands On</title>
+
+<!-- $Id: ARL-SLM-Early-Adopters-Training-2013-Hands-On.html,v 1.6 2018/01/15 09:10:43 ubuntu Exp ubuntu $ -->
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+</head><body>
+
+<a href="..">
+<img src="../ngts-cew/DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading"><a href="#toc">
+
+2013 NAVY & ARL SLM Early Adopters Training Hands On
+
+</a></h1>
+</center>
+<br /><hr>
+
+								<!-- bodytext -->
+
+
+<h1> <span id="Hands_On"> Hands On </span></h1>
+<p>This document is a set of examples for use in the ARL and Navy SLM Early Adopters Training for Hands On interactive practice with the Storage Lifecycle Management instance.  These examples were done on the ARL SLM instance.
+</p>
+<h2> <span id="Initialize"> Initialize </span></h2>
+<h3> <span id="For_bash_shell.2C_korn_shell_or_borne_shell_users:"> For bash shell, korn shell or borne shell users: </span></h3>
+<pre>. $SAMPLES_HOME/slm/init.sh
+</pre>
+<h3> <span id="For_c_shell_or_turbo_c_shell_users:"> For c shell or turbo c shell users: </span></h3>
+<pre>source $SAMPLES_HOME/slm/init.csh
+</pre>
+<p>The output upon success should look like the following:
+</p>
+<pre>Kerberos principal: ${USER}@HPCMP.HPC.MIL
+SLM User: ${USER}
+SLM Host: mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+SLM Resource: arl.msas14.srb_test
+SLM Classification Level: SBU
+
+Welcome to SRB.
+Your User Name is "${USER}@HPCMP.HPC.MIL".
+Your Default Classification is "SBU".
+Your Default Resource is "arl.msas14.srb_test".
+Your Home Collection is "/archive/${USER}/arl/srb_test".
+
+Setting initial SLM Home Collection to ${SLM_HOME}
+${SLM_HOME}=/archive/${USER}/arl/srb_test
+</pre>
+<p>The current user value will be shown instead of ${USER} in the above.
+</p>
+<h3> <span id="User_.24.7BHOME.7D_default_SLM_values"> User ${HOME} default SLM values </span></h3>
+<p>The HPCMP SLM initialization scripts set default initialization values for the test resource and initialize SLM.
+</p><p>The default initialization values are retained in the users ${HOME} directory and will be available for the next login using the same ${HOME} directory.
+</p>
+<ul><li> Once default initialization values have been set you can initialize with the following alternate sequence:
+</li></ul>
+<pre>module load slm
+Sinit # or Sshell
+</pre>
+<p>Note that this sequence works even if default initialization values are not set except that you will be prompted for many of these values and optional values such as the home collection will not be set.
+</p>
+<h2> <span id="Set_environment_variable_for_test_collections_.2F_directories"> Set environment variable for test collections / directories </span></h2>
+<h3> <span id="For_bash_shell.2C_korn_shell_or_borne_shell_users:_2"> For bash shell, korn shell or borne shell users: </span></h3>
+<pre>test=slm-`date +'%Y-%m-%d'`&nbsp;; export test
+</pre>
+<h3> <span id="For_c_shell_or_turbo_c_shell_users:_2"> For c shell or turbo c shell users: </span></h3>
+<pre>setenv test slm-`date +'%Y-%m-%d'`
+</pre>
+<ul><li> Show the environment variable value for test collections / directories
+</li></ul>
+<pre>echo ${test}
+</pre>
+<h2> <span id="Make_a_SLM_collection"> Make a SLM collection </span></h2>
+<pre>Smkcoll ${test}
+</pre>
+<ul><li> List the collection you just added in SLM
+</li></ul>
+<pre>Sls -l | grep ${test}
+</pre>
+<ul><li> List the Admin Scheme for the collection you just added
+</li></ul>
+<pre>Sscheme -l -scheme Admin ${test}
+</pre>
+<ul><li> List selected attributes from the Admin Scheme with Sls for the collection you just added
+</li></ul>
+<pre>Sls -l -select "DATA_OBJECT.data_name,DATA_OBJECT.create_timestamp,Admin.Retain_Time,\
+Admin.Retention_Period,Admin.HPCMP_Project_ID,Admin.DR_Behavior " | grep ${test}
+</pre>
+<ul><li> Set project, No DR copy, and 90 day retention using Sretain for the collection you just added
+</li></ul>
+<pre>Sretain -p HPCMO92330SIS -nodr 90 ${test}
+</pre>
+<ul><li> List selected attributes from the Admin Scheme with Sls for the collection you just updated
+</li></ul>
+<pre>Sls -l -select "DATA_OBJECT.data_name,DATA_OBJECT.create_timestamp,Admin.Retain_Time,\
+Admin.Retention_Period,Admin.HPCMP_Project_ID,Admin.DR_Behavior " | grep ${test}
+</pre>
+<ul><li> List the Admin Scheme for the collection you just updated
+</li></ul>
+<pre>Sscheme -l -scheme Admin ${test}
+</pre>
+<p>All objects ingested into this collection will inherit the retention and project attributes.
+</p>
+<h2> <span id="SLM_Environment"> SLM Environment </span></h2>
+<ul><li> Once initialized the current SLM environment can be displayed with:
+</li></ul>
+<pre>Senv
+</pre>
+<ul><li> Note the HOME_LOGICAL_PATH in the above.
+</li><li> For the ARL SLM srb_test resource this is: <b>/archive/${USER}/arl/srb_test</b>
+</li></ul>
+<ul><li> For production the last will be different for different filesystems and the site will be different for different sites.
+</li></ul>
+<ul><li> List the current collection
+</li></ul>
+<pre>Spwd
+</pre>
+<ul><li> This is different from the Home Collection default for a user:
+</li></ul>
+<pre>SgetU -x ${USER}@HPCMP.HPC.MIL
+</pre>
+<ul><li> Change to home collection for a user as known to SRB
+</li></ul>
+<pre>Scd /archive/${USER}
+Spwd
+</pre>
+<ul><li> Attempt to create a collection
+</li></ul>
+<pre>Smkcoll test
+</pre>
+<ul><li> This will fail with the following error: <b>SRB_COLLECTION_NO_ACCESS_TO_PARENT "The current User does not have enough access to the Parent Collection."</b>
+</li></ul>
+<ul><li> Display access to the current collection (specified with the dot)
+</li></ul>
+<pre>SgetD -a .
+</pre>
+<ul><li> Display access to the current collection (specified with the dot) using -x and grep
+</li></ul>
+<pre>SgetD -x . | grep 'Effective Access'
+</pre>
+<ul><li> Known issue - A user cannot write to the home collection for a user as known to SRB.
+<ul><li> This is to allow future federation individual SLM instances without name collisions.
+</li></ul>
+</li></ul>
+<ul><li> List objects recursively from the home collection for a user as known to SRB.
+</li></ul>
+<pre>Sls -R
+</pre>
+<ul><li> All user namespace objects are created by provisioning with srb_test and others at the lowest level being a Slink to the collection within the resource namespace.
+<ul><li> Users can only create objects within the resource namespace.
+</li><li> Known behavior: "Sls -R" does not traverse Slinks.
+</li></ul>
+</li></ul>
+<ul><li> Change to top collection where you can write
+</li></ul>
+<pre>Scd
+Spwd
+</pre>
+<ul><li> Display access to an object
+</li></ul>
+<pre>SgetD -a .
+</pre>
+<h2> <span id="Display_Users_in_.24.7BUSER.7D_group"> Display Users in ${USER} group </span></h2>
+<pre>SgetG -u ${USER}
+</pre>
+<ul><li> Display aliases associated with the User
+</li></ul>
+<pre>SgetU -alias ${USER}@HPCMP.HPC.MIL
+
+</pre>
+<ul><li> Note that this hands on assumes that your Linux login on the US matches your kerberos principal.  If this is not true replace ${USER} with the appropriate value.
+</li></ul>
+<ul><li> Display all the groups that the specified user belongs to.
+</li></ul>
+<pre>SgetU -g ${USER}@HPCMP.HPC.MIL
+</pre>
+<ul><li> Lists Users that have access to the group and what their level of access is.
+</li></ul>
+<pre>SgetG -a ${USER}
+</pre>
+<h2> <span id="Create_a_set_of_test_files"> Create a set of test files </span></h2>
+<ul><li> Create a set of test files in a directory with three sub directories each with three files.
+<ul><li> If you are a csh or tcsh user use a bash shell to execute the for loops.
+</li></ul>
+</li></ul>
+<pre>cd ${WORKDIR}&nbsp;; mkdir ${test}-01&nbsp;; cd ${test}-01&nbsp;; \
+for i in {1..3}; do mkdir r${i}&nbsp;; cd r${i}&nbsp;; \
+ for j in {1..3}; do echo Test file t${j} &gt; t${j}&nbsp;; \
+ echo Run r${i} &gt;&gt; t${j}&nbsp;; done&nbsp;; \
+cd ..&nbsp;; done&nbsp;; cd ..
+</pre>
+<ul><li> Rename one of the files to have a .txt extension. 
+</li></ul>
+<pre>mv ${WORKDIR}/${test}-01/r1/t2 ${WORKDIR}/${test}-01/r1/t2.txt
+</pre>
+<ul><li> List the files in the ${test}-01 directory:
+</li></ul>
+<pre>for i in $( find ${WORKDIR}/${test}-01 -type f ); do ls -l $i&nbsp;; done
+</pre>
+<ul><li> List the groups you are in
+</li></ul>
+<pre>id
+</pre>
+<ul><li> Set group for some files.
+<ul><li> Use a group other than your primary / default group.  Skip this if you are only in one group.
+</li></ul>
+</li></ul>
+<pre>chgrp -R 92330SIS ${WORKDIR}/${test}-01/r2
+</pre>
+<ul><li> Set group write for one of the sub directories recursively.
+</li></ul>
+<pre>chmod -R g+w ${WORKDIR}/${test}-01/r3
+
+</pre>
+<ul><li> List the files and contents of the test files created with:
+</li></ul>
+<pre>for i in $( find ${WORKDIR}/${test}-01 -type f ); do \
+ls -l --time-style=long-iso ${i}&nbsp;; cat ${i}&nbsp;; done
+</pre>
+<ul><li> If you are a csh or tcsh user you can now exit the bash shell.
+</li></ul>
+<h2> <span id="Put_a_file_in_the_SLM_collection_created_earlier"> Put a file in the SLM collection created earlier </span></h2>
+<ul><li> Put a file into the new collection
+</li></ul>
+<pre>Sput ${WORKDIR}/${test}-01/r1/t1 ${test}
+</pre>
+<ul><li> List the file you just ingested in SLM
+</li></ul>
+<pre>Sls -l ${test}
+</pre>
+<ul><li> List the Admin Scheme for the file you just ingested
+</li></ul>
+<pre>Sscheme -l -scheme Admin ${test}/t1
+</pre>
+<p>The object just ingested has inherited the retention and project attributes from the parent collection.
+</p>
+<h2> <span id="List_all_objects_in_your_srb_test_resource_collection"> List all objects in your srb_test resource collection </span></h2>
+<pre>Sls -R -l /arl/msas14.srb_test/${USER}
+</pre>
+<ul><li> Known issue - Recursive operations may take over a minute to complete.
+</li></ul>
+<ul><li> List all of your objects on the srb_test resource
+</li></ul>
+<pre>Sls -R -l -policy "(DATA_OBJECT.owner_at_domain = ${USER}@HPCMP.HPC.MIL)" \
+/arl/msas14.srb_test/${USER}
+</pre>
+<h2> <span id="Examine_the_file_you_just_put_into_the_new_collection."> Examine the file you just put into the new collection. </span></h2>
+<pre>Scat ${test}/t1
+</pre>
+<ul><li> Retrieve a copy of the file you just put into the new collection.
+</li></ul>
+<pre>mkdir ${WORKDIR}/${test}-02
+Sget ${test}/t1 ${WORKDIR}/${test}-02
+</pre>
+<ul><li> Check that the file retrieved matches the original.
+</li></ul>
+<pre>diff ${WORKDIR}/${test}-01/r1/t1 ${WORKDIR}/${test}-02/t1
+</pre>
+<ul><li> Put a second file into the same collection
+</li></ul>
+<pre>Sput ${WORKDIR}/${test}-01/r1/t2.txt ${test}
+</pre>
+<ul><li> List all files in the collection.
+</li></ul>
+<pre>Sls -l ${test}
+</pre>
+<ul><li> Note that SLM has set a type based on the extension.
+</li></ul>
+<ul><li> We can set the type
+</li></ul>
+<pre>SmodD -type "Text Document" ${test}/t1
+</pre>
+<ul><li> List all files in the collection again to show the type update you just made.
+</li></ul>
+<pre>Sls -l ${test}
+</pre>
+<ul><li> We can see the available types with
+</li></ul>
+<pre>Stoken DataType | less
+</pre>
+<h2> <span id="Now_try_ingesting_a_new_file_to_an_existing_name"> Now try ingesting a new file to an existing name </span></h2>
+<pre>Sput ${WORKDIR}/${test}-01/r2/t1 ${test}/t1
+</pre>
+<ul><li> We get an OBJECT_ALREADY_EXISTS error
+</li></ul>
+<ul><li> To overwrite an object in SLM use the -f force option
+</li></ul>
+<pre>Sput -f ${WORKDIR}/${test}-01/r2/t1 ${test}/t1
+</pre>
+<ul><li> List all the files in the collection again
+</li></ul>
+<pre>Sls -l ${test}
+</pre>
+<ul><li> Note that the type metadata remains.
+</li></ul>
+<ul><li> Examine the file you just overwrote:
+</li></ul>
+<pre>Scat ${test}/t1
+</pre>
+<ul><li> Note that it now is the file from Run r2
+</li></ul>
+<h2> <span id="Now_ingest_a_directory_recursively"> Now ingest a directory recursively </span></h2>
+<ul><li> Make a SLM collection
+</li></ul>
+<pre>Smkcoll ${test}-02
+</pre>
+<ul><li> Set project, No DR copy, and 90 day retention using Sretain for the collection you just created.
+</li></ul>
+<pre>Sretain -p HPCMO92330SIS -nodr 90 ${test}-02
+</pre>
+<ul><li> Now ingest a directory recursively
+</li></ul>
+<pre>Sput -R ${WORKDIR}/${test}-01/* ${test}-02
+</pre>
+<ul><li> List the collection you just ingested files into in SLM and then list it recursively
+</li></ul>
+<pre>Sls -l ${test}-02
+Sls -l -R ${test}-02
+</pre>
+<h2> <span id="Retrieve_a_collection_recursively"> Retrieve a collection recursively </span></h2>
+<pre>Sget -R ${test}-02 ${WORKDIR}/${test}-03
+</pre>
+<pre>ls -l ${WORKDIR}/ | grep ${test}-0
+</pre>
+<ul><li> List the retrieved files
+</li></ul>
+<pre>find ${WORKDIR}/${test}-03 -type f | xargs ls -l
+</pre>
+<ul><li> Note that group and permissions are set on the retrieved files like when ingested.
+</li></ul>
+<h2> <span id="Set_the_Retain_Time_and_DR_attributes_recursively_on_all_objects_in_a_collection"> Set the Retain_Time and DR attributes recursively on all objects in a collection </span></h2>
+<ul><li> Set the Retain_Time and DR attributes recursively on all objects in a sub collection of the collection we inherited recursively.
+</li></ul>
+<pre>Sretain -R -dr 31 ${test}-02/r3
+</pre>
+<ul><li> List objects in a collection that have a Retain_Time more than 66 days in the future.
+</li></ul>
+<pre>Sls -R -policy "(EXPRESSION.current_timestamp &lt; Admin.Retain_Time - '66')\
+ AND (DATA_OBJECT.data_type not like '*collection')" ${test}-02
+</pre>
+<ul><li> List objects in a collection that have a Retain_Time less than 66 days in the future.
+</li></ul>
+<pre>Sls -R -policy "(EXPRESSION.current_timestamp &gt; Admin.Retain_Time - '66')\
+ AND (DATA_OBJECT.data_type not like '*collection')" ${test}-02
+</pre>
+<ul><li> Set the Retain_Time and Project recursively for more objects.
+<ul><li> Use the "--verbose" option to have Sretain show the native SRB syntax.
+</li></ul>
+</li></ul>
+<pre>Sretain --verbose -R -p HPCMO92330SIS 60 ${test}-02/r1
+</pre>
+<ul><li> Repeat the above listings and note that the sets are different.
+</li></ul>
+<ul><li> List all the objects in order of Retain_Time with create time.
+</li></ul>
+<pre>Sls -R -l -policy "(DATA_OBJECT.data_type not like '*collection')" -select \
+"DATA_OBJECT.data_name,DATA_OBJECT.create_timestamp,Admin.Retain_Time,Admin.Retention_Period"\
+-order "Admin.Retain_Time"  ${test}-02
+</pre>
+<h2> <span id="Sdata_using_an_object_called_marble"> Sdata using an object called marble </span></h2>
+<pre>Sput ${WORKDIR}/${test}-01/r1/t1 ${test}/marble
+</pre>
+<ul><li> Set file marble color attribute to red:
+</li></ul>
+<pre>Sdata -o ${test}/marble color=red
+</pre>
+<ul><li> Display the marble color attribute you just added.
+</li></ul>
+<pre>Sdata -o ${test}/marble color
+</pre>
+<ul><li> Set the size attribute for the marble file to large:
+</li></ul>
+<pre>Sdata -o ${test}/marble size=large
+</pre>
+<ul><li> Display the marble size attribute you just added.
+</li></ul>
+<pre>Sdata -o ${test}/marble size
+</pre>
+<ul><li> Display everything set for the marble so far
+</li></ul>
+<pre>Sdata -o ${test}/marble
+</pre>
+<ul><li> Set the type attribute metadata to opaque:
+</li></ul>
+<pre>Sdata -o ${test}/marble type=opaque
+</pre>
+<ul><li> Set the material metadata to glass
+</li></ul>
+<pre>Sdata -o ${test}/marble material=glass
+</pre>
+<ul><li> Display metadata for the file marble
+</li></ul>
+<pre>Sdata -o ${test}/marble
+</pre>
+<ul><li> Delete the size attribute metadata:
+</li></ul>
+<pre>Sdata -o ${test}/marble -d size=
+</pre>
+<ul><li> Verify it was deleted (show defined metadata):
+</li></ul>
+<pre>Sdata -o ${test}/marble 
+</pre>
+<ul><li> Change color attribute to blue, add size of small and delete type&nbsp;:
+</li></ul>
+<pre>Sdata -o ${test}/marble -d size=small color=blue type=
+</pre>
+<ul><li> Verify the changes you just made.
+</li></ul>
+<pre>Sdata -o ${test}/marble
+</pre>
+<ul><li> Think of a metadata value you might want to use and set it
+</li></ul>
+<pre>Sdata -o ${test}/marble fee="fi fo fum"
+</pre>
+<ul><li> Display the new fee attribute value you just set.
+</li></ul>
+<pre>Sdata -o ${test}/marble fee
+</pre>
+<ul><li> Create another file, marble2 and set size=large, color=red, material=glass
+</li></ul>
+<pre>Sput ${WORKDIR}/${test}-01/r1/t1 ${test}/marble2
+Sdata -o ${test}/marble2 size=large color=red material=glass
+</pre>
+<ul><li> Search all files that have size large
+</li></ul>
+<pre>Sdata --search size=large
+</pre>
+<ul><li> One file should be returned, marble2, in the ${test} collection.
+<ul><li> The Sdata search is performed from the current collection the marble2 in multiple sub-collections will be shown if you are repeating this test and have not deleted data from the previous time you ran the test.
+</li></ul>
+</li></ul>
+<ul><li> Search all files that have material glass
+</li></ul>
+<pre>Sdata --search material=glass
+</pre>
+<ul><li> Search all files that have material=glass and size=small
+</li></ul>
+<pre>Sdata --search material=glass AND size=small
+</pre>
+<ul><li> The equivalent search using a policy statement is:
+</li></ul>
+<pre>Sls -R -policy "(Name_Value.Name like material)\
+ AND (Name_value.value like 'glass')\
+ AND DATA_OBJECT.data_id IN\
+ (select DATA_OBJECT.data_id where\
+ (Name_Value.Name like size)\
+ AND (Name_value.value like 'small'))"
+</pre>
+<ul><li> Use the "--verbose" option with Sdata to see the equivalent policy statement.
+</li></ul>
+<pre>Sdata --verbose --search material=glass AND size=small
+</pre>
+<h2> <span id="Change_all_objects_in_one_collection_to_use_the_collection_for_access_control"> Change all objects in one collection to use the collection for access control </span></h2>
+<pre>Schmod -R -acl ${test}-02/r1 ${test}-02/r1
+Schmod -R -acl ${test}-02/r2 ${test}-02/r2
+Schmod -R -acl ${test}-02/r3 ${test}-02/r3
+</pre>
+<ul><li> Give yourself all access to the objects
+</li></ul>
+<pre>Schmod -a ${USER}@HPCMP.HPC.MIL ${test}-02/r1 \
+${test}-02/r2 ${test}-02/r3
+</pre>
+<ul><li> Note that recursion is not needed for the grant because access is controlled by rights set for the collection.
+</li></ul>
+<ul><li> Report name and acl for test objects in the workshop collections.
+</li></ul>
+<pre>Sls -R -l -policy "(DATA_OBJECT.data_type not like '*collection')\
+" -select "DATA_OBJECT.data_name,\
+DATA_OBJECT.acl_collection_name,DATA_OBJECT.acl_data_name" ${test}-0\*
+</pre>
+<h2> <span id="Use_the_user_group_to_control_access_to_the_sub_collections"> Use the user group to control access to the sub collections </span></h2>
+<ul><li> Allow your user group read, write, and all access to the r1, r2 and r3 sub collections respectively.
+</li></ul>
+<pre>Schmod -r ${USER} ${test}-02/r1
+Schmod -w ${USER} ${test}-02/r2
+Schmod -a ${USER} ${test}-02/r3
+</pre>
+<ul><li> Add a user to your user group
+</li></ul>
+<pre>modifyUser new-user-for-group@HPCMP.HPC.MIL insertIntoGroup ${USER}
+</pre>
+<ul><li> Remove a user from your user group
+</li></ul>
+<pre>modifyUser new-user-for-group@HPCMP.HPC.MIL removeFromGroup ${USER}
+</pre>
+<ul><li> List users in your user group
+</li></ul>
+<pre>SgetG -u ${USER}
+</pre>
+<h2> <span id="Simple_queries"> Simple queries </span></h2>
+<ul><li> Name beginning with marble
+</li></ul>
+<pre>Sls -l -policy "(DATA_OBJECT.data_name like marble*)"
+</pre>
+<ul><li> Unix group = 'arscf'
+</li></ul>
+<pre>Sls -l -policy "(DATA_OBJECT.unix_group_name = 'arscf')"
+</pre>
+<ul><li> No DR Copy made
+</li></ul>
+<pre>Sls -l -policy "(DATA_REPLICAS.replica_status &amp; 'SRB_STAT_ARCHIVED_03' = 'SRB_STAT_NONE')"
+</pre>
+<ul><li> No DR Copy made query that omits collections
+<ul><li> Note that the above and many others can be combined with not like collection to see only files.
+</li></ul>
+</li></ul>
+<pre>Sls -l -policy "(DATA_REPLICAS.replica_status &amp; 'SRB_STAT_ARCHIVED_03' = 'SRB_STAT_NONE')\
+and (DATA_OBJECT.data_type not like '*collection')"
+</pre>
+<ul><li> Offline
+</li></ul>
+<pre>Sls -l -policy "(DATA_REPLICAS.replica_status &amp; 'SRB_STAT_OFFLINE' &lt;&gt; 'SRB_STAT_NONE')"
+</pre>
+<ul><li> Online
+</li></ul>
+<pre>Sls -l -policy "(DATA_REPLICAS.replica_status &amp; 'SRB_STAT_OFFLINE' = 'SRB_STAT_NONE')"
+</pre>
+<ul><li> Project
+</li></ul>
+<pre>Sls -l -policy "(Admin.HPCMP_Project_ID = 'HPCMO92330SIS')"
+</pre>
+<ul><li> Query for parts of name and path.
+</li></ul>
+<pre>Sls -R -policy "(DATA_OBJECT.data_name like '*txt')\
+and (DATA_OBJECT.collection_name like '*r1*')" ${test}-02
+</pre>
+<h2> <span id="See_.22Policy_Management.22_pages"> See "Policy Management" pages </span></h2>
+<pre><a href="http://people.arsc.edu/~murakami/ngts-cew/srb-doc/srbUser/common/policy_mangement.htm" rel="nofollow">http://people.arsc.edu/~murakami/ngts-cew/srb-doc/srbUser/common/policy_mangement.htm</a>
+</pre>
+<ul><li> This is from documentation included in a client install.
+</li></ul>
+<pre>ls -l ${SRB_HOME}/doc # {/opt/slm/current/doc on US)
+</pre>
+<ul><li> User Guide - User Tasks - Policy Management
+<ul><li> /opt/slm/current/doc/srbUser/common/policy_mangement.htm
+</li><li> {SRB_HOME}/doc/srbUser/common/policy_mangement.htm
+</li></ul>
+</li></ul>
+<ul><li> This includes tables that list available SRB Data Object and Collection Attributes, SRB Expressions, and available operators.
+</li></ul>
+<h2> <span id="Set_Dublin_Core_scheme_attributes_for_an_object_using_a_a_metadata_specification_file"> Set Dublin_Core scheme attributes for an object using a a metadata specification file </span></h2>
+<ul><li> List Dublin_Core scheme for an object
+</li></ul>
+<pre>Sscheme -l -scheme Dublin_Core ${test}/t2.txt
+</pre>
+<ul><li> It doesn't exist
+</li></ul>
+<ul><li> Look at a metadata specification file in SLM
+</li></ul>
+<pre>Scat /arl/msas14.srb_test/murakami/Sscheme-file-test.txt
+</pre>
+<ul><li> Use metadata specification file in SLM to set metadata for an object
+</li></ul>
+<pre>Sscheme -w -dobj /arl/msas14.srb_test/murakami/Sscheme-file-test.txt ${test}/t2.txt
+</pre>
+<ul><li> List Dublin_Core scheme for an object
+</li></ul>
+<pre>Sscheme -l -scheme Dublin_Core ${test}/t2.txt
+</pre>
+<h2> <span id="SLM_Table_Of_Contents_.28TOC.29_script_demo"> SLM Table Of Contents (TOC) script demo </span></h2>
+<ul><li> Tar up the test files we created
+</li></ul>
+<pre>cd ${WORKDIR}
+tar -cvf ${test}-01.tgz ${test}-01
+</pre>
+<ul><li> Ingest into the first test collection we created
+</li></ul>
+<pre>Scd ${test}
+Sls
+${SAMPLES_HOME}/slm/MetadataUtilities/HYCOM/SrbTarManifest.py ${test}-01.tgz
+</pre>
+<ul><li> List the scheme information
+</li></ul>
+<pre>Sscheme -l ${test}-01.tgz
+</pre>
+<ul><li> Search for a file by name within container files
+</li></ul>
+<pre>${SAMPLES_HOME}/slm/MetadataUtilities/HYCOM/SrbTarSearch.py t2.txt
+</pre>
+<ul><li> Go back to the top level collection and search again
+</li></ul>
+<pre>Scd
+${SAMPLES_HOME}/slm/MetadataUtilities/HYCOM/SrbTarSearch.py t2.txt
+</pre>
+<ul><li> Now we find multiple container files that have a file with this name within.
+</li></ul>
+<ul><li> Rename the tar file with a name that HYCOM users use for file identification
+</li></ul>
+<pre>mv slm-2013-08-27-01.tgz 310_archv_1234_440.tar.gz
+</pre>
+<ul><li> Ingest into the first test collection we created with an additional metadta flag
+</li></ul>
+<pre>Scd ${test}
+${SAMPLES_HOME}/slm/MetadataUtilities/HYCOM/SrbTarManifest.py -m 310_archv_1234_440.tar.gz
+</pre>
+<ul><li> List the scheme information
+</li></ul>
+<pre>Sscheme -l 310_archv_1234_440.tar.gz
+</pre>
+<ul><li> Note the additional Name Value pairs we have associated with this file.
+</li></ul>
+<h1> <span id="Clean_Up"> Clean Up </span></h1>
+<ul><li> Remove test files from ${WORKDIR}
+</li></ul>
+<pre>ll -d ${WORKDIR}/${test}-0*
+rm -rf ${WORKDIR}/${test}-0*
+</pre>
+<ul><li> Remove test files from SLM
+</li></ul>
+<pre>Sls | grep ${test}*
+Srm -R ${test}*
+</pre>
+<pre>Sls marble*
+Srm marble*
+</pre>
+<h1> <span id="Revision_Log"> Revision Log </span></h1>
+<ul><li> 10/8/2013 - LAM - Added trailing backslash characters and modified line breaks for tcsh shell.  Made ${test} variable an exported environment variable.
+</li><li> 9/3/2013 - LAM - Added Table Of Contents (TOC) demonstration
+</li><li> 8/23/2013 - LAM - Posted to <a href="http://people.arsc.edu/~murakami/SLM" rel="nofollow">the people - SLM directory</a>
+</li><li> 8/22/2013 - LAM - Multiple revisions in preparation for the 2013 ARL and NAVY SLM Early Adopters Training.
+</li><li> 8/8/2013 - LAM - First posted to <a href="http://people.arsc.edu/~murakami/SLM" rel="nofollow">the people - SLM directory</a>
+</li><li> 7/16/2013 - LAM - Created this page from <a href="http://people.arsc.edu/~murakami/SLM/2012-08-12-Hands-On.txt" rel="nofollow">CCAC SLM Workshop text document (8/12/2012)</a> that was used for the <a href="/index.php/NAVY_SLM_Pilot_Workshop_2012" title="NAVY SLM Pilot Workshop 2012">NAVY SLM Pilot Workshop 2012</a>.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 143/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1338-0!1!0!!en!2 and timestamp 20131008164307 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<div>
+Retrieved from "<a href="https://intrawiki.arsc.edu/index.php/ARL_SLM_Early_Adopters_Training_2013_Hands_On">
+https://intrawiki.arsc.edu/index.php/ARL_SLM_Early_Adopters_Training_2013_Hands_On</a>"
+<br> - Tuesday, October 8, 2013 @ 8:51:02 AM   (Alaska Time)</div>
+<ul>
+<li><a href="#Hands_On">1 Hands On</a>
+<ul>
+<li><a href="#Initialize">1.1 Initialize</a>
+<ul>
+<li><a href="#For_bash_shell.2C_korn_shell_or_borne_shell_users:">1.1.1 For bash shell, korn shell or borne shell users:</a></li>
+<li><a href="#For_c_shell_or_turbo_c_shell_users:">1.1.2 For c shell or turbo c shell users:</a></li>
+<li><a href="#User_.24.7BHOME.7D_default_SLM_values">1.1.3 User ${HOME} default SLM values</a></li>
+</ul>
+</li>
+<li><a href="#Set_environment_variable_for_test_collections_.2F_directories">1.2 Set environment variable for test collections / directories</a>
+<ul>
+<li><a href="#For_bash_shell.2C_korn_shell_or_borne_shell_users:_2">1.2.1 For bash shell, korn shell or borne shell users:</a></li>
+<li><a href="#For_c_shell_or_turbo_c_shell_users:_2">1.2.2 For c shell or turbo c shell users:</a></li>
+</ul>
+</li>
+<li><a href="#Make_a_SLM_collection">1.3 Make a SLM collection</a></li>
+<li><a href="#SLM_Environment">1.4 SLM Environment</a></li>
+<li><a href="#Display_Users_in_.24.7BUSER.7D_group">1.5 Display Users in ${USER} group</a></li>
+<li><a href="#Create_a_set_of_test_files">1.6 Create a set of test files</a></li>
+<li><a href="#Put_a_file_in_the_SLM_collection_created_earlier">1.7 Put a file in the SLM collection created earlier</a></li>
+<li><a href="#List_all_objects_in_your_srb_test_resource_collection">1.8 List all objects in your srb_test resource collection</a></li>
+<li><a href="#Examine_the_file_you_just_put_into_the_new_collection.">1.9 Examine the file you just put into the new collection.</a></li>
+<li><a href="#Now_try_ingesting_a_new_file_to_an_existing_name">1.10 Now try ingesting a new file to an existing name</a></li>
+<li><a href="#Now_ingest_a_directory_recursively">1.11 Now ingest a directory recursively</a></li>
+<li><a href="#Retrieve_a_collection_recursively">1.12 Retrieve a collection recursively</a></li>
+<li><a href="#Set_the_Retain_Time_and_DR_attributes_recursively_on_all_objects_in_a_collection">1.13 Set the Retain_Time and DR attributes recursively on all objects in a collection</a></li>
+<li><a href="#Sdata_using_an_object_called_marble">1.14 Sdata using an object called marble</a></li>
+<li><a href="#Change_all_objects_in_one_collection_to_use_the_collection_for_access_control">1.15 Change all objects in one collection to use the collection for access control</a></li>
+<li><a href="#Use_the_user_group_to_control_access_to_the_sub_collections">1.16 Use the user group to control access to the sub collections</a></li>
+<li><a href="#Simple_queries">1.17 Simple queries</a></li>
+<li><a href="#See_.22Policy_Management.22_pages">1.18 See "Policy Management" pages</a></li>
+<li><a href="#Set_Dublin_Core_scheme_attributes_for_an_object_using_a_a_metadata_specification_file">1.19 Set Dublin_Core scheme attributes for an object using a a metadata specification file</a></li>
+<li><a href="#SLM_Table_Of_Contents_.28TOC.29_script_demo">1.20 SLM Table Of Contents (TOC) script demo</a></li>
+</ul>
+</li>
+<li><a href="#Clean_Up">2 Clean Up</a></li>
+<li><a href="#Revision_Log">3 Revision Log</a></li>
+</ul>
+</td></tr></table>
+</body></html>

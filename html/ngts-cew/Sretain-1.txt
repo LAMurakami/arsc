@@ -1,0 +1,185 @@
+.\" $Id: Sretain.1,v 1.5 2010/07/13 20:27:34 murakami Exp murakami $
+.\"
+.\" 20100430 - LAM Created initial man page from html version
+.\" 20100713 - LAM Added -p [HPCMP Project]
+.\" 20100713 - LAM Applied fixes suggested by Ravi Sathish
+
+.TH Sretain 1 "July 13, 2010 " ""
+
+.SH NAME
+.B
+Sretain
+\- set SRB data retention attributes.
+.SH SYNOPSIS
+.B
+Sretain
+{\fBoptions\fP}
+[\fB<days>|<date>\fP]
+[\fB<objects>|<collections>\fP]
+.SH DESCRIPTION
+.B
+Sretain
+is the command line interface to set a "Retention Period" on Storage Resource Broker (SRB) objects.
+The Sretain command updates the "Admin Scheme" which is a System Scheme that is automatically
+applied during ingestion of objects into SRB.
+The Sretain command requires a days or date argument for the retention period and objects
+or collections to act upon.
+The "Last Review Time" is set automatically by the Sretain command.
+.SH <days>|<date>
+The [<days>|<date>] parameter is a required parameter. The [days|date] parameter determines the new
+"Retention Period" to be set on Storage Resource Broker (SRB) objects.
+The [<days>|<date>] parameter can be specified in a variety of formats.
+.TP
+[\fBbare integer\fP]
+Specifies "Retention Period" in integer days of duration from the current date.
+.TP
+[\fBinteger\fP]\fBd\fP
+Specifies "Retention Period" in integer days of duration from the current date.
+.TP
+[\fBinteger\fP]\fBw\fP
+Specifies "Retention Period" in integer weeks of duration from the current date.
+.TP
+[\fBinteger\fP]\fBm\fP
+Specifies "Retention Period" in integer months of duration from the current date.
+.TP
+[\fBinteger\fP]\fBy\fP
+Specifies "Retention Period" in integer years of duration from the current date.
+.TP
+[\fByyyy/mm/dd\fP]
+Specifies a fixed date for the end of the "Retention Period"
+ in Year/Month/Day format. 
+.TP
+[\fByyyy-mm-dd\fP]
+Specifies a fixed date for the end of the "Retention Period"
+ in Year-Month-Day format. 
+.TP
+[\fBmm/dd/yyyy\fP]
+Specifies a fixed date for the end of the "Retention Period"
+ in Month/Day/Year format. 
+.TP
+[\fBmm-dd-yyyy\fP]
+Specifies a fixed date for the end of the "Retention Period"
+ in Month-Day-Year format.
+.SH <objects>|<collections>
+The [<objects>|<collections>] parameter is a required parameter.
+More than one object and/or collection can be specified.
+The [<objects>|<collections>] parameter specifies the SRB objects and/or collections to act upon.
+.SH OPTIONS
+The Sretain command allows a number of options to set "Admin Scheme" attributes
+besides the "Retention Period" and includes the -r option which causes the attributes
+to be set recursively on objects within the collection[s].
+The -r option can be specifed to have the command apply recursively to objects
+within the specified collection or collections. 
+.TP
+.B
+-archive|-immediate|-noarchive
+Specifies whether the object is archived, archived immediately, or not archived ("Archive Behavior" attribute).
+.TP
+.B
+-dr|-nodr
+Specifies whether the object is sent to the DR system ("DR Behavior" attribute).
+.TP
+.B
+-purge|-nopurge
+Specifies whether the object is released after archive. ("Purge Behavior" attribute).
+.TP
+.B
+-r
+Specifies that the operation be applied recursively on objects within the collection[s].
+The -r option only works when collections are specified.
+.TP
+.B
+-p [HPCMP Project ID]
+Specifies the 13 character HPCMP Project this object is associated with.
+.SH ADMIN SCHEME
+The admin scheme is a System Scheme that is automatically applied during ingestion of objects into SRB.
+The admin scheme has the following attributes:
+.TP
+.B
+Archive Behavior
+Specifies whether the object is archived, archived immediately, or not archived.
+.TP
+.B
+DR Behavior
+Specifies whether the object is sent to the DR system.
+.TP
+.B
+Purge Behavior
+Specifies whether the object is released after archive.
+.TP
+.B
+Retention Period
+Identifies the number of days the object is retained in the archive.
+.TP
+.B
+Retain-Through
+Identifies the date the object is retained through in the archive.
+.TP
+.B
+Pre-Warning period
+Identifies the number of days prior to the end of the retention period that the user should be warned.
+.TP
+.B
+Last Review
+Identifies when the object was last reviewed. Automatically updated by Sretain.
+.TP
+.B
+Next Review
+Identifies when the archive policy is due to be reviewed by the user.
+.TP
+.B
+Admin Hold
+Identifies whether the object is prevented from expiration and purge
+ (not user modifiable).
+.TP
+.B
+HPCMP Project ID
+Specifies the 13 character HPCMP Project this object is associated with. 
+.SH Metadata Attribute Population Algorithm - Step Description
+.IP 1
+If the attribute is a string list then the value must be
+one of the strings specified for the string list.
+.IP 2
+The system uses values supplied directly by the user
+.IP 3
+If the user does not supply a value, i.e. the value is
+"null", then the system uses the user default value
+associated with the attribute column.
+.IP 4
+If there is no user default value, the system inherits
+the value from the Parent Collection.
+.IP 5
+If there is no Parent Collection value, the system uses
+the administrator default value associated with the attribute column.
+.IP 6
+If none of the above conditions are met then the system
+leaves the value as "null".
+.P
+From SRB User guide (2010 Alpha version)
+.SH EXAMPLES
+.TP
+.B
+Sretain 90 MyObj
+This command will set the retention period for the object MyObj
+in the current collection to 90 days from the current date.
+.TP
+.B
+Sretain 3m MyObj
+This command will set the retention period for the object MyObj
+in the current collection to 3 months from the current date.
+.TP
+.B
+Sretain 90 MyCol/MyObj
+This command will set the retention period for the object MyObj
+in the collection MyCol to 90 days from the current date.
+.TP
+.B
+Sretain 6m 'MyObj*'
+This command will set the retention period for any objects matching 'MyObj*'
+in the current collection to 6 months from the current date.
+.TP
+.B
+Sretain '05/20/2011' -r MyCol
+This command will set the retention period for
+the collection MyCol and all objects in the collection recursively to 05/20/2011.
+.P

@@ -1,0 +1,274 @@
+#%Module
+##########################################################################
+## modules modulefile
+##
+##
+# note that this is read by a Tcl interpretor
+#
+proc ModulesHelp { } {
+
+   puts stderr "Set up slm defaults and environment then intitialize with kerberos credentials.\n"
+}
+
+module-whatis "Set up slm defaults and environment then intitialize with kerberos credentials."
+
+set pkg_root /mnt/gpfs_cta/slm/current
+
+set KLIST /usr/krb5/bin/klist
+
+   setenv           SRB_HOME        $pkg_root
+   append-path      PATH            $pkg_root/bin
+   append-path      LD_LIBRARY_PATH $pkg_root/lib/64
+   append-path      MANPATH         $pkg_root/man
+
+# Don't do the parts required for Sinit if "module unload" was used.
+
+proc slm_defaults {} {
+
+global SLM_PRINCIPAL SLM_USER SLM_DOMAIN SLM_AUTH_NAME SLM_RESOURCE SLM_HOME SLM_CLASSIFICATION SLM_HOST env
+
+if { ! [file isdirectory $::pkg_root] } {
+   puts stderr "\nERROR No Directory at: $::pkg_root"
+   exit 1
+}
+
+if { ! [file executable $::KLIST] } {
+   puts stderr "\nERROR No executable file at: $::KLIST"
+   exit 1
+}
+
+# Split the klist output by line
+
+if {[catch { set t1 [split [exec $::KLIST] "\n"] }]} {
+  puts stderr "\nERROR: $::errorInfo"
+  exit 1
+}
+
+foreach line $t1 {
+  if [regexp "Default principal" $line] {
+    set SLM_PRINCIPAL [lindex $line 2]
+    break
+  }
+}
+
+puts stderr "Kerberos principal: $SLM_PRINCIPAL"
+
+set SLM_USER [lindex [split $SLM_PRINCIPAL "@"] 0]
+
+puts stderr "SLM User: $SLM_USER"
+
+set SLM_DOMAIN [lindex [split $SLM_PRINCIPAL "@"] 1]
+
+# Replace @STORAGE.HPC.MIL with @HPCMP.HPC.MIL in principal
+
+if [string equal {STORAGE.HPC.MIL} $SLM_DOMAIN] {
+  set SLM_AUTH_NAME "$SLM_USER@HPCMP.HPC.MIL"
+  puts stderr "SLM Authentication Name: $SLM_AUTH_NAME"
+} else {
+  set SLM_AUTH_NAME "$SLM_PRINCIPAL"
+}
+
+if { [ array names env ARCHIVE_HOME ] == "" } {
+   puts stderr "\nERROR: ARCHIVE_HOME not set!"
+   exit 1
+}
+
+set FS Unknown_filesystem
+
+if { [lindex [split $env(ARCHIVE_HOME) "/"] 3] == "$env(USER)" } {
+   set FS [lindex [split $env(ARCHIVE_HOME) "/"] 2]
+}
+if { [lindex [split $env(ARCHIVE_HOME) "/"] 2] == "$env(USER)" } {
+   set FS [lindex [split $env(ARCHIVE_HOME) "/"] 1]
+}
+if { [lindex [split $env(ARCHIVE_HOME) "/"] 4] == "$env(USER)" } {
+   set FS [lindex [split $env(ARCHIVE_HOME) "/"] 3]
+}
+
+# ARL filesystem resource collection map
+# The following creates a Tcl nested dictionary structure that holds
+#  resource and collection values for each filesystem.
+
+dict set filesystem army resource arl.msas11.army
+dict set filesystem army collection /archive/SLM_USER/arl/army
+dict set filesystem army classification SBU
+dict set filesystem army mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem armya resource arl.msas13.armya
+dict set filesystem armya collection /archive/SLM_USER/arl/armya
+dict set filesystem armya classification SBU
+dict set filesystem armya mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem armyb resource arl.msas13.armyb
+dict set filesystem armyb collection /archive/SLM_USER/arl/armyb
+dict set filesystem armyb classification SBU
+dict set filesystem armyb mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem armyc resource arl.msas14.armyc
+dict set filesystem armyc collection /archive/SLM_USER/arl/armyc
+dict set filesystem armyc classification SBU
+dict set filesystem armyc mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem navy resource arl.msas12.navy
+dict set filesystem navy collection /archive/SLM_USER/arl/navy
+dict set filesystem navy classification SBU
+dict set filesystem navy mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem navya resource arl.msas11.navya
+dict set filesystem navya collection /archive/SLM_USER/arl/navya
+dict set filesystem navya classification SBU
+dict set filesystem navya mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem navyb resource arl.msas11.navyb
+dict set filesystem navyb collection /archive/SLM_USER/arl/navyb
+dict set filesystem navyb classification SBU
+dict set filesystem navyb mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem navyc resource arl.msas11.navyc
+dict set filesystem navyc collection /archive/SLM_USER/arl/navyc
+dict set filesystem navyc classification SBU
+dict set filesystem navyc mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem airforce resource arl.msas12.airforce
+dict set filesystem airforce collection /archive/SLM_USER/arl/airforce
+dict set filesystem airforce classification SBU
+dict set filesystem airforce mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem others resource arl.msas12.others
+dict set filesystem others collection /archive/SLM_USER/arl/others
+dict set filesystem others classification SBU
+dict set filesystem others mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem quota resource arl.msas11.quota
+dict set filesystem quota collection /archive/SLM_USER/arl/quota
+dict set filesystem quota classification SBU
+dict set filesystem quota mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+dict set filesystem srb_test resource arl.msas14.srb_test
+dict set filesystem srb_test collection /archive/SLM_USER/arl/srb_test
+dict set filesystem srb_test classification SBU
+dict set filesystem srb_test mcats mcat22.arl.hpc.mil,mcat21.arl.hpc.mil
+
+# HTL filesystem resource collection map
+
+dict set filesystem htl_test resource htl.htl_test
+dict set filesystem htl_test collection /archive/SLM_USER/htl/htl_test
+dict set filesystem htl_test classification ORS
+dict set filesystem htl_test mcats mcat71.arl.hpc.mil,mcat72.arl.hpc.mil
+
+dict set filesystem htl_test2 resource htl.htl_test2
+dict set filesystem htl_test2 collection /archive/SLM_USER/htl/htl_test2
+dict set filesystem htl_test2 classification SBU
+dict set filesystem htl_test2 mcats mcat71.arl.hpc.mil,mcat72.arl.hpc.mil
+
+# NAVY filesystem resource collection map
+
+dict set filesystem b resource navy.katrina.b
+dict set filesystem b collection /archive/SLM_USER/navy/b
+dict set filesystem b classification SBU
+dict set filesystem b mcats mcat61.navo.hpc.mil,mcat62.navo.hpc.mil
+
+dict set filesystem g resource navy.katrina.g
+dict set filesystem g collection /archive/SLM_USER/navy/g
+dict set filesystem g classification SBU
+dict set filesystem g mcats mcat61.navo.hpc.mil,mcat62.navo.hpc.mil
+
+dict set filesystem m resource navy.katrina.m
+dict set filesystem m collection /archive/SLM_USER/navy/katrina.m
+dict set filesystem m classification SBU
+dict set filesystem m mcats mcat61.navo.hpc.mil,mcat62.navo.hpc.mil
+
+# AFRL filesystem resource collection map
+
+dict set filesystem msas032 resource afrl.msas032
+dict set filesystem msas032 collection /archive/SLM_USER/afrl/msas032
+dict set filesystem msas032 classification SBU
+dict set filesystem msas032 mcats mcat11.afrl.hpc.mil,mcat12.afrl.hpc.mil
+
+# ORS filesystem resource collection map
+
+dict set filesystem uaf resource wiseman.uaf
+dict set filesystem uaf collection /archive/SLM_USER/ors/uaf
+dict set filesystem uaf classification ORS
+dict set filesystem uaf mcats mcat31.afrl.hpc.mil,mcat32.afrl.hpc.mil
+
+# ERDC filesystem resource collection map
+
+dict set filesystem erdc1 resource erdc.erdc1
+dict set filesystem erdc1 collection /archive/SLM_USER/erdc/erdc1
+dict set filesystem erdc1 classification SBU
+dict set filesystem erdc1 mcats mcat41.erdc.hpc.mil,mcat42.erdc.hpc.mil
+
+# MHPCC filesystem resource collection map
+
+dict set filesystem archive resource mhpcc.archive
+dict set filesystem archive collection /archive/SLM_USER/mhpcc/archive
+dict set filesystem archive classification SBU
+dict set filesystem archive mcats mcat51.mhpcc.hpc.mil,mcat52.mhpcc.hpc.mil
+
+if {[catch { set FS_DICT [dict get $filesystem $FS] }]} {
+  puts stderr "\nERROR: Unknown filesystem: $FS"
+  puts stderr "From ARCHIVE_HOME: $env(ARCHIVE_HOME)"
+  exit 1
+}
+
+set FS_DICT [dict get $filesystem $FS]
+
+set SLM_HOST [dict get $FS_DICT mcats]
+
+puts stderr "SLM Host: $SLM_HOST"
+
+set SLM_RESOURCE [dict get $FS_DICT resource]
+
+puts stderr "SLM Resource: $SLM_RESOURCE"
+
+set t1 [dict get $FS_DICT collection]
+
+# Replace SLM_USER with the actual user extracted from the kerberos principal.
+
+set SLM_HOME [regsub SLM_USER $t1 $SLM_USER]
+
+set SLM_CLASSIFICATION [dict get $FS_DICT classification]
+
+puts stderr "SLM Classification Level: $SLM_CLASSIFICATION"
+
+}
+
+if { ! [string equal {unload} [module-info mode]] } {
+  if {[catch { slm_defaults }]} {
+#   puts stderr "\nERROR: $::errorCode"
+    puts stderr "\nERROR: $::errorInfo"
+    exit 1
+  }
+}
+
+# Only do this last part if "module load" was used.
+
+if [string equal {load} [module-info mode]] {
+
+  if { [file exists ~/.srb/.srbUserSession.def] } {
+    if { ! [string equal {00600} [file attributes ~/.srb/.srbUserSession.def -permission]] } {
+    set SLM_DEF_PERMS [file attributes ~/.srb/.srbUserSession.def -permission]
+    puts stderr "\n~/.srb/.srbUserSession.def permissions reset from $SLM_DEF_PERMS to 00600"
+    file attributes ~/.srb/.srbUserSession.def -permission 00600
+    }
+  }
+
+  if {[catch { exec Sinit -user $SLM_AUTH_NAME -host $SLM_HOST \
+  -port 5625 -comm PLAIN_TEXT -auth KERBEROS_AUTH -coll $SLM_HOME \
+  -rsrc $SLM_RESOURCE -classification $SLM_CLASSIFICATION -w }]} {
+    puts stderr "\nERROR: $::errorInfo"
+    exit 1
+  } else {
+
+    if {[catch { exec -ignorestderr Sinit }]} {
+      puts stderr "\nERROR: $::errorInfo"
+    } else {
+      puts stderr "SLM Home Collection \$SLM_HOME set to: $SLM_HOME"
+    }
+  }
+} else {
+  if { ! [string equal {unload} [module-info mode]] } {
+    puts stderr "SLM Home Collection: $SLM_HOME"
+  }
+}

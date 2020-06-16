@@ -1,0 +1,202 @@
+<HTML><HEAD><TITLE>Sreview - set Admin.Last_Review_Time attribute.</TITLE>
+<style type="text/css">
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+dt { color: #a02712}
+.clearit { clear: both; height: 0; line-height: 0.0; font-size: 0; }
+</style>
+</head><body>
+<a href="..">
+<img src="DODc.gif"
+alt="DoD Shield" border="0" width="99" height="99" style="float: right;"/></a>
+<a href=".">
+<img src="../SLM/HPCMP_Red-Black.gif"
+alt="HPCMP logo" border="0" width="202" height="99" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+Sreview - set Admin.Last_Review_Time attribute.
+
+</h1>
+</center>
+<br class="clearit"><hr>
+
+Section: User Contributed Perl Documentation (1)<BR>Updated: 2012-08-07<BR><A HREF="#index">Index</A>
+<hr>
+
+<A NAME="lbAB">
+<H2>NAME</H2></A>
+
+<B>Sreview</B> - set Admin.Last_Review_Time attribute.
+<A NAME="lbAC">
+<H2>SYNOPSIS</H2></A>
+
+<A NAME="ixAAC"></A>
+<B>Sreview&nbsp;[options]&nbsp;objects|collections</B>
+<A NAME="lbAD">
+<H2>DESCRIPTION</H2></A>
+
+<A NAME="ixAAD"></A>
+<B>Sreview</B> is the command line interface to set <I>``Last_Review_Time''</I> on
+Storage Lifecycle Management (<FONT SIZE="-1">SLM</FONT>) objects. The <B>Sreview</B> command updates the
+<I>``Admin''</I> Scheme which is a System Schmeme that is automatically applied during
+ingestion of objects into <FONT SIZE="-1">SLM</FONT>. The <B>Sreview</B> command requires <B>objects</B> or
+<B>collections</B> to act upon.
+<A NAME="lbAE">
+<H2>objects|collections</H2></A>
+
+<A NAME="ixAAE"></A>
+The <B>objects|collections</B> parameter is a required parameter. More than
+one <B>object</B> and/or <B>collection</B> can be specified. The
+<B>objects|collections</B> parameter specifies the <FONT SIZE="-1">SLM</FONT> objects and/or
+collections to act upon.
+<A NAME="lbAF">
+<H2>OPTIONS</H2></A>
+
+<A NAME="ixAAF"></A>
+The <B>Sreview</B> command allows a number of options when setting <I>``Admin''</I> Scheme
+attribute <I>``Last_Review_Time''</I> and includes the <B>-r</B> option
+which causes the attributes to be set recursively on objects within the
+collection[s].
+<P>
+
+The options are as follows:
+<DL COMPACT>
+<DT><B>-R</B>, <B>-recursive</B><DD>
+<A NAME="ixAAG"></A>
+Specifies that the operation be applied recursively on objects within the
+collection[s]. The <B>-R</B> option only works when collections are specified.
+<DT><B>-help</B><DD>
+<A NAME="ixAAH"></A>
+Print this help message and exit.
+<DT><B>-version</B><DD>
+<A NAME="ixAAI"></A>
+Print the program version and exit.
+<DT><B>-verbose</B><DD>
+<A NAME="ixAAJ"></A>
+Print more verbose output during the execution of <B>Sreview</B>.
+</DL>
+<A NAME="lbAG">
+<H2>EXAMPLES</H2></A>
+
+<A NAME="ixAAK"></A>
+<DL COMPACT>
+<DT>Example 1 Setting Last_Review_Time for a single object.<DD>
+<A NAME="ixAAL"></A>
+% Sreview&nbsp;MyObj
+
+
+<P>
+
+
+This command will set the Last_Review_Time for the object MyObj in the current
+collection to the current date and time.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Last_Review_Time::[sysdate]'&nbsp;MyObj
+<DT>Example 2 Setting Last_Review_Time for multiple objects.<DD>
+<A NAME="ixAAM"></A>
+% Sreview&nbsp;MyObj&nbsp;MyObj2&nbsp;...
+
+
+<P>
+
+
+This command will set the Last_Review_Time for the objects listed in the current
+collection to the current date and time.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Last_Review_Time::[sysdate]'&nbsp;MyObj&nbsp;MyObj2&nbsp;...
+<DT>Example 3 Setting Last_Review_Time recursively on a collection<DD>
+<A NAME="ixAAN"></A>
+% Sreview&nbsp;-R&nbsp;MyCol
+
+
+<P>
+
+
+This command will set the Last_Review_Time for the collection MyCol and all
+objects in the collection recursively to the current date and time.
+
+
+<P>
+
+
+The equivalent native Sscheme command is:
+
+
+<P>
+
+
+% Sscheme&nbsp;-w&nbsp;-val&nbsp;'Admin.Last_Review_Time::[sysdate]'&nbsp;MyObj
+</DL>
+<A NAME="lbAH">
+<H2>SEE ALSO</H2></A>
+
+<A NAME="ixAAO"></A>
+<B></B><A HREF="../../SRB_Commands/Sscheme.html ">Sscheme</A><B>(1)</B>,
+<B></B><A HREF="Sretain.html ">Sretain</A><B>(1)</B>
+<A NAME="lbAI">
+<H2>RELEASE NOTES</H2></A>
+
+<A NAME="ixAAP"></A>
+<DL COMPACT>
+<DT>Version 1.1 - June 28, 2012 - LAM@HTL<DD>
+<A NAME="ixAAQ"></A>
+Initial release.
+
+
+<P>
+
+
+Stripped down version of Sretain to allow setting just the Admin.Last_Review_Time.
+<DT>Version 1.2 - June 28, 2012 - LAM@HTL<DD>
+<A NAME="ixAAR"></A>
+Modified script to submit one 'Sscheme -w' command for all objects specified.
+<p>
+<DT>Version 1.3 - August 7, 2012 - LAM@HTL<DD>
+<A NAME="ixAAS"></A>
+Modified help and man page to specify ``-R'' instead of ``-r'' for recursion to match other Scommands.
+Modified to always escape any asterisk wildcard characters in the objects|collections argument.
+<P>
+</DL>
+
+<HR>
+<A NAME="index"><H2>Index</H2></A>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">objects|collections</A><DD>
+<DT><A HREF="#lbAF">OPTIONS</A><DD>
+<DT><A HREF="#lbAG">EXAMPLES</A><DD>
+<DT><A HREF="#lbAH">SEE ALSO</A><DD>
+<DT><A HREF="#lbAI">RELEASE NOTES</A><DD>
+</DL>
+<HR>
+This document was created by
+man2html and sed,
+using the manual pages.<BR>
+Time: 22:37:20 GMT, August 07, 2012
+</BODY>
+</HTML>

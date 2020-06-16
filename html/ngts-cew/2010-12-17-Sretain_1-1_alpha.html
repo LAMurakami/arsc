@@ -1,0 +1,355 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Sretain - set SRB retention attributes.</title>
+<style type="text/css">
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+dt { color: #a02712}
+</style>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4220.GIF" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+<h1>Sretain - set SRB retention attributes.</h1>
+</sub></td><td width="100"><a href="..">
+<img src="https://ngtsmt.navo.hpc.mil/portal/pls/portal/docs/1/4221.GIF" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#days_date">days|date</a></li>
+	<li><a href="#objects_collections">objects|collections</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#admin_scheme">ADMIN SCHEME</a></li>
+	<li><a href="#metadata_attribute_population_algorithm__step_description">Metadata Attribute Population Algorithm - Step Description</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#release_notes">RELEASE NOTES</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p><strong>Sretain</strong> - set SRB retention attributes.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>Sretain&nbsp;[options]&nbsp;days|date&nbsp;objects|collections</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><strong>Sretain</strong> is the command line interface to set a <em>``Retention Period''</em> on
+Storage Resource Broker (SRB) objects. The <strong>Sretain</strong> command updates the
+<em>``Admin Scheme''</em> which is a System Schmeme that is automatically applied during
+ingestion of objects into SRB. The <strong>Sretain</strong> command requires a <strong>days</strong> or
+<strong>date</strong> argument for the retention period and <strong>objects</strong> or
+<strong>collections</strong> to act upon. The <em>``Last Review Time''</em> is set automatically by
+the <strong>Sretain</strong> command.</p>
+<p>
+</p>
+<hr />
+<h1><a name="days_date">days|date</a></h1>
+<p>The <strong>days|date</strong> parameter is a required parameter. The
+<strong>days|date</strong> parameter determines the new <em>``Retention Period''</em> to be
+set on Storage Resource Broker (SRB) objects. The <strong>days|date</strong>
+parameter can be specified in a variety of formats.</p>
+<dl>
+<dt><strong><a name="item_integer_5bd_7cw_7cm_7cy_5d"><strong>integer[d|w|m|y]</strong></a></strong>
+
+<dd>
+<p>Specifies <em>``Retention Period''</em> in integer days of duration from the current
+date.  Modifiers are available for days <strong>d</strong>, weeks <strong>w</strong>, months <strong>m</strong> and years
+<strong>y</strong>.</p>
+</dd>
+</li>
+<dt><strong><a name="item_yyyy_"><strong>yyyy/mm/dd</strong></a></strong>
+
+<dd>
+<p>Specifies a fixed date for the end of the <em>``Retention Period''</em> in
+year/month/day format.</p>
+</dd>
+</li>
+<dt><strong><a name="item_yyyy_2dmm_2ddd"><strong>yyyy-mm-dd</strong></a></strong>
+
+<dd>
+<p>Specifies a fixed date for the end of the <em>``Retention Period''</em> in
+year-month-day format.</p>
+</dd>
+</li>
+<dt><strong><a name="item_mm_"><strong>mm/dd/yyyy</strong></a></strong>
+
+<dd>
+<p>Specifies a fixed date for the end of the <em>``Retention Period''</em> in
+month/day/year format.</p>
+</dd>
+</li>
+<dt><strong><a name="item_mm_2ddd_2dyyyy"><strong>mm-dd-yyyy</strong></a></strong>
+
+<dd>
+<p>Specifies a fixed date for the end of the <em>``Retention Period''</em> in
+month-day-year format.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="objects_collections">objects|collections</a></h1>
+<p>The <strong>objects|collections</strong> parameter is a required parameter. More than
+one <strong>object</strong> and/or <strong>collection</strong> can be specified. The
+<strong>objects|collections</strong> parameter specifies the SRB objects and/or
+collections to act upon.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<p>The <strong>Sretain</strong> command allows a number of options to set <em>``Admin Scheme''</em>
+attributes besides the <em>``Retention Period''</em> and includes the <strong>-r</strong> option
+which causes the attributes to be set recursively on objects within the
+collection[s].</p>
+<p>The options are as follows:</p>
+<dl>
+<dt><strong><a name="item__2dr"><strong>-r</strong></a></strong>
+
+<dd>
+<p>Specifies that the operation be applied recursively on objects within the
+collection[s]. The <strong>-r</strong> option only works when collections are specified.</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dnext_review_3ddays_7cdate"><strong>-next_review=days|date</strong></a></strong>
+
+<dd>
+<p>Specify the <strong>date</strong> or number of <strong>days</strong> until the next review.</p>
+</dd>
+</li>
+<dt><strong><a name="item__2darchive_7c_2dimmediate_7c_2dnoarchive"><strong>-archive|-immediate|-noarchive</strong></a></strong>
+
+<dd>
+<p>Specifies whether the object is archived, archived immediately, or not archived
+(<em>``Archive Behavior''</em> attribute).</p>
+</dd>
+</li>
+<dt><strong><a name="item__2ddr_7c_2dnodr"><strong>-dr|-nodr</strong></a></strong>
+
+<dd>
+<p>Specifies whether the object is sent to the DR system (<em>``DR Behavior''</em>
+attribute).</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dpurge_7c_2dnopurge"><strong>-purge|-nopurge</strong></a></strong>
+
+<dd>
+<p>Specifies whether the object is released after archive. (<em>``Purge Behavior''</em>
+attribute).</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dnext_review_days_7cdate"><strong>-next_review days|date</strong></a></strong>
+
+<dd>
+<p>Specifies the next review time in either <strong>days</strong> or <strong>date</strong> in the format
+specified earlier.</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dhold"><strong>-hold</strong></a></strong>
+
+<dd>
+<p>Specifies that the <em>``Admin Hold''</em> column be set to yes.  <strong>This is an
+administrator only option.</strong></p>
+</dd>
+</li>
+<dt><strong><a name="item__2dp_project_id"><strong>-p project_id</strong></a></strong>
+
+<dd>
+<p>Specifies the project ID that this object is a member of.</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dhelp"><strong>-help</strong></a></strong>
+
+<dd>
+<p>Print this help message and exit.</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dversion"><strong>-version</strong></a></strong>
+
+<dd>
+<p>Print the program version and exit.</p>
+</dd>
+</li>
+<dt><strong><a name="item__2dverbose"><strong>-verbose</strong></a></strong>
+
+<dd>
+<p>Print more verbose output during the execution of <strong>Sretain</strong>.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="admin_scheme">ADMIN SCHEME</a></h1>
+<p>The admin scheme is a System Schmeme that is automatically applied during
+ingestion of objects into SRB. The admin scheme has the following attributes:</p>
+<dl>
+<dt><strong><a name="item_archive_behavior"><em>Archive Behavior</em></a></strong>
+
+<dd>
+<p>Specifies whether the object is archived, archived immediately, or not archived.</p>
+</dd>
+</li>
+<dt><strong><a name="item_dr_behavior"><em>DR Behavior</em></a></strong>
+
+<dd>
+<p>Specifies whether the object is sent to the DR system.</p>
+</dd>
+</li>
+<dt><strong><a name="item_purge_behavior"><em>Purge Behavior</em></a></strong>
+
+<dd>
+<p>Specifies whether the object is released after archive.</p>
+</dd>
+</li>
+<dt><strong><a name="item_retention_period"><em>Retention Period</em></a></strong>
+
+<dd>
+<p>Identifies the number of days the object is retained in the archive.</p>
+</dd>
+</li>
+<dt><strong><a name="item_retain_2dthrough"><em>Retain-Through</em></a></strong>
+
+<dd>
+<p>Identifies the date the object will be retained through.</p>
+</dd>
+</li>
+<dt><strong><a name="item_pre_2dwarning_period"><em>Pre-Warning Period</em></a></strong>
+
+<dd>
+<p>Identifies the number of days prior to the end of the retention period that the
+user should be warned.</p>
+</dd>
+</li>
+<dt><strong><a name="item_last_review_time"><em>Last Review Time</em></a></strong>
+
+<dd>
+<p>Identifies when the object was last reviewed. Automatically updated by
+<strong>Sretain</strong>.</p>
+</dd>
+</li>
+<dt><strong><a name="item_next_review_time"><em>Next Review Time</em></a></strong>
+
+<dd>
+<p>Identifies when the archive policy is due to be reviewed by the user.</p>
+</dd>
+</li>
+<dt><strong><a name="item_admin_hold"><em>Admin Hold</em></a></strong>
+
+<dd>
+<p>Identifies whether the object is prevented from expiration and purge (not user
+modifiable).</p>
+</dd>
+</li>
+<dt><strong><a name="item_hpcmp_project_id"><em>HPCMP Project ID</em></a></strong>
+
+<dd>
+<p>Identifies the HPCMP project that the object or collection belongs to.
+The value must be uppercase alphanumeric.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="metadata_attribute_population_algorithm__step_description">Metadata Attribute Population Algorithm - Step Description</a></h1>
+<ol>
+<li>
+<p>If the attribute is a string list then the value must be one of the strings
+specified for the string list.  The system uses values supplied directly by the
+user (does not apply for System Master Schemes).</p>
+</li>
+<li>
+<p>If the user does not supply a value, i.e. the value is ``null'', then the system
+uses the user default value associated with the attribute column.</p>
+</li>
+<li>
+<p>If there is no user default value, the system uses the administrator default
+value associated with the attribute column.</p>
+</li>
+<li>
+<p>If there is no administrator default value, the system inherits the value from
+the Parent Collection.</p>
+</li>
+<li>
+<p>If none of the above conditions are met then the system leaves the value as
+``null''. (From SRB User guide (2010 Alpha version)</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Example 1 Setting retention time to 90 days</p>
+<p>% Sretain&nbsp;90d&nbsp;MyObj</p>
+<p>This command will set the retention period for the object MyObj in the current
+collection to 90 days from the current date.</p>
+<p>Example 2 Setting retention time to 3 months</p>
+<p>% Sretain&nbsp;3m&nbsp;MyObj</p>
+<p>This command will set the retention period for the object MyObj in the current
+collection to 3 months from the current date.</p>
+<p>Example 3 Setting retention time to 90 days for an object in a collection</p>
+<p>% Sretain&nbsp;90d&nbsp;MyCol/MyObj</p>
+<p>This command will set the retention period for the object MyObj in the
+collection MyCol to 90 days from the current date.</p>
+<p>Example 4 Setting retention time to 6 months using regular expressions</p>
+<p>% Sretain&nbsp;6m&nbsp;'MyObj*'</p>
+<p>This command will set the retention period for any objects matching 'MyObj*' in
+the current collection to 6 months from the current date.</p>
+<p>Example 5 Setting retention time to a specfic date recursively on a collection</p>
+<p>% Sretain&nbsp;-r&nbsp;05/20/2011&nbsp;MyCol</p>
+<p>This command will set the retention period for the collection MyCol and all
+objects in the collection recursively to 05/20/2011</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><strong>Sscheme(1)</strong>, <strong>Sls(1)</strong>, <strong>Senv(1)</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="release_notes">RELEASE NOTES</a></h1>
+<dl>
+<dt><strong><a name="item_version_1_2e0__2d_july_23_2c_2010">Version 1.0 - July 23, 2010</a></strong>
+
+<ul>
+<li>
+<p>Initial release.</p>
+</li>
+</ul>
+<dt><strong><a name="item_version_1_2e1__2d_december_17_2c_2010__2d_lam_40ar">Version 1.1 - December 17, 2010 - LAM@ARSC</a></strong>
+
+<ul>
+<li>
+<p>Modified to accept uppercase alphanumberic project and short project option.
+Modified pod examples to match implemented syntax.</p>
+</li>
+</ul>
+</dl>
+
+</body>
+
+</html>

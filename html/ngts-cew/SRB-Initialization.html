@@ -1,0 +1,339 @@
+<html><head>
+<title>SRB Initialization</title>
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.blue { color: blue; }
+</style>
+</head><body>
+<hr><table width="100%"><tr><td width="200"><a href=".">
+<img src="HPCMP-logo.gif" border="0"
+ alt="HPCMP logo"></a></td><td align=center><sub>
+
+<h1>SRB Initialization<br><a href="#Revision_log">4/1/2011</a></h1>
+
+</sub></td><td width="100"><a href="..">
+
+<img src="DoD-Shield.gif" border="0"
+ alt="DoD Shield"></a></td></tr></table><hr>
+
+<p>Contents:
+
+<a href="#CEW_recommends">CEW recommends</a> &nbsp;
+<a href="#SRB_ready">SRB ready</a> &nbsp;
+<a href="#Initialization_script">Initialization scripts</a> &nbsp;
+<a href="#assumptions">assumptions</a> &nbsp;
+<a href="#output">output</a>
+
+<h3><a name="CEW_recommends">CEW recommends the following for SRB Initialization</a></h3>
+
+The Sinit and Sshell commands will NOT be wrapped
+ but will be available for use by users in their native form.
+<p>
+It is the recommendation that srb initialization be performed
+ in the system profile for all users so that users are SRB ready when the login completes.
+
+<h3><a name="SRB_ready">SRB ready definition</a></h3>
+<ol>
+<li>Authentication is by KERBEROS_AUTH.
+<li>The host is set to the local MCAT servers.
+<li>The resource is set to the local archive.
+<li>The classification level is set to the value appropriate for the DRSC.
+<li>The user is placed in the local site sub collection of his/her home collection.
+</ol>Savy users can Sexit and Sinit with different values.
+
+<h3><a name="Initialization_script">SRB Initialization scripts</a></h3>
+
+<p> &nbsp; &nbsp;
+<a href="#bash">For bash, ksh and sh users</a> &nbsp;
+<a href="#csh">For csh and tcsh users</a>
+
+<h4>Site / Machine customization</h4>
+
+The srb.sh and srb.csh scripts below set a number of variables that have to be modified for each Site / Machine.
+The scripts above are the working versions on the ARSC TDS as of 4/1/2011.
+Following is a list of the variables that must be modified for each Site / Machine.
+<ul><li>
+KLIST - This variable is set to the path of the klist command used to determine the SRB principal.
+<p><li>
+SRB_HOST - This variable is set to a comma separated list of the MCAT server host names.
+<p><li>
+SRB_RESOURCE - This variable is set to the local SRB resource for users at the current site.  SRB only allows a single default resource for a user.  The HPCMP EUE Customer Experience Workgroup has recommended that the resource be set to a resource local to the machine that the user is accessing SRB from so as to avoid unnecessary traffic between the DSRC's over the DREN for users that access HPCs at more than one DSRC.
+<p><li>
+SRB_CLASSIFICATION - This is the default classification level of data for the machine that the user is accessing SRB from.  SRB stores the highest classification level a user is allowed access to.  For Open Research machines this should be 'SRB_LEVEL_00' and for all other unclassified system this should be 'SRB_LEVEL_01'.
+<p><li>
+APP - This is the base directory where applications are installed. These scripts assume that SRB has been installed at $APP/srb/current.  The APP environment variable is set on the utility servers but may not be set on HPC machines.  The SRB_HOME variable may be set directly if the SRB application has been in another location.
+</ul>
+
+<h4><a name="bash">For bash, ksh and sh users</a></h4>
+The following code was added to the end of the /etc/profile file
+ which is the system environment initialization:
+<pre>test -s /etc/profile.local && . /etc/profile.local</pre>
+
+The following code was added to the end of the /etc/profile.local file
+ which is the local system environment initialization:
+<pre>srb_init_script="${APP}/srb/init/srb.sh"
+# Initialize SRB if file readable, no personal version, and not root
+if [[ -r $srb_init_script && ! -f $HOME/.srb_init.sh && $uid != 0 ]] ; then
+      if [[ $- == *i* ]] ; then  # if interactive source the SRB initialization
+         source $srb_init_script
+#     else                       # else source the SRB initialization quietly
+#        source $srb_init_script >& /dev/null
+      fi
+fi
+unset srb_init_path</pre>
+The following initializes SRB:
+<pre># Initialize the environment for the Storage Resource Broker (srb).
+# --:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+
+# Extract the kerberos principal from the current kerberos keylist.
+KLIST='/usr/software/krb5/bin/klist'
+SRB_PRINCIPAL=`${KLIST} | grep "Default principal" | cut -d ':' -f 2 | tr -d ' \t'`
+
+# Test SRB_PRINCIPAL before continuing
+if [ -z $SRB_PRINCIPAL ] ; then # SRB_PRINCIPAL was NOT retrieved from klist output
+echo Cannot initialize SRB - No kerberos ticket!
+else # SRB_PRINCIPAL was retrieved from klist output
+
+if [ -z $SRB_HOME ] ; then # If we haven't already set up the environment
+
+echo Default principal: $SRB_PRINCIPAL
+
+# Extract the SRB user name from the kerberos principal
+
+SRB_USER=`echo $SRB_PRINCIPAL | cut -d '@' -f 1`
+echo SRB User: $SRB_USER
+
+# Set the value of the local MCAT servers for round robin use.
+
+SRB_HOST='mcata-a.arsc.edu,mcatb-a.arsc.edu,mcatc-a.arsc.edu'
+echo SRB Host: $SRB_HOST
+
+# Set the default SRB resource to a local archive.
+
+SRB_RESOURCE='arsc.spike.rsrc2'
+echo SRB Resource: $SRB_RESOURCE
+
+# Set the SRB Classification level to the value for this DSRC
+
+SRB_CLASSIFICATION='SRB_LEVEL_00'
+echo SRB Classification Level: $SRB_CLASSIFICATION
+
+# Set the SRB collection for this DSRC
+
+SRB_COLLECTION='~/arsc'; export SRB_COLLECTION
+echo SRB Collection: $SRB_COLLECTION
+
+# Set the SRB_HOME value to where the most current SRB client is installed.
+SRB_HOME="${APP}/srb/current"; export SRB_HOME
+echo SRB Home: $SRB_HOME
+
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$SRB_HOME/lib/64; export LD_LIBRARY_PATH
+PATH=${PATH}:$SRB_HOME/bin; export PATH
+MANPATH=${MANPATH}:$SRB_HOME/man; export MANPATH
+
+# Write SRB defaults
+
+Sinit -user ${SRB_PRINCIPAL} -host ${SRB_HOST} \
+-port 5625 -comm PLAIN_TEXT -auth KERBEROS_AUTH \
+-rsrc ${SRB_RESOURCE} -classification ${SRB_CLASSIFICATION} -w
+
+unset SRB_USER SRB_HOST SRB_RESOURCE SRB_CLASSIFICATION
+
+fi # If we haven't already set up the environment
+
+# Initialize the SRB client
+
+Sinit
+
+# Set the current SRB collection to the collection for this DSRC.
+
+Scd ${SRB_COLLECTION}
+
+fi # end if SRB_PRINCIPAL was retrieved from klist output
+
+unset KLIST SRB_PRINCIPAL
+</pre>
+
+<h4><a name="csh">For csh and tcsh users</a></h4>
+The following code was added to the end of the /etc/csh.login file
+ which is the system environment initialization:
+<pre>if ( -r /etc/csh.login.local ) source /etc/csh.login.local</pre>
+The following code was added to the end of the /etc/csh.login.local file
+ which is the local system environment initialization:
+<pre>set srb_init_script="${APP}/srb/init/srb.csh"
+# Initialize SRB if file readable, no personal version, and not root
+if ( -r $srb_init_script && ! -f $HOME/.srb_init.csh && $uid != 0 ) then
+      if ($?prompt) then         # if interactive source the SRB initialization
+         source $srb_init_script
+#     else                       # else source the SRB initialization quietly
+#        source $srb_init_script >& /dev/null
+      endif
+endif
+unset srb_init_path</pre>
+The following initializes SRB:
+<pre># Initialize the environment for the Storage Resource Broker (srb).
+# /usr/var/tmp/ianni/srb_init.csh - James Ianni created the csh version
+# --:----|----:----|----:----|----:----|----:----|----:----|----:----|----:----|
+
+# Extract the kerberos principal from the current kerberos keylist.
+set KLIST = '/usr/local/krb5/bin/klist'
+set SRB_PRINCIPAL = `${KLIST} | grep "Default principal" | cut -d ':' -f 2 | tr -d ' \t'`
+
+if ( $SRB_PRINCIPAL == "" ) then # SRB_PRINCIPAL was NOT retrieved from klist output
+echo Cannot initialize SRB - No kerberos ticket!
+else # SRB_PRINCIPAL was retrieved from klist output
+
+if ( ! $?SRB_HOME ) then # If we haven't already set up the environment
+
+echo Default principal: $SRB_PRINCIPAL
+
+# Extract the SRB user name from the kerberos principal
+
+set SRB_USER = `echo $SRB_PRINCIPAL | cut -d '@' -f 1`
+echo SRB User: $SRB_USER
+
+# Set the value of the local MCAT servers for round robin use.
+
+set SRB_HOST = 'mcata-a.arsc.edu,mcatb-a.arsc.edu,mcatc-a.arsc.edu'
+echo SRB Host: $SRB_HOST
+
+# Set the default SRB resource to a local archive.
+
+set SRB_RESOURCE = 'arsc.spike.rsrc2'
+echo SRB Resource: $SRB_RESOURCE
+
+# Set the SRB Classification level to the value for this DSRC
+
+set SRB_CLASSIFICATION = 'SRB_LEVEL_00'
+echo SRB Classification Level: $SRB_CLASSIFICATION
+
+# Set the SRB collection for this DSRC
+
+setenv SRB_COLLECTION 'arsc'
+echo SRB Collection: $SRB_COLLECTION
+
+# Set the SRB_HOME value to where the most current SRB client is installed.
+
+setenv SRB_HOME ${APP}/srb/current
+echo SRB Home: $SRB_HOME
+
+setenv PATH ${PATH}:${SRB_HOME}/bin
+
+if ( $?LD_LIBRARY_PATH ) then
+    setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${SRB_HOME}/lib/64
+else
+    setenv LD_LIBRARY_PATH ${SRB_HOME}/lib/64
+endif
+
+if ( $?MANPATH ) then
+    setenv MANPATH ${MANPATH}:${SRB_HOME}/man
+else
+    setenv MANPATH `manpath`:${SRB_HOME}/man
+endif
+
+# Write SRB defaults
+
+Sinit -user ${SRB_PRINCIPAL} -host ${SRB_HOST} \
+-port 5625 -comm PLAIN_TEXT -auth KERBEROS_AUTH \
+-rsrc ${SRB_RESOURCE} -classification ${SRB_CLASSIFICATION} -w
+
+unset SRB_USER SRB_HOST SRB_RESOURCE SRB_CLASSIFICATION
+
+endif # If we haven't already set up the environment
+
+# Initialize the SRB client
+
+Sinit
+
+# Set the current SRB collection to the collection for this DSRC.
+
+Scd ${SRB_COLLECTION}
+
+endif # end if SRB_PRINCIPAL was retrieved from klist output
+
+unset KLIST SRB_PRINCIPAL</pre>
+
+<h3><a name="assumptions">The above script is based on the following assumptions:</a></h3>
+<ol>
+<li>All users logging on to a Utility Server of HPC Login node will have a SRB account.
+<li>All users will have the SRB account name matching the prefix of the kerberos principal.
+<li>Users will have a local resource.
+<li>Users will have a site sub collection within their home collection.
+</ol>
+The above script uses a number of environment variables that are not strictly necessary.
+ These are used to add to the readability and simplfy modification for the DSRC where the script will run.
+<h3><a name="output">Below is the output from sourcing this script at ARSC when all is working:</a></h3>
+<pre width="90%">$ source ~/.bash_srb
+Default principal: murakami@ARSC.EDU
+SRB User: murakami
+SRB Host: mcata-a.arsc.edu,mcatb-a.arsc.edu,mcatc-a.arsc.edu
+SRB Resource: arsc.rsrc1
+SRB Classification Level: SRB_LEVEL_00
+SRB Collection: ~/arsc
+SRB Home: /usr/local/pkg/srb/current
+
+Welcome to SRB.
+Your User Name is "murakami@ARSC.EDU".
+Your Default Classification is "SRB_LEVEL_00".
+Your Home Collection is "/archive/murakami".
+Your Default Resource is "arsc.rsrc1".
+
+[08:53:37 Thu Oct 14] murakami@alpha ~</pre>
+
+<h3>Below is the output from the system sourcing this script at ARSC on the US TDS when the SRB Servers are not up:</h3>
+
+<pre>Last login: Fri Apr  1 10:47:38 2011 from alpha.arsc.edu
+Default principal: murakami@ARSC.EDU
+SRB User: murakami
+SRB Host: mcata-a.arsc.edu,mcatb-a.arsc.edu,mcatc-a.arsc.edu
+SRB Resource: arsc.spike.rsrc2
+SRB Classification Level: SRB_LEVEL_00
+SRB Collection: ~/arsc
+SRB Home: /opt/apps/srb/current
+SRB_SERVER_DOWN "SRB Client unable to connect to SRB Server.
+ SRB Server may be offline or listening on a different port number.
+ SRB Server may also be unable to connect to any of the MCAT Servers."
+SRB_SESSION_READ_ERROR "There is no active session or file permissions are tampered.
+ Initialize session with verbose option using Sshell/Sinit for Acommands and Scommands, or Minit for Mcommands."
+[11:13:46 Fri Apr 01] murakami@akustdsl-0001 ~</pre>
+Note that line breaks were added to the error messages.
+
+<h3>Below is the output from the system sourcing this script at ARSC on the US TDS when no kerberos credentials are present:</h3>
+
+<pre>source $APP/srb/init/srb.sh
+klist: No credentials cache found while retrieving principal name
+Cannot initialize SRB - No kerberos ticket!
+[11:14:25 Fri Apr 01] murakami@akustdsl-0001 ~</pre>
+
+<h3><a name="Revision_log">Revision log</a></h3>
+<dl>
+<dt>10/13/2010 - LAM - Initial version posted to NGTS portal
+<dd><ul><li>This is from discussion in numerous CEW calls
+ and emails.
+<li>In the May timeframe we were still working with an Sinit wrapper.
+<li>In July Mary Ann Cuffini compiled the SRB ready definition from earlier emails and discussions.</ul>
+<dt>10/14/2010 - LAM - Added output from sourcing this script at ARSC when all is working.
+<dt>11/11/2010 - LAM - Added links at the top of the document and Revision log.
+<dt>3/31/2011 - LAM - Added csh and tcsh version of the script.
+<dd><ul>
+<li>Added sections detailing changes to system initialization scripts via system local initialization scripts.
+<li>Scripts were modified to report error if principal cannot be extracted from klist output.
+<li>Scripts were modified skip environment section if environment variables are already defined.
+<li>Absolute path for klist command added as environment variable.
+<li>SRB_HOME is defined within APP which is now defined on Utility Servers.
+<li>Coding added to csh / tcsh version to handle MANPATH and / or LD_LIBRARY_PATH not being defined.
+</ul>
+<dt>4/1/2011 - LAM - Fixed a spelling error (typo)
+<dd><ul>
+<li>Modified the csh script to use SET instead of UNSET for most variables
+<li>Modified both scripts to explicitely unset most variables before exiting.
+<li>Added examples of output from errors.
+<li>Added Site / Machine customizaton section.
+</ul>
+</dl>
+
+</body></html>

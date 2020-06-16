@@ -1,0 +1,278 @@
+<HTML><HEAD><TITLE>tnef - decode Transport Neutral Encapsulation Format</TITLE>
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+dt { color: #a02712}
+</style>
+</head><body>
+
+<!-- Begin ARSC Intranet Head section -->
+<a name="Top" href="..">
+<img src="../UAF_logo_93x83.gif"
+alt="UAF Logo" border="0" width="93" height="83" style="float: right;"/></a>
+<a href=".">
+<img src="../arsc_acronym_4color.gif"
+alt="ARSC Logo" border="0" width="78" height="50" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+tnef - decode<br>Transport Neutral Encapsulation Format
+
+</h1>
+</center>
+
+<!-- End ARSC Intranet Head section -->
+
+
+<H1>TNEF</H1>
+Section: User Commands  (1)<BR>Updated: TNEF MIME Decoder<BR><A HREF="#index">Index</A>
+<HR>
+
+<A NAME="lbAB">
+<H2>NAME</H2></A>
+
+tnef - decode Microsoft's Transport Neutral Encapsulation Format
+
+<A NAME="lbAC">
+<H2>SYNOPSIS</H2></A>
+
+<B>tnef</B> [options] [FILE]
+
+<P>
+
+<B>tnef</B>
+
+{<B>--help</B> | <B>--version</B>}
+<A NAME="lbAD">
+<H2>DESCRIPTION</H2></A>
+
+This manual page documents the
+<B>tnef</B>
+
+filter.
+<B>tnef</B>
+
+decodes e-mail attachments encoded in Microsoft's Transport Neutral
+Encapsulation Format (hereafter, TNEF), which &quot;wraps&quot;
+Microsoft e-mail attachments.
+<P>
+
+<I>Unfortunately</I>, these wrapped attachments are inaccessible to
+
+any e-mail client that does not understand TNEF.
+<I>Fortunately</I>,
+
+the
+<B>tnef</B>
+
+filter can be used by any MIME-aware client to unpack these attachments.
+<A NAME="lbAE">&nbsp;</A>
+<H2>OPTIONS</H2>
+
+<DL COMPACT>
+<DT><B>-f</B> FILE,  <B>--file</B>=FILE<DD>
+use FILE as input ('-' denotes stdin).  When this option is omitted,
+<B>tnef</B>
+
+reads data from stdin.
+<DT><B>-C</B> DIR,  --<B>directory</B>=DIR<DD>
+unpack file attachments into DIR.
+<DT><B>-x SIZE, --maxsize=SIZE</B><DD>
+limit maximum size of extracted archive (bytes)
+<DT><B>-t,  --list</B><DD>
+list attached files, do not extract.
+<DT><B>-w,  --interactive,  --confirmation</B><DD>
+ask for confirmation for every action.
+<DT><B>--overwrite</B><DD>
+when extracting attachments, overwrite existing files.
+<DT><B>--number-backups</B><DD>
+when extracting attachments, if file FOO will be overwritten,
+create FOO.n instead.
+<DT><B>--use-paths</B><DD>
+honor file pathnames specified in the TNEF attachment.
+For security reasons, paths to attached files are
+ignored by default.
+<DT><B>--save-body FILE</B><DD>
+Save message body data found in the TNEF data.  There can be up to
+three message bodies in the file, plain text, HTML encoded, and RTF
+encoded.  Which are saved is specified by the --body-pref option.
+By default the message bodies are written to a file named message with
+an extension based upon the type (txt, html, rtf).
+<DT><B>--body-pref PREF</B><DD>
+Specifies which of the possibly three message body formats will be
+saved.  PREF can be up to three characters long and each character
+must be one of 'r', 'h', or 't' specifying RTF, HTML or text.  The
+order is the order that the data will be checked, the first type found
+will be saved.  If PREF is the special value of 'all' then any and all
+message body data found will be saved.  The default is 'rht'.
+<DT><B>--save-rtf FILE</B><DD>
+DEPRECATED.  Equivalent to --save-body=FILE --body-pref=r
+<DT><B>-h,  --help</B> <DD>
+show usage message.
+<DT><B>-V,  --version</B> <DD>
+display version and copyright.
+<DT><B>-v,  --verbose</B><DD>
+produce verbose output.
+<DT><B>--debug</B><DD>
+enable debug output.
+</DL>
+<A NAME="lbAF">
+<H2>EXAMPLE</H2></A>
+
+The following example demonstrates typical
+<B>tnef</B>
+
+usage with a popular Unix mail client called &quot;mutt&quot;.
+<A NAME="lbAG">
+<H3>Step 1 -- Configure ~/.mailcap</H3></A>
+
+
+Mutt can't use
+<B>tnef</B>
+
+for its intended purpose until an appropriate content type definition
+exists in ~/.mailcap .  Here's a sample definition:
+<P>
+
+<DL COMPACT><DT><DD>
+application/ms-tnef; tnef -w %s
+</DL>
+
+<P>
+
+This mailcap entry says that whenever the MIME content type:
+<P>
+
+<DL COMPACT><DT><DD>
+application/ms-tnef
+</DL>
+
+<P>
+
+is encountered, use this command to decode it: 
+<P>
+
+<DL COMPACT><DT><DD>
+tnef -w %s
+</DL>
+
+<P>
+
+The latter command string invokes
+<B>tnef</B>,
+
+specifying both the <B>-w</B> option and the attachment (created as a
+temporary file) as command line arguments.
+<A NAME="lbAH">
+<H3>Step 2 -- Add The Filter To $PATH</H3></A>
+
+
+Mutt can't invoke
+<B>tnef</B>
+
+if the filter isn't accessible via $PATH.
+<A NAME="lbAI">
+<H3>Step 3 -- Test Mutt</H3></A>
+
+
+Use mutt to read a message that includes a TNEF attachment.  Mutt will
+note that an attachment of type &quot;application/ms-tnef is unsupported&quot;.
+<P>
+
+Press the &quot;v&quot; key to open mutt's &quot;view attachment&quot; menu.
+<P>
+
+Move the cursor over the TNEF attachment and press the enter key to &quot;view&quot;
+the attachment.
+Mutt will launch
+<B>tnef</B>
+
+and invoke it
+using the command line syntax specified in ~/.mailcap (step 1).
+<B>tnef</B>
+
+then decodes all file(s) included in the TNEF attachment, prompting
+for confirmation prior to creating an individual file (refer to
+<B>-w</B>
+
+option above).  
+<B>-w</B>
+
+is useful here because it gives the end user a chance to
+view the filename(s) included in the mail message.
+<P>
+
+Note that Mutt's attachment menu also supports a pipe option, which permits
+the user to pipe attachments to an external filter (how convenient). 
+So, to list the contents of a TNEF attachment prior to decoding it, press
+the &quot;|&quot; key and enter this command:
+<P>
+
+<DL COMPACT><DT><DD>
+tnef -t
+</DL>
+
+<P>
+
+<A NAME="lbAJ">
+<H2>SEE ALSO</H2></A>
+
+<B>metamail</B>(1),
+
+<B>mailcap</B>(4),
+
+<B>mutt</B>(1),
+
+other email clients.
+<A NAME="lbAK">&nbsp;</A>
+<H2>AUTHOR</H2>
+
+Mark Simpson.
+<A NAME="lbAL">
+<H2>REPORTING BUGS</H2></A>
+
+Report bugs to 
+
+Mark Simpson &lt;<A HREF="mailto:verdammelt@users.sourceforge.net">verdammelt@users.sourceforge.net</A>&gt;
+
+<A NAME="lbAM">
+<H2>OTHER REFERENCES</H2></A>
+
+<A HREF="http://support.microsoft.com/support/kb/articles/Q136/2/04.asp">http://support.microsoft.com/support/kb/articles/Q136/2/04.asp</A>
+
+describes how to configure Microsoft email clients so that the TNEF format
+is disabled when sending messages
+to non-TNEF-compatible clients.
+<P>
+<P>
+<P>
+<P>
+
+<HR>
+<A NAME="index"><H2>Index</H2></A>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">OPTIONS</A><DD>
+<DT><A HREF="#lbAF">EXAMPLE</A><DD>
+<DL>
+<DT><A HREF="#lbAG">Step 1 -- Configure ~/.mailcap</A><DD>
+<DT><A HREF="#lbAH">Step 2 -- Add The Filter To $PATH</A><DD>
+<DT><A HREF="#lbAI">Step 3 -- Test Mutt</A><DD>
+</DL>
+<DT><A HREF="#lbAJ">SEE ALSO</A><DD>
+<DT><A HREF="#lbAK">AUTHOR</A><DD>
+<DT><A HREF="#lbAL">REPORTING BUGS</A><DD>
+<DT><A HREF="#lbAM">OTHER REFERENCES</A><DD>
+</DL>
+<HR>
+This document was created by
+man2html,
+using the manual page.<BR>
+Time: 20:58:26 GMT, August 15, 2011
+</BODY>
+</HTML>

@@ -1,0 +1,6 @@
+sending incremental file list
+log/
+log/2013-05-26-1729-Bk-arsc-people.txt
+
+sent 2726 bytes  received 46 bytes  426.46 bytes/sec
+total size is 1537031  speedup is 554.48

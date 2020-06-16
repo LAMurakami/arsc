@@ -1,0 +1,44 @@
+/* ============================================================
+$Id: int.css,v 1.3 2009/11/23 19:11:44 murakami Exp murakami $
+Site-wide styles for ARSC intranet
+
+20071219(tjb): initial version, link warnings
+20090114(tjb): move icons to /images/
+20091021 LAM : Modified external rule for use on test vs int.
+20091023 LAM : Added "a:hover" and "pre" styles
+20091103 LAM : Added "a:hover img" to prevent color background
+                for images that may have transparency.
+20091120 LAM : Added changes that were made on test except the change to the
+                external link testing.  Changed hover and pre colors to
+                one of 16 ARSC colors.  Changed the default font to sans-serif.
+               Added RCS Id tag to include versioning in source.
+20100331 LAM : Changed back to alternating colors for headings.
+============================================================ */
+
+/* ------------------------------------------------------------
+standard styles
+------------------------------------------------------------ */
+/* Changed the default font to sans-serif.
+----:----|----:----|----:----|----:----|----:----|----:----|----:----|----:-- */
+{ font-family: Helvetica, Tahoma, Arial, sans-serif; font-size: 1.2em; }
+
+html {  margin-left: 5%; margin-right: 5%; }
+
+body {background-color:#FFF;}  /* white background */
+
+/* Changed the color of first three headings to ARSC colors.
+----:----|----:----|----:----|----:----|----:----|----:----|----:----|----:-- */
+h1 { color: #1e5593; }
+h2 { color: #9b4703; }
+h3 { color: #1e5593; }
+
+/* Add a background color when cursor is over a link.
+----:----|----:----|----:----|----:----|----:----|----:----|----:----|----:-- */
+a:hover { background: #c1dbd4 }
+a:hover img { background: white }
+/* Add a border and shaded background to preformatted text.
+----:----|----:----|----:----|----:----|----:----|----:----|----:----|----:-- */
+pre { color: black; background: #f6fafa; font-family: monospace;
+ border: solid; border-width: thin; padding: 0.5em;}
+
+

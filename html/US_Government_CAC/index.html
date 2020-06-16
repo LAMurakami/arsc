@@ -1,0 +1,106 @@
+<html><head>
+<title>Get a US Government CAC card to work on a 64 bit Linux machine.</title>
+<!-- $Id: index.html,v 1.1 2019/07/09 21:26:11 ubuntu Exp ubuntu $ -->
+
+<style type="text/css">
+html { margin-left: 3%; margin-right: 3%; }
+h1, h2, h3, h4, h5 { color: #1e5593; font-family: Helvetica, Arial, sans-serif; }
+h1.firstHeading {font-size:200%;}
+h1 {font-size:138.5%;}
+h2 {font-size:123.1%;}
+h3 {font-size:108%;}
+h4,h5,h6 {font-size:100%;}
+dt { color: #a02712}
+pre { color: black; background: #f6fafa; font-family: monospace;
+  border: solid; border-width: thin; padding: 0.5em; }
+.green1 { color: green; }
+</style>
+</head><body>
+<!-- Begin ARSC Intranet Head section -->
+<a name="Top" href="/About">
+<img src="/UAF_logo_93x83.gif"
+alt="UAF Logo" border="0" width="93" height="83" style="float: right;"/></a>
+<a href="/">
+<img src="/arsc_acronym_4color.gif"
+alt="ARSC Logo" border="0" width="78" height="50" style="float: left;"/></a>
+
+<center>
+<h1 class="firstHeading">
+
+<a href="#toc">Get a US Government CAC to work
+<br>with the x86_64 version of Firefox
+<br>on a 64 bit REHL 6.4 or CentOS 6.4 machine.
+</a>
+
+</h1>
+</center>
+<!-- End ARSC Intranet Head section -->
+
+								<!-- bodytext -->
+
+<h1> <span id="Introduction."> Introduction. </span></h1>
+<p>Most if not all US Government employees are now issued a CAC (Common Access Card).  This includes active members of the Armed Services and civilian government employees.  Many government contractors may also be issued a CAC.
+</p><p>The CAC serves as an identification card that humans can read and includes a picture, expiration date, and ID number.  The CAC is also a Smart Card that can be read to access government signed certificates stored on the CAC.  Reading the CAC requires entry of a Personal Identification Number (PIN).  The combination of the CAC (something you have) and the PIN (something you know) for authentication is a form of Two factor Authentication which is a requirement to access many U.S. Government (USG) Information Systems (IS) and the preffered way for many more.
+</p>
+<h1> <span id="64-bit-Linux"> 64 bit Linux machine </span></h1>
+<p>Getting a US Government CAC to work on a 64 bit REHL 6.4 machine or a 64 bit CentOS 6.4 machine running the x86_64 version of Firefox is a lot easier than getting a CAC to work on Linux was in the past.  The US Government mostly uses MS Windows workstations and offers little or no official support for using a CAC on another platform.
+</p><p>This procedure has been used on Red Hat Enterprise Linux (RHEL) 6.4 machines and CentOS 6.4 machines and should also work on Scientific Linux (SL) 6.4 machines.
+</p>
+<ul><li> Card: "Oberthur ID One V5.5 Dual"
+</li><li> Reader: <a href="SCR331.pdf" rel="nofollow">SCR-331</a>
+</li></ul>
+<p>Install esc (Enterprise Security Client Smart Card Client) which will
+cause the ccid, coolkey, pcsc-lite, and pcsc-lite-libs dependancies to be installed.
+</p>
+<pre>yum -y install esc
+</pre>
+<p>Update xulrunner which updates firefox.
+</p>
+<pre>yum -y update xulrunner
+</pre>
+<p>Reboot
+</p><p>At this point the "Smart Card Manager" can see information on the CAC card.
+</p>
+<h2> <span id="Configure_the_.22CAC_Reader.22_Security_Device_in_the_x86_64_version_of_Firefox:"> Configure the "CAC Reader" Security Device in the x86_64 version of Firefox: </span></h2>
+<p>Select "Preferences" from the "Edit" menu.
+Click on the "Advanced" icon and then select the "Encryption" tab.
+</p><p>Click on the "Security Devices" button and then the "Load" button in the window that appears.
+Under "Module Name" put a name you will recognize such as "CAC Reader".
+</p><p>Click the browse button and navigate to /usr/lib64/pkcs11/libcoolkeypk11.so and select that, or, alternatively, enter "/usr/lib64/pkcs11/libcoolkeypk11.so" in the "Module Filename" field.
+</p><p>The "CAC Reader" module will now appear in the previous window, and, if you have a CAC Reader plugged into the computer with a CAC inserted, your personal information will appear as well.
+</p><p>Once you are at this point you can now visit DoD CAC enabled sites.
+</p>
+<h2> <span id="Add_exceptions_to_trust_DoD_sites_you_will_use_your_CAC_to_authenticate_to."> Add exceptions to trust DoD sites you will use your CAC to authenticate to. </span></h2>
+<p>You could install DoD root certificates but then you would have to keep updating them anyway.
+</p><p>Expired certificates that have been added by exception may have to delete before you can add a new certificate for the same site.
+</p><p>These appear in Firefox -&gt; Edit -&gt; Preferences -&gt; Advanced -&gt; Encryption -&gt; View Certificates -&gt; Servers
+</p>
+<ul><li> Scroll down to see the DoD sites under "U.S. Government".
+</li><li> Look at the "Expires On" column and delete any that have a date in the past.
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 86/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:253-0!1!0!!en!2 and timestamp 20130518203720 -->
+				<!-- /bodytext -->
+<table id="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<div>
+Retrieved from "<a href="/About">
+https://intrawiki.arsc.edu/index.php/Card_reader</a>"
+<br> - Saturday, May 18, 2013 @ 7:06:12 PM (Alaska Time)</div>
+<li><a href="#Introduction.">1 Introduction.</a></li>
+<li><a href="#64-bit-Linux">2 64 bit Linux machine </a>
+<ul>
+<li><a href="#Configure_the_.22CAC_Reader.22_Security_Device_in_the_x86_64_version_of_Firefox:">2.1 Configure the "CAC Reader" Security Device in the x86_64 version of Firefox:</a></li>
+<li><a href="#Add_exceptions_to_trust_DoD_sites_you_will_use_your_CAC_to_authenticate_to.">2.2 Add exceptions to trust DoD sites you will use your CAC to authenticate to.</a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
