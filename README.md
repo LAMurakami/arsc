@@ -7,6 +7,21 @@ This is one of the additional-sites of the Linux Apache MariaDB in the cloud
 AWS EC2 instance described in the
 [aws repo README.md](https://github.com/LAMurakami/aws#readme)
 
+The main page is a copy of what was at people.arsc.edu/~murakami with
+broken links changed.  Some of the links were changed to point to pages
+captured by The Internet Archive as part of the Internet Archive Wayback
+Machine.
+
+I started with
+[Arctic Region Supercomputing Center](https://en.wikipedia.org/wiki/Arctic_Region_Supercomputing_Center)
+(ARSC) Monday, August 31, 2009 and created the people.arsc.edu/~murakami
+page by the end of the year when I created an ARSC HPC Users Newsletter
+contribution.
+
+My time with ARSC ended August 31, 2015 when I retired, not coincidentally,
+the same day
+[Arctic Region Supercomputing Center ceased to exist](http://arsc.lam1.us/About).
+
 This repo contains content in the html folder and an apache2 configuration
 that can be implemented with:
 
