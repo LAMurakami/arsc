@@ -3,6 +3,10 @@
 [arsc.lam1.us](http://arsc.lam1.us/)
 [arsc.lamurakami.com](http://arsc.lamurakami.com/)
 
+This is one of the additional-sites of the Linux Apache MariaDB in the cloud
+AWS EC2 instance described in the
+[aws repo README.md](https://github.com/LAMurakami/aws#readme)
+
 This repo contains content in the html folder and an apache2 configuration
 that can be implemented with:
 
