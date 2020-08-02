@@ -46,3 +46,10 @@ This would then be picked up by the Daily cron job to backup
 #!/bin/bash
 run-parts --report /mnt/efs/aws-lam1-ubuntu
 [19:34:30 Sunday 06/14/2020] ubuntu@aws</pre>
+
+
+See Also:
+* [aws repo README.md](https://github.com/LAMurakami/aws#readme)
+* [no-ssl repo README.md](https://github.com/LAMurakami/no-ssl#readme)
+* [ubuntu-etc repo README.md](https://github.com/LAMurakami/ubuntu-etc#readme) Ubuntu Server 20.04 configuration changes for LAM AWS VPC EC2 instances
+
