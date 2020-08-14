@@ -23,30 +23,12 @@ the same day
 [Arctic Region Supercomputing Center ceased to exist](http://arsc.lam1.us/About).
 
 This repo contains content in the html folder and an apache2 configuration
-that can be implemented with:
-
-<pre>sudo ln -s /var/www/arsc/arsc_apache2.conf \
-/etc/apache2/sites-available/060_arsc.conf
-
-sudo a2ensite 060_arsc
-sudo systemctl reload apache2</pre>
-
-If the repo contents are installed in a location other than /var/www
-the path in the configuration and in the instuctions would have to be modified.
-
-The arsc_archive_rebuild.bash script will Rebuild an archive of /var/www/arsc
-resources when they change.  It is intended to be run daily with:
-
-<pre>ln -s /var/www/arsc/arsc_archive_rebuild.bash /mnt/efs/aws-lam1-ubuntu/arsc</pre>
-
-This would then be picked up by the Daily cron job to backup
-/mnt/efs/aws-lam1-ubuntu archives.
-
-<pre>$ cat /etc/cron.daily/Bk-20-aws-changes
-#!/bin/bash
-run-parts --report /mnt/efs/aws-lam1-ubuntu
-[19:34:30 Sunday 06/14/2020] ubuntu@aws</pre>
-
+that can be implemented within the cloud-config runcmd: list with:
+<pre> - echo
+ - echo 'Installing arsc.lam1.us web site'
+ - git clone https://github.com/LAMurakami/arsc /var/www/arsc
+ - ln -s /var/www/arsc/arsc_apache2.conf /etc/apache2/sites-available/060_arsc.conf
+ - a2ensite 060_arsc</pre>
 
 See Also:
 * [aws repo README.md](https://github.com/LAMurakami/aws#readme)
