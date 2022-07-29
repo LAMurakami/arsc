@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-# $Id: Sretain,v 1.11 2011/04/28 22:23:16 murakami Exp murakami $
 # See perl pod documentation at the end of this file
 
 use strict;

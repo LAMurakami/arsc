@@ -1,4 +1,3 @@
-.\" $Id: Sdata.1,v 1.3 2010/08/02 22:42:43 murakami Exp murakami $
 .\"
 .\" 20100528 - LAM Created initial man page from James Ianni's email
 .\" 20100802 - LAM Added some examples
