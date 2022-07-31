@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-# $Id: Sreview,v 1.8 2012/08/07 22:33:16 murakami Exp murakami $
 # See perl pod documentation at the end of this file
 
 use strict;
