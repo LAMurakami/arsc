@@ -5,7 +5,7 @@
 
 This is one of the additional-sites of the Linux Apache MariaDB in the cloud
 AWS EC2 instance described in the
-[aws repo README.md](https://github.com/LAMurakami/aws#readme)
+[no-ssl repo README.md](https://github.com/LAMurakami/no-ssl#readme)
 
 The main page is a copy of what was at people.arsc.edu/~murakami with
 broken links changed.  Some of the links were changed to point to pages
